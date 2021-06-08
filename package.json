@@ -1,0 +1,14 @@
+{
+  "name": "the-coffee-shop",
+  "version": "1.0.0",
+  "description": "Mini project for intro2se course",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-server": "cd server && npm i",
+    "install-client": "cd client && npm i",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev"
+  },
+  "author": "Ga chien pro max",
+  "license": "ISC"
+}
