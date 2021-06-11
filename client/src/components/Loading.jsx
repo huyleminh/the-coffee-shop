@@ -1,10 +1,15 @@
 import { Spin } from "antd";
+import PropTypes from 'prop-types';
 import React from "react";
 
-function Loading() {
+Loading.propTypes = {
+    style: PropTypes.object
+};
+
+function Loading(props) {
     return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <Spin size="large" tip="Loading..." />
+        <div style={props.style}>
+            <Spin size="large" tip="Loading, please wait for a moment..." />
         </div>
     );
 }

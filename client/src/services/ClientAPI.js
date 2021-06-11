@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const ClientAPI = axios.create({
-    baseURL: `http://localhost:5000/`,
+    baseURL: `http://localhost:5000/api`,
     headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("acess_token")
     },
 });
 
@@ -21,6 +22,7 @@ ClientAPI.interceptors.request.use(
 // Add a response interceptor
 ClientAPI.interceptors.response.use(
     function (response) {
+        // code, statusText, ..., data
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
         return response;

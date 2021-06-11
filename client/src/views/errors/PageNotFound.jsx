@@ -1,12 +1,12 @@
 import React from 'react';
 
 
-function Forbidden(props) {
+function NotFound(props) {
     return (
         <div>
-            Forbidden
+            Page not found
         </div>
     );
 }
 
-export default Forbidden;
+export default NotFound;
