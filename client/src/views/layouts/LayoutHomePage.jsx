@@ -8,8 +8,9 @@ import HomePage from "./HomePage";
 function LayoutHomePage(props) {
     return (
         <Switch>
-            <Route path={`/dashboard/admin`} component={LayoutAdmin} />
-            <Route path={`/dashboard/employee`} component={LayoutEmployee} />
+            <Route path={`/admin`} component={LayoutAdmin} />
+            <Route path={`/employee`} component={LayoutEmployee} />
+            <Route exact path="/profile" />
             <Route exact path="/" component={HomePage} />
             <Route>
                 <Redirect to="/404">
