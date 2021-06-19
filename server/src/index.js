@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+// import TestController from "./controllers/test.controller.js";
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(function (req, res, next) {
 app.get("/", (req, res) => {
     res.send("Hello world");
 });
+
+// app.get("/test", TestController.getData);
 
 app.listen(PORT, () => {
     console.log(`The coffee shopp's server is listening at http://localhost:${PORT}`);
