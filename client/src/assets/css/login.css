@@ -1,13 +1,20 @@
 a {
     color: #674c24;
     font-weight: 600;
+
+    justify-content: center;
+    align-items: center;
 }
 
 a:hover {
     color: #b88031;
 }
 
-.signup {
+.form__bottom {
+    justify-content: center;
+}
+
+.signin {
     width: 100%;
     height: 100vh;
 
@@ -23,23 +30,25 @@ a:hover {
     flex-direction: column;
     align-items: center;
 
-    width: calc(100% / 4);
-    height: calc(100vh - 100px);
+    justify-content: center;
 
-    padding: 35px;
+    width: calc(100% / 3);
+    height: calc(100vh - 200px);
+
+    padding: 50px;
     border-radius: 20px;
 
     -webkit-box-shadow: 0px 0px 7px 7px #674c24;
     -moz-box-shadow: 0px 0px 7px 7px #674c24;
-    box-shadow: 0px 0px 7px 7px #674c24;
+    box-shadow: 0px 0px 7px 7px #363d38;
 }
 
 .form > :first-child {
     position: absolute;
     width: inherit;
     font-size: 1.75rem;
-    padding-left: 20px;
-    top: 60px;
+    padding: 20px;
+    top: 87px;
     color: #4c3d23;
     cursor: pointer;
 }
@@ -70,7 +79,7 @@ a:hover {
 }
 
 .form__controll form > :nth-child(n) {
-    margin-top: 10px;
+    margin-top: 40px;
     width: 100%;
 }
 
@@ -84,25 +93,30 @@ a:hover {
 .form__controll form input {
     outline: none;
     border: 1px solid #4c3d23;
-    border-radius: 5px;
-    height: 45px;
+    border-radius: 10px;
+    height: 50px;
 
     padding: 15px 10px;
     font-size: 14px;
 }
 
-button[type="submit"] {
-    width: 100%;
-    height: 45px;
-    background: #4c3d23;
+.IconFbGg {
+    padding-left: 1em;
+    white-space: 3em;
+}
 
+button[type="submit"] {
+    height: 55px;
+    background: #503a24;
+
+    padding: 8px;
     border: none;
     border-radius: 8px;
     outline: none;
     color: #fff;
 
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 800;
     cursor: pointer;
 }
 
@@ -110,13 +124,9 @@ button[type="submit"]:hover {
     background-color: #665230;
 }
 
-.policy {
-    text-align: center;
-}
-
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 780px) {
     .form {
-        width: 300px;
+        width: 350px;
     }
 
     .form__title {
@@ -132,25 +142,19 @@ button[type="submit"]:hover {
     }
 
     .form__controll form input {
-        height: 30px;
+        height: 40px;
     }
 
     button[type="submit"] {
-        height: 30px;
+        height: 40px;
         font-size: 1rem;
         font-weight: 600;
     }
-
-    .policy > span,
-    .policy > span > a {
-        font-size: 0.75rem;
-        margin-top: 5px;
-    }
 }
 
-@media only screen and (min-width: 993px) and (max-width: 1420px) {
+@media only screen and (min-width: 780px) and (max-width: 1420px) {
     .form {
-        width: 350px;
+        width: 400px;
     }
 
     .form__title {
@@ -166,19 +170,13 @@ button[type="submit"]:hover {
     }
 
     .form__controll form input {
-        height: 35px;
+        height: 40px;
     }
 
     button[type="submit"] {
-        height: 35px;
+        height: 40px;
         font-size: 1rem;
         font-weight: 600;
-    }
-
-    .policy > span,
-    .policy > span > a {
-        font-size: 0.75rem;
-        margin-top: 5px;
     }
 }
 
