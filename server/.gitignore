@@ -2,3 +2,6 @@
 *build
 
 .env
+
+testapi.http
+*.DS_Store
