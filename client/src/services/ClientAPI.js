@@ -1,7 +1,8 @@
 import axios from "axios";
+import EnvironmentConst from "../shared/EnvironmentConst";
 
 const ClientAPI = axios.create({
-    baseURL: `http://localhost:5000/api`,
+    baseURL: EnvironmentConst.API_DOMAIN,
     headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + localStorage.getItem("acess_token")
