@@ -91,18 +91,15 @@ function Login() {
                 </div>
                 <div className="signin__form__bottom">
                     <span>
-                        <br />
                         <h3 style={{ textIndent: "1.4em", fontWeight: "750" }}> Or </h3>
                         <div className="signin__IconFbGg">
-                            <pre>
-                                <a href="#" style={{ color: "blue" }}>
-                                    <FontAwesomeIcon icon={faFacebook} size="2x" />
-                                </a>
-                                <text> </text>
-                                <a href="#" style={{ color: "orange" }}>
-                                    <FontAwesomeIcon icon={faGoogle} size="2x" />
-                                </a>
-                            </pre>
+                            <a href="#" style={{ color: "blue" }}>
+                                <FontAwesomeIcon icon={faFacebook} size="2x" />
+                            </a>
+                            <text> </text>
+                            <a href="#" style={{ color: "orange" }}>
+                                <FontAwesomeIcon icon={faGoogle} size="2x" />
+                            </a>
                         </div>
                     </span>
                 </div>
