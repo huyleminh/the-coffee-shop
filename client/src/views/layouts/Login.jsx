@@ -35,7 +35,6 @@ function Login() {
     };
 
     const handleSubmit = (e) => {
-        console.log(e.target.value);
         console.log("clicked");
     };
 
@@ -51,17 +50,17 @@ function Login() {
                 backgroundSize: "cover",
             }}
         >
-            <div className="form">
+            <div className="signin__form">
                 <div onClick={handleGoHome}>
                     <FontAwesomeIcon icon={faHome} />
                 </div>
 
-                <div className="form__title">
+                <div className="signin__form__title">
                     <h1>Log In</h1>
                     <b>Become a member of our coffee shop</b>
                 </div>
 
-                <div className="form__controll">
+                <div className="signin__form__controll">
                     <form action="">
                         <input
                             type="text"
@@ -90,11 +89,11 @@ function Login() {
                         </button>
                     </form>
                 </div>
-                <div className="form__bottom" id="form__bot">
+                <div className="signin__form__bottom">
                     <span>
                         <br />
-                        <h3 style={{ textIndent: "2em", fontWeight: "750" }}> Or </h3>
-                        <div className="IconFbGg">
+                        <h3 style={{ textIndent: "1.4em", fontWeight: "750" }}> Or </h3>
+                        <div className="signin__IconFbGg">
                             <pre>
                                 <a href="#" style={{ color: "blue" }}>
                                     <FontAwesomeIcon icon={faFacebook} size="2x" />
