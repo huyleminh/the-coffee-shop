@@ -33,7 +33,7 @@ a:hover {
     justify-content: center;
 
     width: calc(100% / 3);
-    height: calc(100vh - 200px);
+    height: calc(100vh - 100px);
 
     padding: 50px;
     border-radius: 20px;
@@ -48,7 +48,7 @@ a:hover {
     width: inherit;
     font-size: 1.75rem;
     padding: 20px;
-    top: 87px;
+    top: 70px;
     color: #4c3d23;
     cursor: pointer;
 }
