@@ -81,7 +81,8 @@ a:hover {
     width: 100%;
 }
 
-.form__controll form input {
+.form__controll form input,
+.form__controll form select {
     outline: none;
     border: 1px solid #4c3d23;
     border-radius: 5px;
@@ -89,6 +90,10 @@ a:hover {
 
     padding: 15px 10px;
     font-size: 14px;
+}
+
+.form__controll form select {
+    padding: 0 10px;
 }
 
 button[type="submit"] {
@@ -135,19 +140,24 @@ button[type="submit"]:hover {
         height: 30px;
     }
 
+    .form__controll form select {
+        height: 30px;
+    }
+
     button[type="submit"] {
         height: 30px;
         font-size: 1rem;
         font-weight: 600;
     }
 
-    .policy > span, .policy > span > a {
+    .policy > span,
+    .policy > span > a {
         font-size: 0.75rem;
         margin-top: 5px;
     }
 }
 
-@media only screen and (min-width: 993px) and (max-width: 1420px){
+@media only screen and (min-width: 993px) and (max-width: 1420px) {
     .form {
         width: 350px;
     }
@@ -168,13 +178,18 @@ button[type="submit"]:hover {
         height: 35px;
     }
 
+    .form__controll form select {
+        height: 35px;
+    }
+
     button[type="submit"] {
         height: 35px;
         font-size: 1rem;
         font-weight: 600;
     }
 
-    .policy > span, .policy > span > a {
+    .policy > span,
+    .policy > span > a {
         font-size: 0.75rem;
         margin-top: 5px;
     }

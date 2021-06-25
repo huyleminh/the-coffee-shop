@@ -1,8 +1,11 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Select } from "antd";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
+
+const { Option } = Select;
 
 function Signup() {
     const history = useHistory();
@@ -31,11 +34,15 @@ function Signup() {
                     <form action="">
                         <input
                             type="text"
-                            placeholder="Fulllname"
+                            placeholder="Fullname"
                             autoFocus={true}
                             name="fullname"
                             required
                         />
+                        <select name="" id="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
                         <input type="text" placeholder="Phone number" name="phone" required />
                         <input type="text" placeholder="Address" name="address" required />
                         <input type="text" placeholder="Username" name="username" required />
