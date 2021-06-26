@@ -149,6 +149,14 @@ a {
     color: #614119;
 }
 
+.header__right > ul > .shopping > #wishlist:hover {
+    color: red;
+}
+
+.header__right > ul > .shopping > #cart:hover {
+    color: #2674EA;
+}
+
 @media only screen and (max-width: 768px) {
     .header__navbar {
         flex-direction: column;
