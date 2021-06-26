@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-OrderManagement.propTypes = {};
-
-function OrderManagement(props) {
+function OrderManagement() {
     return <div>Order management</div>;
 }
 

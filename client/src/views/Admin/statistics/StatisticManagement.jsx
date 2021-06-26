@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-StatisticManagement.propTypes = {};
-
-function StatisticManagement(props) {
+function StatisticManagement() {
     return <div>Statistic management</div>;
 }
 
