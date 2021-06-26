@@ -20,15 +20,28 @@ class AuthController {
             res.send({ status: 401 });
         } else {
             // both username and password are match.
-            const role = userLoginFromDB[0].role;
+            const role = userLoginFromDB[0].roleID;
             const privateKey = process.env.SECRECT_TOKEN_KEY;
             const token = jwt.sign({ role, username, password }, privateKey, { expiresIn: "0.5h" });
 
-            let expiredIn = new Date();
-            expiredIn.setMinutes(expiredIn.getMinutes() + 30);
-            expiredIn = expiredIn.valueOf();
+            let expriredIn = new Date();
+            expriredIn.setMinutes(expriredIn.getMinutes() + 30);
+            expriredIn = expriredIn.valueOf();
+            res.send({ status: 200, data: { id: userLoginFromDB[0].id, role, token, expriredIn  } });
+        }
+    };
 
-            res.send({ status: 200, data: { id: userLoginFromDB[0].id, role, token, expiredIn } });
+    static verifyToken = (req, res) => {
+        const authHeader = req.headers["authorization"];
+        const token = authHeader.split(" ")[1];
+        if (!token) {
+            res.send({ status: 401 });
+        }
+        else {
+            jwt.verify(token, process.env.SECRECT_TOKEN_KEY, (err, data) => {
+                if (err) res.send({ status: 403 });
+                res.send({ status: 200 })
+            })
         }
     };
 

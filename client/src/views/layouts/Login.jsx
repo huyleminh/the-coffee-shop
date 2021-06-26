@@ -1,3 +1,4 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -5,37 +6,36 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/login.css";
 import backgroundImg from "../../assets/images/loginBackground.jpg";
+import LoginWorkflow from "../../workflow/LoginWorkflow";
 
 function Login() {
+    (() => {
+        localStorage.removeItem("user");
+    })();
+
     const history = useHistory();
-
     const [userDetails, setUserDetails] = useState({ username: "", password: "" });
+    const [isSending, setIsSending] = useState(false);
 
-    const verifyInput = (username, password) => {
-        if (username === "" || password === "") {
-            console.log("LOGIN INFO ERROR");
+    const handleOnChange = (e) => {
+        const target = e.target;
+        const { name, value } = target;
+        const state = { ...userDetails, [name]: value };
+        setUserDetails(state);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSending(true);
+
+        const { username, password } = userDetails;
+        const flow = new LoginWorkflow({ username, password });
+        const isSuccess = await flow.startLogin();
+        if (isSuccess.status === 200) history.goBack();
+        else {
+            alert(isSuccess.statusText);
+            setIsSending(false);
         }
-    };
-
-    const onChangeUsername = (e) => {
-        const user = e.target.value;
-        const state = { ...userDetails, username: user };
-        setUserDetails(state);
-    };
-
-    const onChangePassword = (e) => {
-        const passwordValue = e.target.value;
-        const state = { ...userDetails, password: passwordValue };
-        setUserDetails(state);
-    };
-
-    const adminUser = {
-        username: "admin",
-        password: "admin",
-    };
-
-    const handleSubmit = (e) => {
-        console.log("clicked");
     };
 
     const handleGoHome = () => {
@@ -67,7 +67,7 @@ function Login() {
                             placeholder="Username"
                             name="username"
                             value={userDetails.username}
-                            onChange={onChangeUsername}
+                            onChange={handleOnChange}
                             required
                         />
                         <input
@@ -75,7 +75,7 @@ function Login() {
                             placeholder="Password"
                             name="password"
                             value={userDetails.password}
-                            onChange={onChangePassword}
+                            onChange={handleOnChange}
                             required
                         />
                         <span style={{ textAlign: "center", fontWeight: "750" }}>
@@ -85,7 +85,11 @@ function Login() {
                             </a>
                         </span>
                         <button type="submit" onClick={handleSubmit}>
-                            LOGIN
+                            {isSending ? (
+                                <LoadingOutlined style={{ fontSize: 24 }} spin />
+                            ) : (
+                                "LOGIN"
+                            )}
                         </button>
                     </form>
                 </div>
@@ -95,11 +99,10 @@ function Login() {
                         <h3 style={{ textIndent: "1.4em", fontWeight: "750" }}> Or </h3>
                         <div className="signin__IconFbGg">
                             <pre>
-                                <a href="#" style={{ color: "blue" }}>
+                                <a href="/" style={{ color: "blue" }}>
                                     <FontAwesomeIcon icon={faFacebook} size="2x" />
                                 </a>
-                                <text> </text>
-                                <a href="#" style={{ color: "orange" }}>
+                                <a href="/" style={{ color: "orange" }}>
                                     <FontAwesomeIcon icon={faGoogle} size="2x" />
                                 </a>
                             </pre>

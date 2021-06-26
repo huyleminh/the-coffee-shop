@@ -1,11 +1,8 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Select } from "antd";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
-
-const { Option } = Select;
 
 function Signup() {
     const history = useHistory();
@@ -67,7 +64,7 @@ function Signup() {
                     <span>
                         By clicking up the SIGNUP button, you agree to our
                         <br />
-                        <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>
+                        <a href="/">Terms &amp; Conditions</a> and <a href="/">Privacy Policy</a>
                     </span>
                 </div>
             </div>

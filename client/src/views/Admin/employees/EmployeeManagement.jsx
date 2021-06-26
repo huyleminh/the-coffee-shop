@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-EmployeeManagement.propTypes = {};
-
-function EmployeeManagement(props) {
+function EmployeeManagement() {
     return <div>Employee management</div>;
 }
 
