@@ -20,14 +20,14 @@ class AuthController {
             res.send({ status: 401 });
         } else {
             // both username and password are match.
-            const role = userLoginFromDB[0].roleID;
+            const role = userLoginFromDB[0].role;
             const privateKey = process.env.SECRECT_TOKEN_KEY;
             const token = jwt.sign({ role, username, password }, privateKey, { expiresIn: "0.5h" });
 
             let expriredIn = new Date();
             expriredIn.setMinutes(expriredIn.getMinutes() + 30);
             expriredIn = expriredIn.valueOf();
-            res.send({ status: 200, data: { id: userLoginFromDB[0].id, role, token, expriredIn  } });
+            res.send({ status: 200, data: { id: userLoginFromDB[0].id, role, token, expriredIn } });
         }
     };
 
@@ -36,12 +36,11 @@ class AuthController {
         const token = authHeader.split(" ")[1];
         if (!token) {
             res.send({ status: 401 });
-        }
-        else {
+        } else {
             jwt.verify(token, process.env.SECRECT_TOKEN_KEY, (err, data) => {
                 if (err) res.send({ status: 403 });
-                res.send({ status: 200 })
-            })
+                res.send({ status: 200 });
+            });
         }
     };
 
@@ -76,13 +75,23 @@ class AuthController {
                 id = shortid.generate();
                 id = id.substr(0, 7); // start from 0, length is 7.
 
-                if (idList.findIndex((value) => value.id === id) === -1)
-                    break;
+                if (idList.findIndex((value) => value.id === id) === -1) break;
             }
 
             // insert a new user to database.
-            const insertUserInfoToDB = await authModel.insertUserInfo(id, userInfoRequest.fullname, userInfoRequest.address, userInfoRequest.phoneNumber, userInfoRequest.gender);
-            const insertUserLoginToDB = await authModel.insertUserLogin(id, userInfoRequest.username, userInfoRequest.password, userInfoRequest.role);
+            const insertUserInfoToDB = await authModel.insertUserInfo(
+                id,
+                userInfoRequest.fullname,
+                userInfoRequest.address,
+                userInfoRequest.phoneNumber,
+                userInfoRequest.gender
+            );
+            const insertUserLoginToDB = await authModel.insertUserLogin(
+                id,
+                userInfoRequest.username,
+                userInfoRequest.password,
+                userInfoRequest.role
+            );
 
             res.send({
                 status: 201,
@@ -90,7 +99,7 @@ class AuthController {
                     id,
                     role: userInfoRequest.role,
                     token,
-                    expiredIn
+                    expiredIn,
                 },
             });
         } else {

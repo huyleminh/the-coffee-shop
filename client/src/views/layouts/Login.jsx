@@ -31,7 +31,7 @@ function Login() {
         const { username, password } = userDetails;
         const flow = new LoginWorkflow({ username, password });
         const isSuccess = await flow.startLogin();
-        if (isSuccess.status === 200) history.goBack();
+        if (isSuccess.status === 200) history.push("/");
         else {
             alert(isSuccess.statusText);
             setIsSending(false);
