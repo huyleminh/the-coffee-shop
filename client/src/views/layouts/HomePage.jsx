@@ -36,12 +36,12 @@ function HomePage() {
         const checkLogin = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
             if (user) {
-                const { token, expriredIn, role } = user;
-                if (!token || !expriredIn) {
+                const { token, expiredIn, role } = user;
+                if (!token || !expiredIn) {
                     clearLocal();
                     setUserStatus({ isLogin: false, role: 3 });
                 } else {
-                    if (new Date().valueOf() > expriredIn) {
+                    if (new Date().valueOf() > expiredIn) {
                         alert("Your session has expired.");
                         history.push("/login");
                     } else {
