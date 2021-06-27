@@ -5,7 +5,6 @@ import "../../assets/css/layouts/HomePage.css";
 import Footer from "../../components/layouts/Footer";
 import Header from "../../components/layouts/Header";
 import Loading from "../../components/Loading";
-import LoginAPI from "../../services/Login/LoginAPI";
 import PageNotFound from "../errors/PageNotFound";
 import LandingPage from "./LandingPage/LandingPage";
 
@@ -36,44 +35,32 @@ function HomePage() {
     useEffect(() => {
         const checkLogin = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
-            let isOk = true;
-            if (!user) {
-                isOk = false;
-            } else {
+            if (user) {
                 const { token, expriredIn, role } = user;
-                if (!token) {
-                    isOk = false;
+                if (!token || !expriredIn) {
+                    clearLocal();
+                    setUserStatus({ isLogin: false, role: 3 });
                 } else {
-                    if (!expriredIn || new Date().valueOf() > expriredIn) {
-                        isOk = false;
+                    if (new Date().valueOf() > expriredIn) {
+                        alert("Your session has expired.");
+                        history.push("/login");
                     } else {
-                        try {
-                            const response = await LoginAPI.verifyAccessToken(token);
-                            if (response.status === 200)
-                                setUserStatus({ isLogin: true, role: role });
-                            else {
-                                isOk = false;
-                            }
-                        } catch (e) {
-                            console.log(e);
-                            isOk = false;
-                        }
+                        setUserStatus({ isLogin: true, role: role });
                     }
                 }
+            } else {
+                clearLocal();
+                setUserStatus({ isLogin: false, role: 3 });
             }
 
-            if (!isOk) {
-                setUserStatus({ isLogin: false, role: 3 });
-                alert("Your session has expired.");
-                history.push("/login");
-            }
             setTimeout(() => {
                 setIsLoading(false);
             }, 800);
         };
 
-        checkLogin();
-    }, [history]);
+        if (isLoading) checkLogin();
+        // eslint-disable-next-line
+    }, []);
 
     useEffect(() => {
         const scrollHeader = () => {

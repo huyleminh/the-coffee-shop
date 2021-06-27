@@ -35,7 +35,7 @@ class AuthController {
             res.send({ status: 401 });
         } else {
             // both username and password are match.
-            const role = userLoginFromDB[0].roleID;
+            const role = userLoginFromDB[0].role;
             const privateKey = process.env.SECRECT_TOKEN_KEY;
             const token = jwt.sign({ role, username, password }, privateKey, { expiresIn: "0.5h" });
 
