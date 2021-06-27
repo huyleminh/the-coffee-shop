@@ -1,8 +1,10 @@
 import DatabaseConnection from "../utilities/database/DatabaseConnection.js";
 import DatabaseConfig from "../configs/DatabaseConfig.js";
+import UserInfo from "../utilities/database/entities/UserInfo.js";
+import UserLogin from "../utilities/database/entities/UserLogin.js";
 
 class AuthModel {
-    getAllId() {
+    getAllUserId() {
         return new Promise((resolve, reject) => {
             const sqlQuery = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN;`;
 
@@ -36,12 +38,8 @@ class AuthModel {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    // Convert variable 'rows' from [RowDataPacket{}] to [{}]
-                    // This array has at most one element.
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
+                    const userLoginList = UserLogin.toArrayFromDatabaseObject(rows);
+                    resolve(userLoginList);
                 }
             });
         });
@@ -50,7 +48,7 @@ class AuthModel {
     getAllUserLogin() {
         return new Promise((resolve, reject) => {
             const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN`;
-            
+
             DatabaseConnection.query(sqlQuery, (error, rows) => {
                 if (error) {
                     reject(error);
@@ -60,11 +58,8 @@ class AuthModel {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    // Convert variable 'rows' from [RowDataPacket{}] to [{}]
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
+                    const userLoginList = UserLogin.toArrayFromDatabaseObject(rows);
+                    resolve(userLoginList);
                 }
             });
         });
@@ -78,7 +73,7 @@ class AuthModel {
             ON login.id = info.id
             WHERE login.username = ? OR info.phoneNumber = ?`;
 
-            DatabaseConnection.query(sqlQuery,  [username, phoneNumber], (error, rows) => {
+            DatabaseConnection.query(sqlQuery, [username, phoneNumber], (error, rows) => {
                     if (error) {
                         reject(error);
                         return;
@@ -87,12 +82,8 @@ class AuthModel {
                     if (rows === undefined) {
                         reject(new Error("Error: 'rows' is undefined"));
                     } else {
-                        // Convert variable 'rows' from [RowDataPacket{}] to [{}]
-                        // This array has at most two element.
-                        const jsonString = JSON.stringify(rows);
-                        const jsonData = JSON.parse(jsonString);
-
-                        resolve(jsonData);
+                        const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                        resolve(userInfoList);
                     }
                 }
             );
@@ -112,23 +103,20 @@ class AuthModel {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    // Convert variable 'rows' from [RowDataPacket{}] to [{}]
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    resolve(userInfoList);
                 }
             });
         });
     }
 
-    insertUserInfo(id, fullname, address, phoneNumber, gender) {
+    insertUserInfo(userInfo) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
-            VALUES (?, ?, ?, ?, b?, current_timestamp(), current_timestamp());`;
-            const userInfo = [id, fullname, address, phoneNumber, gender];
+            // (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
+            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO
+            VALUES (?, ?, ?, ?, b?, ?, ?);`;
 
-            DatabaseConnection.query(sqlQuery, userInfo, (error) => {
+            DatabaseConnection.query(sqlQuery, Object.values(userInfo), (error) => {
                     if (error) {
                         reject(error);
                         return;
@@ -140,13 +128,13 @@ class AuthModel {
         });
     }
 
-    insertUserLogin(id, username, password, role) {
+    insertUserLogin(userLogin) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN (id, username, password, role, updatedAt)
-            VALUES (?, ?, ?, ?, current_timestamp());`;
-            const userLogin = [id, username, password, role];
+            // (id, username, password, role, updatedAt)
+            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN
+            VALUES (?, ?, ?, ?, ?);`;
 
-            DatabaseConnection.query(sqlQuery, userLogin, (error) => {
+            DatabaseConnection.query(sqlQuery, Object.values(userLogin), (error) => {
                     if (error) {
                         reject(error);
                         return;
