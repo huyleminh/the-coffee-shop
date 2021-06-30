@@ -22,4 +22,8 @@ export default class UserValidation {
                 error: "Password must be at least 8 letters and one number.",
             };
     };
+
+    static validateFullname = (fullname) => {
+        
+    }
 }

@@ -1,14 +1,38 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
+import { LoadingOutlined } from "@ant-design/icons";
 
 function Signup() {
+    (() => {
+        localStorage.removeItem("user");
+    })();
+
     const history = useHistory();
+    const [userInfo, setUserInfo] = useState({
+        fullname: "",
+        gender: "male",
+        phoneNumber: "",
+        address: "",
+        username: "",
+        password: "",
+        confirm: "",
+    });
+    const [isSending, setIsSending] = useState(false);
+
+    const handleChange = (e) => {
+        const target = e.target;
+        const name = target.name;
+        const newuser = { ...userInfo, [name]: target.value };
+        setUserInfo(newuser);
+    };
 
     const handleSubmit = (e) => {
-        console.log("clicked");
+        e.preventDefault();
+        setIsSending(true);
+        console.log(userInfo);
     };
 
     const handleGoHome = () => {
@@ -35,27 +59,63 @@ function Signup() {
                             autoFocus={true}
                             name="fullname"
                             required
+                            value={userInfo.fullname}
+                            onChange={handleChange}
                         />
-                        <select name="" id="gender">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                        <select name="gender" id="gender" onChange={handleChange}>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
                         </select>
-                        <input type="text" placeholder="Phone number" name="phone" required />
-                        <input type="text" placeholder="Address" name="address" required />
-                        <input type="text" placeholder="Username" name="username" required />
-                        <input type="password" placeholder="Password" name="password" required />
+                        <input
+                            type="text"
+                            placeholder="Phone number"
+                            name="phoneNumber"
+                            required
+                            value={userInfo.phoneNumber}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Address"
+                            name="address"
+                            required
+                            value={userInfo.address}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            name="username"
+                            required
+                            value={userInfo.username}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            name="password"
+                            required
+                            value={userInfo.password}
+                            onChange={handleChange}
+                        />
                         <input
                             type="password"
                             placeholder="Confirm password"
                             name="confirm"
                             required
+                            value={userInfo.confirm}
+                            onChange={handleChange}
                         />
 
                         <span style={{ textAlign: "center" }}>
                             Already have an account? <a href="/login">Login</a>
                         </span>
                         <button type="submit" onClick={handleSubmit}>
-                            SIGNUP
+                            {isSending ? (
+                                <LoadingOutlined style={{ fontSize: 24 }} spin />
+                            ) : (
+                                "SIGNUP"
+                            )}
                         </button>
                     </form>
                 </div>
