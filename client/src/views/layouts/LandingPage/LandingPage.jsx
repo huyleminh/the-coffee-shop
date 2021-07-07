@@ -33,6 +33,7 @@ function LandingPage() {
             <div className="about container-section wrapper" id="about">
                 <div className="about__left container-left">
                     <h1>About us</h1>
+                    <br />
                     <p>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
                         finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
@@ -41,7 +42,7 @@ function LandingPage() {
                         bibendum vel, elementum scelerisque dolor. Etiam ullamcorper eros vel
                         placerat ultrices. Curabitur eget odio et ex egestas dapibus. Integer
                         viverra eros enim, vitae facilisis massa vestibulum vestibulum.
-                        <br />
+                        <br /><br />
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
                         finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
                         Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,

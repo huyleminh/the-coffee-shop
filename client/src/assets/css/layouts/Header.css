@@ -157,7 +157,7 @@ a {
     color: #2674EA;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 900px) {
     .header__navbar {
         flex-direction: column;
         width: 100%;
