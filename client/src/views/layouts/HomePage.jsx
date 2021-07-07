@@ -5,6 +5,7 @@ import "../../assets/css/layouts/HomePage.css";
 import Footer from "../../components/layouts/Footer";
 import Header from "../../components/layouts/Header";
 import Loading from "../../components/Loading";
+import ScrollTopButton from "../../components/ScrollTopButton";
 import PageNotFound from "../errors/PageNotFound";
 import LandingPage from "./LandingPage/LandingPage";
 
@@ -115,7 +116,7 @@ function HomePage() {
                         </Route>
                     </Switch>
                 </Layout>
-
+                <ScrollTopButton />
                 <Footer />
             </div>
         );

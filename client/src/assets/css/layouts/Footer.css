@@ -37,7 +37,7 @@
 }
 
 .team img {
-    width: 80%;
+    width: 85%;
 }
 
 .team > a {
@@ -97,7 +97,6 @@
         font-size: 1.2rem;
     }
 
-    /* Team */
     .team > a {
         display: flex;
         justify-content: center;
