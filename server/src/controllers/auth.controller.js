@@ -38,7 +38,7 @@ class AuthController {
             const role = userLoginFromDB[0].role;
             const token = jwt.sign(
                 {
-                    id,
+                    id: userLoginFromDB[0].id,
                     username,
                     role,
                 },
