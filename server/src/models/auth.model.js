@@ -25,6 +25,7 @@ class AuthModel {
             });
         });
     }
+
     getUserLoginByUsername(username) {
         return new Promise((resolve, reject) => {
             const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN WHERE username = ?;`;

@@ -9,8 +9,11 @@ class AuthorizationMiddleware {
         }
         else {
             jwt.verify(token, process.env.SECRECT_TOKEN_KEY, (err, data) => {
-                if (err) res.send({ status: 403 });
-                next()
+                if (err) res.send({ status: 403, message: err.message });
+
+                res.locals.dataFromToken = data;
+                res.locals.dataFromRequest = req.body;
+                next();
             })
         }
     };
