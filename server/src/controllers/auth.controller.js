@@ -36,17 +36,21 @@ class AuthController {
         } else {
             // both username and password are match.
             const role = userLoginFromDB[0].role;
-            const privateKey = process.env.SECRECT_TOKEN_KEY;
-            const token = jwt.sign({ role, username, password }, privateKey, { expiresIn: "0.5h" });
+            const token = jwt.sign(
+                {
+                    id,
+                    username,
+                    role,
+                },
+                process.env.SECRECT_TOKEN_KEY,
+                { expiresIn: "0.5h" }
+            );
 
             let expiredIn = new Date();
             expiredIn.setMinutes(expiredIn.getMinutes() + 30);
             expiredIn = expiredIn.valueOf();
 
-            res.send({
-                status: 200,
-                data: { id: userLoginFromDB[0].id, role, token, expiredIn }
-            });
+            res.send({ status: 200, data: { role, token, expiredIn } });
         }
     };
 
@@ -75,21 +79,6 @@ class AuthController {
         if (userInfoFromDB.length !== 0) {
             res.send({ status: 409 });
         } else {
-            const privateKey = process.env.SECRECT_TOKEN_KEY;
-            const token = jwt.sign(
-                {
-                    role: userInfoRequest.role,
-                    username: userInfoRequest.username,
-                    password: userInfoRequest.password,
-                },
-                privateKey,
-                { expiresIn: "0.5h" }
-            );
-
-            let expiredIn = new Date();
-            expiredIn.setMinutes(expiredIn.getMinutes() + 30);
-            expiredIn = expiredIn.valueOf();
-
             // create a user id.
             const userIdList = await authModel.getAllUserId();
             const id = generateUserId(userIdList);
@@ -119,7 +108,22 @@ class AuthController {
             const insertUserInfoToDB = await authModel.insertUserInfo(newUserInfo);
             const insertUserLoginToDB = await authModel.insertUserLogin(newUserLogin);
 
-            res.send({ status: 201, data: { id, role: userInfoRequest.role, token, expiredIn } });
+            // create an access token for this user
+            const token = jwt.sign(
+                {
+                    id: newUserInfo.id,
+                    username: userInfoRequest.username,
+                    role: userInfoRequest.role,
+                },
+                process.env.SECRECT_TOKEN_KEY,
+                { expiresIn: "0.5h" }
+            );
+
+            let expiredIn = new Date();
+            expiredIn.setMinutes(expiredIn.getMinutes() + 30);
+            expiredIn = expiredIn.valueOf();
+
+            res.send({ status: 201, data: { role: userInfoRequest.role, token, expiredIn } });
         }
     };
 }
