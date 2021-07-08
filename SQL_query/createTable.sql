@@ -143,11 +143,10 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product_rating` (
 -- ------------------------------------------------------
 -- Table `heroku_a51da3167c7e5af`.`product_rating`
 -- ------------------------------------------------------
-CREATE TABLE `heroku_a51da3167c7e5af`.`new_table` (
+CREATE TABLE `heroku_a51da3167c7e5af`.`discount` (
   `id` VARCHAR(36) NOT NULL,
   `percent` FLOAT NULL,
   `active` BIT NULL,
-  `new_tablecol` VARCHAR(45) NULL,
   `startDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `endDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
