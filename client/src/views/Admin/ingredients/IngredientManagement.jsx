@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-IngredientManagement.propTypes = {};
-
-function IngredientManagement(props) {
+function IngredientManagement() {
     return <div>Ingerdients management</div>;
 }
 
