@@ -69,6 +69,8 @@ class AuthController {
 
     static postSignup = async (req, res) => {
         const userInfoRequest = req.body;
+        //Handle missing address key in signup request
+        userInfoRequest.address = ""
 
         const authModel = new AuthModel();
         const userInfoFromDB = await authModel.getUserInfoByUsernameAndPhoneNumber(
