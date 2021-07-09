@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-function Forbidden() {
+function Forbidden(props) {
     return (
         <div>
             Forbidden

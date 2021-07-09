@@ -1,17 +1,17 @@
 import React from "react";
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "../../assets/css/404.css";
 
 
-function NotFound() {
-    // const history = useHistory();
+function NotFound(props) {
+    const history = useHistory();
 
-    // const handleGoHome = () => {
-    //     // history.push
-    // };
+    const handleGoHome = () => {
+        // history.push
+    };
 
-    // const handleGoBack = () => {
-    // };
+    const handleGoBack = () => {
+    };
 
     return (
         <div>404</div>

@@ -1,33 +1,10 @@
 import DatabaseConnection from "../utilities/database/DatabaseConnection.js";
 import DatabaseConfig from "../configs/DatabaseConfig.js";
-import UserInfo from "../utilities/database/entities/UserInfo.js";
-import UserLogin from "../utilities/database/entities/UserLogin.js";
 
 class AuthModel {
-    getAllUserId() {
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN;`;
-
-            DatabaseConnection.query(sqlQuery, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    }
     getUserLoginByUsername(username) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN WHERE username = ?;`;
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login WHERE USERNAME = ?`;
 
             DatabaseConnection.query(sqlQuery, username, (error, rows) => {
                 if (error) {
@@ -38,8 +15,12 @@ class AuthModel {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    const userLoginList = UserLogin.toArrayFromDatabaseObject(rows);
-                    resolve(userLoginList);
+                    // Convert variable 'rows' from [RowDataPacket{}] to [{}]
+                    // This array has at most one element.
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+
+                    resolve(jsonData);
                 }
             });
         });
@@ -47,8 +28,7 @@ class AuthModel {
 
     getAllUserLogin() {
         return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN`;
-
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login`;
             DatabaseConnection.query(sqlQuery, (error, rows) => {
                 if (error) {
                     reject(error);
@@ -58,91 +38,13 @@ class AuthModel {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    const userLoginList = UserLogin.toArrayFromDatabaseObject(rows);
-                    resolve(userLoginList);
+                    // Convert variable 'rows' from [RowDataPacket{}] to [{}]
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+
+                    resolve(jsonData);
                 }
             });
-        });
-    }
-
-    getUserInfoByUsernameAndPhoneNumber(username, phoneNumber) {
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT info.*
-            FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN AS login
-            JOIN ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO AS info
-            ON login.id = info.id
-            WHERE login.username = ? OR info.phoneNumber = ?`;
-
-            DatabaseConnection.query(sqlQuery, [username, phoneNumber], (error, rows) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    if (rows === undefined) {
-                        reject(new Error("Error: 'rows' is undefined"));
-                    } else {
-                        const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
-                        resolve(userInfoList);
-                    }
-                }
-            );
-        });
-    }
-
-    getAllUserInfo() {
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO`;
-
-            DatabaseConnection.query(sqlQuery, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
-                    resolve(userInfoList);
-                }
-            });
-        });
-    }
-
-    insertUserInfo(userInfo) {
-        return new Promise((resolve, reject) => {
-            // (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
-            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO
-            VALUES (?, ?, ?, ?, b?, ?, ?);`;
-
-            DatabaseConnection.query(sqlQuery, Object.values(userInfo), (error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    resolve();
-                }
-            );
-        });
-    }
-
-    insertUserLogin(userLogin) {
-        return new Promise((resolve, reject) => {
-            // (id, username, password, role, updatedAt)
-            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_LOGIN
-            VALUES (?, ?, ?, ?, ?);`;
-
-            DatabaseConnection.query(sqlQuery, Object.values(userLogin), (error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    resolve();
-                }
-            );
         });
     }
 }

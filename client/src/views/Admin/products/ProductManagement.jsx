@@ -1,6 +1,9 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-function ProductManagement() {
+ProductManagement.propTypes = {};
+
+function ProductManagement(props) {
     return <div>Product management</div>;
 }
 

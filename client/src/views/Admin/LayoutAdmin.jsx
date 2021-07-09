@@ -11,10 +11,11 @@ import StatisticManagement from "./statistics/StatisticManagement";
 
 LayoutAdmin.propTypes = {};
 
-const { Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
-function LayoutAdmin() {
+function LayoutAdmin(props) {
     const match = useRouteMatch();
+    const menulist = [];
 
     return (
         <Layout>

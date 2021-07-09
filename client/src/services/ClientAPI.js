@@ -5,6 +5,7 @@ const ClientAPI = axios.create({
     baseURL: EnvironmentConst.API_DOMAIN,
     headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("acess_token")
     },
 });
 
@@ -25,8 +26,6 @@ ClientAPI.interceptors.response.use(
         // code, statusText, ..., data
         // Any status code that lie within the range of 2xx cause this function to trigger
         // Do something with response data
-        if (response && response.status === 200)
-            return response.data;
         return response;
     },
     function (error) {

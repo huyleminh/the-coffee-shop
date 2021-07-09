@@ -10,7 +10,8 @@ function LayoutHomePage(props) {
         <Switch>
             <Route path={`/admin`} component={LayoutAdmin} />
             <Route path={`/employee`} component={LayoutEmployee} />
-            <Route path="/" component={HomePage} />
+            <Route exact path="/profile" />
+            <Route exact path="/" component={HomePage} />
             <Route>
                 <Redirect to="/404">
                     <PageNotFound />
