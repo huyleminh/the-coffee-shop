@@ -19,9 +19,8 @@ function ScrollTopButton() {
         const onVisible = () => {
             const scrollY = window.scrollY;
 
-            if (scrollY > 600) scrollButton.classList.add("active");
+            if (scrollY > 400) scrollButton.classList.add("active");
             else {
-                console.log("remove");
                 scrollButton.classList.remove("active");
             }
         };
