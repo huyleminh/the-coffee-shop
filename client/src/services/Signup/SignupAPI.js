@@ -2,9 +2,17 @@ import ClientAPI from "../ClientAPI";
 
 class SignupAPI {
     static getSignupToken = (props) => {
-        const { username, password, fullname, address, phoneNumber, gender, role } = props;
+        const { username, password, fullname, phoneNumber, gender } = props;
+        console.log(props);
         //need somes expression to modify fiels before sending to be
-        return ClientAPI.post("/auth/signup", { username, password, fullname, address, phoneNumber, gender, role });
+        return ClientAPI.post("/auth/signup", {
+            username,
+            password,
+            fullname,
+            phoneNumber,
+            gender,
+            role: 3, //3:customer
+        });
     };
 }
 

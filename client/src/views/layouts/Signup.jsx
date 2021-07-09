@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
 import { LoadingOutlined } from "@ant-design/icons";
+import SignupWorkflow from "../../workflow/SignupWorkflow";
 
 function Signup() {
     (() => {
@@ -15,7 +16,6 @@ function Signup() {
         fullname: "",
         gender: "male",
         phoneNumber: "",
-        address: "",
         username: "",
         password: "",
         confirm: "",
@@ -33,6 +33,30 @@ function Signup() {
         e.preventDefault();
         setIsSending(true);
         console.log(userInfo);
+        const { username, password, fullname, phoneNumber, gender, confirm } = userInfo;
+        const flow = new SignupWorkflow({
+            username,
+            password,
+            fullname,
+            phoneNumber,
+            gender,
+            confirm,
+        });
+
+        const returnStatus = flow.startSignup();
+        console.log(returnStatus);
+
+        returnStatus.then((response) => {
+            console.log(response);
+            if (response.status === 400) {
+                alert(response.statusText);
+            }
+
+            if (response.status === 201) {
+                alert("Registration successfully.");
+                history.push("/");
+            }
+        });
     };
 
     const handleGoHome = () => {
@@ -74,14 +98,7 @@ function Signup() {
                             value={userInfo.phoneNumber}
                             onChange={handleChange}
                         />
-                        <input
-                            type="text"
-                            placeholder="Address"
-                            name="address"
-                            required
-                            value={userInfo.address}
-                            onChange={handleChange}
-                        />
+
                         <input
                             type="text"
                             placeholder="Username"
