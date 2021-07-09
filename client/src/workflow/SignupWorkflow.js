@@ -53,6 +53,7 @@ export default class SignupWorkflow {
                 fullname: this.#fullname,
                 phoneNumber: this.#phoneNumber,
                 gender: this.#gender === "male" ? 0 : 1,
+                role: 3,
             });
 
             console.log(response);
