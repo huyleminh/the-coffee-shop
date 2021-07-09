@@ -1,9 +1,9 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
-import { LoadingOutlined } from "@ant-design/icons";
 import SignupWorkflow from "../../workflow/SignupWorkflow";
 
 function Signup() {
@@ -29,10 +29,10 @@ function Signup() {
         setUserInfo(newuser);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSending(true);
-        console.log(userInfo);
+
         const { username, password, fullname, phoneNumber, gender, confirm } = userInfo;
         const flow = new SignupWorkflow({
             username,
@@ -43,20 +43,15 @@ function Signup() {
             confirm,
         });
 
-        const returnStatus = flow.startSignup();
-        console.log(returnStatus);
+        const signupResponse = await flow.startSignup();
 
-        returnStatus.then((response) => {
-            console.log(response);
-            if (response.status === 400) {
-                alert(response.statusText);
-            }
-
-            if (response.status === 201) {
-                alert("Registration successfully.");
-                history.push("/");
-            }
-        });
+        if (signupResponse.status === 400) {
+            setIsSending(false);
+            alert(signupResponse.statusText);
+        } else if (signupResponse.status === 201) {
+            alert("Register successfully.");
+            history.push("/");
+        }
     };
 
     const handleGoHome = () => {

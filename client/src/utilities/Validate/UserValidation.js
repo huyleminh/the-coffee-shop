@@ -26,8 +26,6 @@ export default class UserValidation {
     static validateFullname = (fullname) => {
         const fullnameRegex =
             /^([a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_])+$/gi;
-        console.log(fullname);
-        console.log(fullname.match(fullnameRegex));
         if (fullname.match(fullnameRegex)) return { status: true };
         else
             return {

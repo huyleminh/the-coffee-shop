@@ -114,7 +114,7 @@ class AuthModel {
         return new Promise((resolve, reject) => {
             // (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
             const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.USER_INFO
-            VALUES (?, ?, ?, ?, b?, ?, ?);`;
+            VALUES (?, ?, ?, ?, ?, ?, ?);`; // fix ?b to ?, error can not find field b0
 
             DatabaseConnection.query(sqlQuery, Object.values(userInfo), (error) => {
                     if (error) {

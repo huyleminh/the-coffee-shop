@@ -17,7 +17,7 @@ export default class SignupWorkflow {
         this.#fullname = props.password ? props.fullname : "";
         this.#phoneNumber = props.phoneNumber ? props.phoneNumber : "";
         this.#gender = props.gender ? props.gender : "";
-        this.#role = 3; //props.role ? props.role : "";
+        this.#role = 3;
     }
 
     #validateSignupInformation = () => {
@@ -42,11 +42,9 @@ export default class SignupWorkflow {
 
     startSignup = async () => {
         const validate = this.#validateSignupInformation();
-        console.log(validate);
         if (!validate.status) return { status: 400, statusText: validate.error };
 
         try {
-            console.log("ok 47");
             const response = await SignupAPI.getSignupToken({
                 username: this.#_username,
                 password: this.#_password,
@@ -54,8 +52,6 @@ export default class SignupWorkflow {
                 phoneNumber: this.#phoneNumber,
                 gender: this.#gender === "male" ? 0 : 1,
             });
-
-            console.log(response);
 
             if (response.status === 201) {
                 const user = response.data;
