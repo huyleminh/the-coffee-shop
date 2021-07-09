@@ -70,7 +70,10 @@ class AuthController {
             userInfoRequest.username,
             userInfoRequest.phoneNumber
         );
-
+      
+        //Handle missing address key in signup request
+        userInfoRequest.address = ""
+      
         if (userInfoFromDB.length !== 0) {
             res.send({ status: 409 });
         } else {
@@ -85,7 +88,7 @@ class AuthController {
             const newUserInfo = new UserInfo(
                 id,
                 userInfoRequest.fullname,
-                "",
+                userInfoRequest.address,
                 userInfoRequest.phoneNumber,
                 userInfoRequest.gender,
                 nowJSONString,
