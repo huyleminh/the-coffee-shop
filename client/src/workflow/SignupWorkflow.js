@@ -50,7 +50,7 @@ export default class SignupWorkflow {
                 password: this.#_password,
                 fullname: this.#fullname,
                 phoneNumber: this.#phoneNumber,
-                gender: this.#gender === "male" ? 0 : 1,
+                gender: this.#gender === "male" ? "0" : "1",
                 role: 3,
             });
 
