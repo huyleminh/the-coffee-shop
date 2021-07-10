@@ -25,27 +25,32 @@ class UserController {
         // this object has {id, username, role}, but we only need id.
         const { id } = res.locals.dataFromToken;
         const dataFromRequest = res.locals.dataFromRequest;
-        const [userInfo] = await UserInfo.getAllByAttribute("id", id);
+        const [userNeedEdit] = await UserInfo.getAllByAttribute("id", id);
 
-        if (dataFromRequest.hasOwnProperty("phoneNumber") && dataFromRequest.phoneNumber == userInfo.phoneNumber) {
-            res.send({ status: 409, message: "This phone number already exists" });
+        if (userNeedEdit === undefined) {
+            res.send({ status: 404, message: "This user does not exist" });
             return;
         }
 
-        const keys = Object.keys(dataFromRequest);
-        const values = Object.values(dataFromRequest);
-
-        let indexOfPasswordAttr = keys.findIndex((attributeName) => attributeName == "password" );
-        if (indexOfPasswordAttr != -1) {
-            const updatePassword = await UserLogin.updatePassword(
-                id,
-                values[indexOfPasswordAttr]
-            );
-            keys.splice(indexOfPasswordAttr, 1);
-            values.splice(indexOfPasswordAttr, 1);
+        const phoneNumber = dataFromRequest["phoneNumber"]
+        if (phoneNumber !== undefined) {
+            const [user] = await UserInfo.getAllByAttribute("phoneNumber", phoneNumber);
+            if (user !== undefined && user.id !== userNeedEdit.id) {
+                res.send({ status: 409, message: "This phone number already exists" });
+                return;
+            }
         }
 
-        const updateUserInfo = await userInfo.update(keys, values)
+        const newPassword = dataFromRequest["password"];
+        if (newPassword !== undefined) {
+            const updatePassword = await UserLogin.updatePassword(id, newPassword);
+            delete dataFromRequest["password"];
+        }
+
+        const updateUserInfo = await userNeedEdit.update(
+            Object.keys(dataFromRequest),
+            Object.values(dataFromRequest)
+        )
         res.send({ status: 204 });
     };
 }
