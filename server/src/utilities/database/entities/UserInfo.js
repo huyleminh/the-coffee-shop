@@ -54,6 +54,31 @@ class UserInfo {
         });
     }
 
+    cloneWithAttributes(keys) {
+        const origin = this;
+        const clone = {};
+
+        for (let key of keys) {
+            Object.defineProperty(clone, key, {
+                value: origin[key],
+                writable: true,
+                enumerable: true
+            })
+        }
+
+        return clone;
+    }
+
+    cloneExceptAttributes(keys) {
+        const clone = { ...this };
+
+        for (let key of keys) {
+            delete clone[key];
+        }
+
+        return clone;
+    }
+
     static getAllId = () => {
         return new Promise((resolve, reject) => {
             const sql = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login;`;
