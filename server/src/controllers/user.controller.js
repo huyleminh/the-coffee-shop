@@ -16,7 +16,7 @@ class UserController {
             status: 200,
             data: {
                 userInfo: userInfo.cloneExceptAttributes(["id"]),
-                userLogin: userLogin.cloneExceptAttributes(["id", "createdAt"])
+                userLogin: userLogin.cloneExceptAttributes(["id"])
             }
         });
     }
