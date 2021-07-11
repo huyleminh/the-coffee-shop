@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS `heroku_a51da3167c7e5af` DEFAULT CHARACTER SET utf8;
+CREATE SCHEMA IF NOT EXISTS `heroku_a51da3167c7e5af` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
 USE `heroku_a51da3167c7e5af`;
 
 -- -----------------------------------------------------
@@ -10,14 +10,15 @@ CREATE TABLE IF NOT EXISTS `heroku_a51da3167c7e5af`.`user_info` (
   `address` VARCHAR(150) NOT NULL,
   `phoneNumber` VARCHAR(10) NOT NULL,
   `gender` BIT(1) NOT NULL,
-  `updatedAt` TIMESTAMP NOT NULL,
-  `createdAt` TIMESTAMP NULL,
+  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   
   CONSTRAINT `PK_USER_INFO` PRIMARY KEY (`id`),
   CONSTRAINT `UC_USER_INFO` UNIQUE (`phoneNumber`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- -----------------------------------------------------
@@ -28,17 +29,20 @@ CREATE TABLE IF NOT EXISTS `heroku_a51da3167c7e5af`.`user_login` (
   `username` VARCHAR(50) NOT NULL,
   `password` VARCHAR(50) NOT NULL,
   `role` SMALLINT(1) NOT NULL DEFAULT 3,
-  `updatedAt` TIMESTAMP NOT NULL,
+  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
   CONSTRAINT `PK_USER_LOGIN` PRIMARY KEY (`id`),
-  CONSTRAINT `UC_USER_LOGIN` UNIQUE (`username`),
-  CONSTRAINT `FK_USER_LONG_USER_INFO` FOREIGN KEY (`id`)
-    REFERENCES `heroku_a51da3167c7e5af`.`USER_INFO` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+  CONSTRAINT `UC_USER_LOGIN` UNIQUE (`username`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
+
+
+ALTER TABLE `heroku_a51da3167c7e5af`.`user_login`
+ADD CONSTRAINT FK_USER_LONG_USER_INFO
+FOREIGN KEY (id)
+REFERENCES `heroku_a51da3167c7e5af`.`user_info`(id);
 
 
 -- -----------------------------------------------------
@@ -55,7 +59,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product` (
   `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `PK_PRODUCT` PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- -----------------------------------------------------
@@ -67,7 +72,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`category` (
   CONSTRAINT `PK_CATEGORY` PRIMARY KEY (`id`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- -----------------------------------------------------
@@ -79,7 +85,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product_category` (
   CONSTRAINT `PK_PRODUCT_CATEGORY` PRIMARY KEY (`categoryId`, `productId`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- ------------------------------------------------------
@@ -94,7 +101,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`discount` (
   CONSTRAINT `PK_DISCOUNT` PRIMARY KEY (`id`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- ------------------------------------------------------
@@ -107,7 +115,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product_rating` (
   CONSTRAINT `PK_PRODUCT_RATING` PRIMARY KEY (`productId`)
 )
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
     
 
 ALTER TABLE `heroku_a51da3167c7e5af`.`product_category`
@@ -129,4 +138,3 @@ ALTER TABLE `heroku_a51da3167c7e5af`.`product`
 ADD CONSTRAINT FK_PRODUCT_DISCOUNT
 FOREIGN KEY (discountID)
 REFERENCES `heroku_a51da3167c7e5af`.`discount`(id);
-    
