@@ -108,9 +108,9 @@ INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) V
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('783042ac-d75e-400f-819a-2d8e8116666d','77080847-46e7-44d1-900e-ffcb754a83af');
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('783042ac-d75e-400f-819a-2d8e8116666d','37c18857-bd2d-419f-a1e4-f9b82d6a2e34');
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('783042ac-d75e-400f-819a-2d8e8116666d','8366c3f7-6ba1-49d2-8380-c4c267caa4ea');
-INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9568692a-22a3-419d-b64f-140bed0642c0','ae823e2f-6c64-40d2-b845-2318c58ec98d');
-INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9568692a-22a3-419d-b64f-140bed0642c0','b13336cf-24f9-4ff5-9d30-879465b1106f');
-INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9568692a-22a3-419d-b64f-140bed0642c0','36fc349a-866a-4486-ba9b-88bc6d701cae');
+INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('b3a5adc3-7180-43c2-a5f9-22b6f0996598','ae823e2f-6c64-40d2-b845-2318c58ec98d');
+INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('b3a5adc3-7180-43c2-a5f9-22b6f0996598','b13336cf-24f9-4ff5-9d30-879465b1106f');
+INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('b3a5adc3-7180-43c2-a5f9-22b6f0996598','36fc349a-866a-4486-ba9b-88bc6d701cae');
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9ba61a6d-e64a-44db-aa7b-320930e0c56a','c39f2884-0fc8-4239-9972-77caf29e51cf');
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9ba61a6d-e64a-44db-aa7b-320930e0c56a','600da386-9ea1-4a2e-91fe-e2db43b2eadf');
 INSERT INTO `heroku_a51da3167c7e5af`.`product_category` (categoryId,productId) VALUES ('9ba61a6d-e64a-44db-aa7b-320930e0c56a','5de298df-5a13-4dbd-ad7e-94a8d892aa09');
@@ -136,7 +136,6 @@ VALUES
 ('600da386-9ea1-4a2e-91fe-e2db43b2eadf',13.5,3),
 ('57ac9ac4-e079-4620-bfff-87f177842a66',31.5,9),
 ('9c1f5fe2-f40c-457f-bae6-be9977e6f00c',7,2);
-
 
 
 
