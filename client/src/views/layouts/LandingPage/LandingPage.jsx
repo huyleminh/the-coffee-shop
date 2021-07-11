@@ -19,6 +19,7 @@ function LandingPage() {
 
     return (
         <Content>
+            <div className="overlay"></div>
             <div className="hero">
                 <button disabled="disabled">Welcome To</button>
                 <h1>The Coffee Shop</h1>

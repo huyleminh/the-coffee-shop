@@ -8,6 +8,7 @@ import Loading from "../../components/Loading";
 import ScrollTopButton from "../../components/ScrollTopButton";
 import PageNotFound from "../errors/PageNotFound";
 import LandingPage from "./LandingPage/LandingPage";
+import MenuPage from "./MenuPage/MenuPage";
 
 function HomePage() {
     const history = useHistory();
@@ -100,12 +101,10 @@ function HomePage() {
                     handleLogout={handleLogout}
                 />
 
-                <div className="overlay"></div>
-
                 <Layout className="container">
                     <Switch>
                         <Route exact path="/profile" />
-                        <Route exact path="/menu" />
+                        <Route exact path="/menu" component={MenuPage} />
                         <Route exact path="/cart" />
                         <Route exact path="/wishlist" />
                         <Route exact path="/" component={LandingPage} />

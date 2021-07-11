@@ -1,0 +1,42 @@
+.pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ant-pagination-item:focus-visible,
+.ant-pagination-item:hover {
+    border-color: #503a24;
+}
+
+.ant-pagination-item:focus-visible a, .ant-pagination-item a {
+    color: #503a24a8;
+}
+
+.ant-pagination-item-active {
+    border-color: #503a24;
+}
+
+.ant-pagination-item:focus-visible a, .ant-pagination-item:hover a {
+    color: #503a24;
+}
+
+.ant-pagination-item-active a {
+    color: #503a24;
+}
+
+.ant-pagination-prev:focus-visible .ant-pagination-item-link,
+.ant-pagination-next:focus-visible .ant-pagination-item-link,
+.ant-pagination-prev:hover .ant-pagination-item-link,
+.ant-pagination-next:hover .ant-pagination-item-link {
+    color: #503a24;
+    border-color: #503a24;
+}
+
+.ant-pagination-prev:focus-visible .ant-pagination-item-link,
+.ant-pagination-next:focus-visible .ant-pagination-item-link,
+.ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-item-link {
+    color: #503a24a8;
+}
