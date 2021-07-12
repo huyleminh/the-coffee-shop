@@ -50,8 +50,8 @@ REFERENCES `heroku_a51da3167c7e5af`.`user_info`(id);
 -- -----------------------------------------------------
 CREATE TABLE `heroku_a51da3167c7e5af`.`product` (
   `id` VARCHAR(36) NOT NULL,
-  `name` NVARCHAR(150) NOT NULL,
-  `image` TEXT DEFAULT NULL,
+  `name` VARCHAR(150) NOT NULL,
+  `image` VARCHAR(50) DEFAULT NULL,
   `price` INT DEFAULT NULL,
   `description` TEXT DEFAULT NULL,
   `discountId` VARCHAR(36) DEFAULT NULL,
@@ -68,7 +68,7 @@ DEFAULT COLLATE = utf8mb4_bin;
 -- -----------------------------------------------------
 CREATE TABLE `heroku_a51da3167c7e5af`.`category` (
   `id` VARCHAR(36) NOT NULL,
-  `name` NVARCHAR(60) NOT NULL,
+  `name` VARCHAR(60) NOT NULL,
   CONSTRAINT `PK_CATEGORY` PRIMARY KEY (`id`)
 )
 ENGINE = InnoDB
