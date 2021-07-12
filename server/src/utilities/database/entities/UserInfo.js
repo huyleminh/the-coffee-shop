@@ -167,6 +167,26 @@ class UserInfo {
         });
     }
 
+    static getAll = () => {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_info`;
+
+            DatabaseConnection.query(sqlQuery, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined) {
+                    reject(new Error("Error: 'rows' is undefined"));
+                } else {
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    resolve(userInfoList);
+                }
+            });
+        });
+    }
+
     update(keys, values) {
         const id = this.id
 
