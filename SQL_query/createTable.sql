@@ -246,9 +246,33 @@ ADD CONSTRAINT FK_CART_USER_INFO
 FOREIGN KEY (userId)
 REFERENCES `heroku_a51da3167c7e5af`.`user_info`(id);
 -- ------------------------------------------------------
--- FK_CART
+-- FK_WISHLIST
 -- ------------------------------------------------------
+ALTER TABLE `heroku_a51da3167c7e5af`.`wishlist`
+ADD CONSTRAINT FK_WISHLIST_PRODUCT
+FOREIGN KEY (productId)
+REFERENCES `heroku_a51da3167c7e5af`.`product`(id);
 
+ALTER TABLE `heroku_a51da3167c7e5af`.`wishlist`
+ADD CONSTRAINT FK_WISHLIST_USER_INFO
+FOREIGN KEY (userId)
+REFERENCES `heroku_a51da3167c7e5af`.`user_info`(id);
+-- ------------------------------------------------------
+-- FK_ORDER
+-- ------------------------------------------------------
+ALTER TABLE `heroku_a51da3167c7e5af`.`order`
+ADD CONSTRAINT FK_ORDER_USER_INFO
+FOREIGN KEY (userId)
+REFERENCES `heroku_a51da3167c7e5af`.`user_info`(id);
+-- ------------------------------------------------------
+-- FK_PRODUCT_ORDER
+-- ------------------------------------------------------
+ALTER TABLE `heroku_a51da3167c7e5af`.`product_order`
+ADD CONSTRAINT FK_PRODUCT_ORDER_PRODUCT
+FOREIGN KEY (productID)
+REFERENCES `heroku_a51da3167c7e5af`.`product`(id);
 
-
-
+ALTER TABLE `heroku_a51da3167c7e5af`.`product_order`
+ADD CONSTRAINT FK_PRODUCT_ORDER_ORDER
+FOREIGN KEY (orderId)
+REFERENCES `heroku_a51da3167c7e5af`.`order`(id);
