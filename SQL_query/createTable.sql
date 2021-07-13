@@ -136,8 +136,8 @@ COLLATE = utf8mb4_bin;
 CREATE TABLE `heroku_a51da3167c7e5af`.`product_ingredient` (
   `productId` VARCHAR(36) NOT NULL,
   `ingredientId` VARCHAR(36) NOT NULL,
-  UNIQUE INDEX `productId_UNIQUE` (`productId` ASC),
-  UNIQUE INDEX `ingredientId_UNIQUE` (`ingredientId` ASC))
+   INDEX `index_product` (`productId` ASC),
+   INDEX `index_ingredien` (`ingredientId` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
@@ -163,8 +163,8 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`wishlist` (
   `productId` VARCHAR(36) NOT NULL,
   `userId` CHAR(7) NOT NULL,
   PRIMARY KEY (`productId`, `userId`),
-  UNIQUE INDEX `productId_UNIQUE` (`productId` ASC),
-  UNIQUE INDEX `userId_UNIQUE` (`userId` ASC))
+  INDEX `productId_INDEX` (`productId` ASC),
+  INDEX `userId_INDEX` (`userId` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
