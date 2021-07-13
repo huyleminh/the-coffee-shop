@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import authRouter from "./routes/auth.route.js";
+import userRouter from "./routes/user.route.js";
 
 dotenv.config();
 
@@ -19,7 +20,8 @@ app.use(function (req, res, next) {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 
 app.listen(PORT, () => {
-    console.log(`The coffee shopp's server is listening at http://localhost:${PORT}`);
+    console.log(`The coffee shop's server is listening at http://localhost:${PORT}`);
 });

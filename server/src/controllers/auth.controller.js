@@ -1,4 +1,3 @@
-import AuthModel from "../models/auth.model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import shortid from "shortid";
@@ -7,46 +6,48 @@ import UserLogin from "../utilities/database/entities/UserLogin.js";
 
 dotenv.config();
 
-
 const generateUserId = (userIdList) => {
     let id;
     while (true) {
         id = shortid.generate();
         id = id.substr(0, 7); // start from 0, length is 7.
 
-        if (userIdList.findIndex((value) => value.id === id) === -1)
-            return id;
+        if (userIdList.findIndex((value) => value.id === id) === -1) return id;
     }
 };
-
 
 class AuthController {
     static postLogin = async (req, res) => {
         const { username, password } = req.body;
+        const [userLoginFromDB] = await UserLogin.getAllByAttribute(
+            "username",
+            username
+        );
 
-        const authModel = new AuthModel();
-        const userLoginFromDB = await authModel.getUserLoginByUsername(username);
-
-        if (userLoginFromDB.length === 0) {
+        if (userLoginFromDB === undefined) {
             // username is not exists.
             res.send({ status: 404 });
-        } else if (userLoginFromDB[0].password !== password) {
+        } else if (userLoginFromDB.password !== password) {
             // incorrect password.
             res.send({ status: 401 });
         } else {
             // both username and password are match.
-            const role = userLoginFromDB[0].role;
-            const privateKey = process.env.SECRECT_TOKEN_KEY;
-            const token = jwt.sign({ role, username, password }, privateKey, { expiresIn: "0.5h" });
+            const role = userLoginFromDB.role;
+            const token = jwt.sign(
+                {
+                    id: userLoginFromDB.id,
+                    username,
+                    role,
+                },
+                process.env.SECRET_TOKEN_KEY,
+                { expiresIn: "0.5h" }
+            );
 
             let expiredIn = new Date();
             expiredIn.setMinutes(expiredIn.getMinutes() + 30);
             expiredIn = expiredIn.valueOf();
 
-            res.send({
-                status: 200,
-                data: { id: userLoginFromDB[0].id, role, token, expiredIn }
-            });
+            res.send({ status: 200, data: { role, token, expiredIn } });
         }
     };
 
@@ -56,7 +57,7 @@ class AuthController {
         if (!token) {
             res.send({ status: 401 });
         } else {
-            jwt.verify(token, process.env.SECRECT_TOKEN_KEY, (err, data) => {
+            jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
                 if (err) res.send({ status: 403 });
                 res.send({ status: 200 });
             });
@@ -65,33 +66,19 @@ class AuthController {
 
     static postSignup = async (req, res) => {
         const userInfoRequest = req.body;
-
-        const authModel = new AuthModel();
-        const userInfoFromDB = await authModel.getUserInfoByUsernameAndPhoneNumber(
+        const userInfoFromDB = await UserInfo.getAllByUsernameAndPhoneNumber(
             userInfoRequest.username,
             userInfoRequest.phoneNumber
         );
 
+        //Handle missing address key in signup request
+        userInfoRequest.address = ""
+
         if (userInfoFromDB.length !== 0) {
             res.send({ status: 409 });
         } else {
-            const privateKey = process.env.SECRECT_TOKEN_KEY;
-            const token = jwt.sign(
-                {
-                    role: userInfoRequest.role,
-                    username: userInfoRequest.username,
-                    password: userInfoRequest.password,
-                },
-                privateKey,
-                { expiresIn: "0.5h" }
-            );
-
-            let expiredIn = new Date();
-            expiredIn.setMinutes(expiredIn.getMinutes() + 30);
-            expiredIn = expiredIn.valueOf();
-
             // create a user id.
-            const userIdList = await authModel.getAllUserId();
+            const userIdList = await UserInfo.getAllId();
             const id = generateUserId(userIdList);
 
             const now = new Date();
@@ -116,10 +103,28 @@ class AuthController {
             );
 
             // insert a new user to database.
-            const insertUserInfoToDB = await authModel.insertUserInfo(newUserInfo);
-            const insertUserLoginToDB = await authModel.insertUserLogin(newUserLogin);
+            const insertUserInfoToDB = await newUserInfo.insert();
+            const insertUserLoginToDB = await newUserLogin.insert();
 
-            res.send({ status: 201, data: { id, role: userInfoRequest.role, token, expiredIn } });
+            // create an access token for this user
+            const token = jwt.sign(
+                {
+                    id: newUserInfo.id,
+                    username: userInfoRequest.username,
+                    role: userInfoRequest.role,
+                },
+                process.env.SECRET_TOKEN_KEY,
+                { expiresIn: "0.5h" }
+            );
+
+            let expiredIn = new Date();
+            expiredIn.setMinutes(expiredIn.getMinutes() + 30);
+            expiredIn = expiredIn.valueOf();
+
+            res.send({
+                status: 201,
+                data: { role: userInfoRequest.role, token, expiredIn },
+            });
         }
     };
 }
