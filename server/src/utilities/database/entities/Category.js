@@ -1,3 +1,5 @@
+import DatabaseConnection from "../DatabaseConnection.js";
+import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 class Category {
     constructor(id, name) {
         this.id = id;
@@ -12,10 +14,27 @@ class Category {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new Category(
-                row.id,
-                row.name
-            );
+            return new Category(row.id, row.name);
+        });
+    };
+
+    static getAll = () => {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.category;`;
+            DatabaseConnection.query(sqlQuery, (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (result === undefined) {
+                    reject(new Error("Error: 'result' is underfined"));
+                } else {
+                    const categoriesInfo =
+                        Category.toArrayFromDatabaseObject(result);
+                    resolve(categoriesInfo);
+                }
+            });
         });
     };
 }
