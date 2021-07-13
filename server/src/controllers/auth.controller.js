@@ -70,10 +70,10 @@ class AuthController {
             userInfoRequest.username,
             userInfoRequest.phoneNumber
         );
-      
+
         //Handle missing address key in signup request
         userInfoRequest.address = ""
-      
+
         if (userInfoFromDB.length !== 0) {
             res.send({ status: 409 });
         } else {
