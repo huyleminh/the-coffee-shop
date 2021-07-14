@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import "../../../assets/css/layouts/menu/MenuPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
-import CustomePagination from "../../../components/navigation/CustomPagination";
+import CustomPagination from "../../../components/navigation/CustomPagination";
 import ProductItem from "./Product/ProductItem";
 
 const { Content } = Layout;
@@ -19,6 +19,11 @@ function MenuPage(props) {
     };
 
     const activeClassname = isFilterVisible ? "active" : null;
+
+    const handleChangeFilter = (e) => {
+        const target = e.target;
+        alert("Radio checked ", target.value);
+    };
 
     return (
         <Content>
@@ -34,7 +39,7 @@ function MenuPage(props) {
 
                     <div className="menu__group filter">
                         <h1>Filter</h1>
-                        <Radio.Group>
+                        <Radio.Group onChange={handleChangeFilter}>
                             <Space direction="vertical">
                                 <Radio value="cappucino1">Cappucino 1</Radio>
                                 <Radio value="cappucino2">Cappucino 2</Radio>
@@ -46,7 +51,7 @@ function MenuPage(props) {
 
                     <div className="menu__group sort">
                         <h1>Sort by</h1>
-                        <Radio.Group>
+                        <Radio.Group onChange={handleChangeFilter}>
                             <Space direction="vertical">
                                 <Radio value="popularity">Popularity</Radio>
                                 <Radio value="price-asc">Price: Low to high</Radio>
@@ -85,7 +90,8 @@ function MenuPage(props) {
                         <ProductItem />
                         <ProductItem />
                     </div>
-                    <CustomePagination />
+
+                    <CustomPagination page={1} total={50} limit={15} />
                 </div>
             </div>
         </Content>
