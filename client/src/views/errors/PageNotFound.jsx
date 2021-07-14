@@ -1,7 +1,7 @@
 import React from "react";
-// import { useHistory } from "react-router-dom";
+import backgroundImg from "../../assets/images/404.png";
 import "../../assets/css/404.css";
-
+import { useHistory } from "react-router-dom";
 
 function NotFound() {
     // const history = useHistory();
@@ -12,9 +12,35 @@ function NotFound() {
 
     // const handleGoBack = () => {
     // };
+    const history = useHistory();
+
+    const goHome = () => {
+        history.push("/");
+    };
+
+    const goLogin = () => {
+        history.push("/login");
+    };
 
     return (
-        <div>404</div>
+        <div
+            className="notFoundPage"
+            style={{
+                backgroundImage: `url(${backgroundImg})`,
+                backgroundSize: "cover",
+            }}
+        >
+            <div class="returnButtonContainer">
+                <div className="returnButtonDiv">
+                    <button className="returnButton" onClick={goHome}>
+                        Go home
+                    </button>
+                    <button className="goLoginButton" onClick={goLogin}>
+                        Login
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
 

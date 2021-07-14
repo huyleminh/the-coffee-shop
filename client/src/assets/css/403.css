@@ -1,8 +1,8 @@
-.notFoundPage {
-    background-image: "../../assets/images/404.png";
+.fobiddenPage {
+    background-image: "../../assets/images/403.png";
     background-size: cover;
     display: flex;
-    margin-top: 0px;
+    margin-top: 15px;
     width: 100%;
     height: 100vh;
     background-position: center;
@@ -14,10 +14,10 @@
     position: relative;
 }
 
-.returnButtonDiv {
+.returnButtonDivFobidden {
     margin: 0;
     position: absolute;
-    top: 90%;
+    top: 94%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -62,7 +62,7 @@
     background-color: #b88031;
 }
 
-.returnButtonDiv button:hover {
+.returnButtonDivFobidden button:hover {
     background-color: #b88031;
 }
 
@@ -81,7 +81,7 @@
     .returnButton:hover {
         background-color: #b88031;
     }
-    .returnButtonDiv button:hover {
+    .returnButtonDivFobidden button:hover {
         background-color: #b88031;
     }
 
@@ -113,7 +113,7 @@
     .returnButton:hover {
         background-color: #614e2d;
     }
-    .returnButtonDiv button:hover {
+    .returnButtonDivFobidden button:hover {
         background-color: #614e2d;
     }
 
@@ -145,7 +145,7 @@
     .returnButton:hover {
         background-color: #614e2d;
     }
-    .returnButtonDiv button:hover {
+    .returnButtonDivFobidden button:hover {
         background-color: #614e2d;
     }
 
