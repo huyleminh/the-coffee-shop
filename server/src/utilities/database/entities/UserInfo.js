@@ -7,7 +7,7 @@ class UserInfo {
         this.fullname = fullname;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.gender = `${gender}`;
+        this.gender = gender;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
     }
@@ -19,15 +19,13 @@ class UserInfo {
         const jsonString = JSON.stringify(rows);
         const jsonData = JSON.parse(jsonString);
 
-        // In MySQL, 'gender' is BIT data type.
-        // In JS, 'gender' is an object { type: "Buffer", data: [] }.
         return jsonData.map((row) => {
             return new UserInfo(
                 row.id,
                 row.fullname,
                 row.address,
                 row.phoneNumber,
-                row.gender.data[0],
+                row.gender,
                 row.updatedAt,
                 row.createdAt
             );
@@ -40,7 +38,7 @@ class UserInfo {
         return new Promise((resolve, reject) => {
             // (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.user_info
-            VALUES (?, ?, ?, ?, b?, ?, ?);`;
+            VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
                     if (error) {
@@ -124,10 +122,7 @@ class UserInfo {
 
     static getAllByAttributes = (keys, values) => {
         return new Promise((resolve, reject) => {
-            let whereStatement = keys.join("=?,");
-            whereStatement += "=?";
-            whereStatement = whereStatement.replace("gender=?", "gender=b?");
-
+            const whereStatement = keys.join("=?,") + "=?";
             const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_info WHERE ${whereStatement};`;
 
             DatabaseConnection.query(sql, values, (error, rows) => {
@@ -172,21 +167,34 @@ class UserInfo {
         });
     }
 
+    static getAll = () => {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_info`;
+
+            DatabaseConnection.query(sqlQuery, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined) {
+                    reject(new Error("Error: 'rows' is undefined"));
+                } else {
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    resolve(userInfoList);
+                }
+            });
+        });
+    }
+
     update(keys, values) {
         const id = this.id
 
-        for (let i = 0; i < keys.length; i++) {
-            if (keys[i] === "gender")
-                values[i] = `${values[i]}`
-
-            this[keys[i]] = values
-        }
+        for (let i = 0; i < keys.length; i++)
+            this[keys[i]] = values[i];
 
         return new Promise((resolve, reject) => {
-            let setStatement = keys.join("=?,");
-            setStatement += "=?";
-            setStatement = setStatement.replace("gender=?", "gender=b?");
-
+            const setStatement = keys.join("=?,") + "=?";
             const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.user_info
             SET ${setStatement}
             WHERE id = '${id}';`;
@@ -203,18 +211,8 @@ class UserInfo {
     }
 
     static updateByAttributes = (id, keys, values) => {
-        for (let i = 0; i < keys.length; i++) {
-            if (keys[i] === "gender") {
-                values[i] = `${values[i]}`
-                break
-            }
-        }
-
         return new Promise((resolve, reject) => {
-            let setStatement = keys.join("=?,");
-            setStatement += "=?";
-            setStatement = setStatement.replace("gender=?", "gender=b?");
-
+            const setStatement = keys.join("=?,") + "=?";
             const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.user_info
             SET ${setStatement}
             WHERE id = '${id}';`;

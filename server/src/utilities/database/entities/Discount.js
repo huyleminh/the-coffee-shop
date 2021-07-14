@@ -14,13 +14,11 @@ class Discount {
         const jsonString = JSON.stringify(rows);
         const jsonData = JSON.parse(jsonString);
 
-        // In MySQL, 'active' is BIT data type.
-        // In JS, 'active' is an object { type: "Buffer", data: [] }.
         return jsonData.map((row) => {
             return new Discount(
                 row.id,
                 row.percent,
-                row.active.data[0],
+                row.active,
                 row.startDate,
                 row.endDate
             );
