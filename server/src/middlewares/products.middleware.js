@@ -8,7 +8,7 @@ class ProductsMiddleware {
                 params.page !== "" &&
                 params.limit !== undefined &&
                 params.limit !== "") ||
-            (params.page !== undefined && params.limit !== undefined)
+            (params.page === undefined && params.limit === undefined)
         ) {
             if (
                 countParams === 0 ||
