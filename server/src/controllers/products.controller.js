@@ -55,6 +55,7 @@ class ProductsController {
                     price: product.price,
                     description: product.description
                 },
+                categoryName: product.categoryName,
                 rating: {
                     totalStar: product.totalStar,
                     totalRating: product.totalRating
