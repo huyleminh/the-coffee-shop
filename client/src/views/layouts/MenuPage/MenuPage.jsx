@@ -30,19 +30,10 @@ function MenuPage(props) {
     const [categories, setCategories] = useState([]);
 
     // Pagination
-    const [paginationState, setPaginationState] = useState({
-        page: 1,
-        limit: 9,
-        total: 0,
-    });
+    const [paginationState, setPaginationState] = useState({ page: 1, limit: 9, total: 0 });
 
     const [filters, setFilters] = useState(() => {
-        const initialState = {
-            page: 1,
-            limit: 9,
-            filter: "",
-            search: "",
-        };
+        const initialState = { page: 1, limit: 9, filter: "", search: "" };
 
         const params = queryString.parse(location.search);
         if (params.filter) {
@@ -52,9 +43,6 @@ function MenuPage(props) {
             initialState.search = params.search;
             initialState.filter = "";
         }
-
-        console.log(initialState);
-
         return initialState;
     });
 
@@ -65,30 +53,40 @@ function MenuPage(props) {
 
     const activeClassname = isFilterVisible ? "active" : null;
 
+    // Filter by category
     const handleChangeFilter = (e) => {
         const target = e.target;
+        //Change url params
         history.push({
             path: location.pathname,
-            search: queryString.stringify({ filter: target.value}),
+            search: queryString.stringify({ filter: target.value }),
         });
+        // Rerender
         setFilters({
             ...filters,
             filter: target.value,
             page: 1,
-            limit: 9
-        })
-    };
-
-    const handlePageChange = (page) => {
-        setPaginationState({
-            ...paginationState,
-            page: page,
-        });
-        setFilters({
-            ...filters,
-            page: page,
+            limit: 9,
         });
         setIsLoading(true);
+    };
+
+    // Pagination
+    const handlePageChange = (page) => {
+        setPaginationState({ ...paginationState, page: page });
+        setFilters({ ...filters, page: page });
+        setIsLoading(true);
+    };
+
+    // Handle search term changes
+    const handleSearchTerm = (e) => {
+        const target = e.target;
+        console.log(target.value);
+
+        // Huong dan
+        // người dùng sẽ nhập tên sản phẩm vào để search
+        // chỉ cần lấy value ra, set lên chỗ setFilter (set cho đúng search) là được, setIsLoading(false) luôn
+        // lưu ý kĩ thuật debounce trước khi code, xem video trong discord mới gửi có 1 bài về search để biết thêm
     };
 
     useEffect(() => {
@@ -99,10 +97,7 @@ function MenuPage(props) {
         const fetchProducts = async () => {
             const { page, limit, filter, search } = filters;
 
-            const params = {
-                page,
-                limit,
-            };
+            const params = { page, limit };
 
             if (filter) params.filter = filter;
             else if (search) params.search = search;
@@ -159,7 +154,13 @@ function MenuPage(props) {
                     <FontAwesomeIcon icon={faTimes} id="exit" onClick={toggleFilterBar} />
                     <div className="menu__group search">
                         <label htmlFor="search"></label>
-                        <input type="text" name="search" id="search" placeholder="Search" />
+                        <input
+                            type="text"
+                            name="search"
+                            id="search"
+                            placeholder="Search by name"
+                            onChange={handleSearchTerm}
+                        />
                     </div>
 
                     <div className="menu__group filter">
