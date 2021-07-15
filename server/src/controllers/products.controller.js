@@ -2,49 +2,45 @@ import Product from "../utilities/database/entities/Product.js";
 
 const MAX_PRODUCTS_PER_PAGE = 9;
 
-const calculatePageInfo = (totalProducts, totalPages, currentPage) => {
-    const limit =
-        (currentPage < totalPages)
-            ? MAX_PRODUCTS_PER_PAGE
-            : (totalProducts - (totalPages - 1) * MAX_PRODUCTS_PER_PAGE);
+// const calculatePageInfo = (totalProducts, totalPages, currentPage) => {
+//     const limit =
+//         currentPage < totalPages
+//             ? MAX_PRODUCTS_PER_PAGE
+//             : totalProducts - (totalPages - 1) * MAX_PRODUCTS_PER_PAGE;
 
-    return { page: currentPage, limit, total: totalProducts }
-}
+//     return { page: currentPage, limit, total: totalProducts };
+// };
 
 class ProductsController {
     static getProducts = async (req, res) => {
-        const params = res.locals.params
+        const params = res.locals.params;
 
         let productList = undefined;
-        if (params.page === undefined)
-            params.page = 1
+        if (params.page === undefined) params.page = 1;
+        else params.page = parseInt(params.page);
 
-        if (params.search !== undefined)
-            productList = await Product.searchProducts(params.search)
+        if (params.search !== undefined) productList = await Product.searchProducts(params.search);
         else if (params.filter !== undefined)
-            productList = await Product.filterProducts(params.filter)
-        else
-            productList = await Product.getProducts()
+            productList = await Product.filterProducts(params.filter);
+        else productList = await Product.getProducts();
 
+        const totalProducts = productList.length;
+        let totalPages = Math.ceil(totalProducts / MAX_PRODUCTS_PER_PAGE);
+        if (totalPages === 0) totalPages = 1;
 
-        const totalProducts = productList.length
-        let totalPages = Math.ceil(totalProducts / MAX_PRODUCTS_PER_PAGE)
-        if (totalPages === 0)
-            totalPages = 1
-
-        if (params.page <  1 || params.page > totalPages) {
-            res.send({ status: 404, message: "Page not found" })
+        if (params.page < 1 || params.page > totalPages) {
+            res.send({ status: 404, message: "Page not found" });
             return;
         }
 
         const products = productList.map((product) => {
-            let discount = null
+            let discount = null;
             if (product.discountId !== null) {
                 discount = {
                     percent: product.percent,
                     startDate: product.startDate,
-                    endDate: product.endDate
-                }
+                    endDate: product.endDate,
+                };
             }
 
             return {
@@ -53,27 +49,33 @@ class ProductsController {
                     name: product.name,
                     image: product.image,
                     price: product.price,
-                    description: product.description
+                    description: product.description,
                 },
                 categoryName: product.categoryName,
                 rating: {
                     totalStar: product.totalStar,
-                    totalRating: product.totalRating
+                    totalRating: product.totalRating,
                 },
-                discount
-            }
-        })
+                discount,
+            };
+        });
 
-        const start = (params.page - 1) * MAX_PRODUCTS_PER_PAGE
-        const pagination = calculatePageInfo(totalProducts, totalPages, params.page)
+        const start = (params.page - 1) * MAX_PRODUCTS_PER_PAGE;
+        // const pagination = calculatePageInfo(totalProducts, totalPages, params.page);
+        const pagination = {
+            page: params.page,
+            limit: MAX_PRODUCTS_PER_PAGE,
+            total: totalProducts,
+        };
 
         res.send({
-            status: 200, data: {
+            status: 200,
+            data: {
                 products: products.slice(start, start + pagination.limit),
-                pagination
-            }
-        })
-    }
+                pagination,
+            },
+        });
+    };
 }
 
 export default ProductsController;
