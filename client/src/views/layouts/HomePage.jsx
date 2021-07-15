@@ -16,14 +16,6 @@ function HomePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [userStatus, setUserStatus] = useState({ isLogin: false, role: 3 });
 
-    const [headerState, setHeaderState] = useState({ isScroll: false, isVisible: false });
-
-    const toggleHeaderBar = () => {
-        const prevVisible = { ...headerState };
-        prevVisible.isVisible = !prevVisible.isVisible;
-        setHeaderState(prevVisible);
-    };
-
     const clearLocal = () => {
         localStorage.removeItem("user");
     };
@@ -65,17 +57,6 @@ function HomePage() {
         // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        const scrollHeader = () => {
-            const scrollY = window.scrollY;
-            if (scrollY > 0) {
-                setHeaderState({ ...headerState, isScroll: true });
-            } else setHeaderState({ ...headerState, isScroll: false });
-        };
-        window.addEventListener("scroll", scrollHeader);
-        return () => window.removeEventListener("scroll", scrollHeader);
-    });
-
     if (isLoading)
         return (
             <Loading
@@ -90,17 +71,8 @@ function HomePage() {
         );
     else
         return (
-            <div
-                onClick={() =>
-                    headerState.isVisible && setHeaderState({ ...headerState, isVisible: false })
-                }
-            >
-                <Header
-                    userStatus={userStatus}
-                    state={headerState}
-                    toggleHeaderBar={toggleHeaderBar}
-                    handleLogout={handleLogout}
-                />
+            <div>
+                <Header userStatus={userStatus} handleLogout={handleLogout} />
 
                 <Layout className="container">
                     <Switch>

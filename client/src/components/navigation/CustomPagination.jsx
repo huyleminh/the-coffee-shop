@@ -4,15 +4,30 @@ import { Pagination } from "antd";
 import "../../assets/css/navigation/Pagination.css";
 
 CustomePagination.propTypes = {
-    pagination: PropTypes.object.isRequired,
+    page: PropTypes.number,
+    limit: PropTypes.number,
+    total: PropTypes.number,
+    pageChange: PropTypes.func,
+};
+
+CustomePagination.defaultProps = {
+    page: 1,
+    limit: 9,
+    total: 0,
+    pageChange: null,
 };
 
 function CustomePagination(props) {
-    // const { pagination } = props;
+    const { page, limit, total, pageChange } = props;
+
+    const handleOnChange = (page) => {
+        if (!pageChange) return;
+        pageChange(page);
+    };
 
     return (
         <div className="pagination">
-            <Pagination defaultCurrent={1} total={50} />
+            <Pagination defaultCurrent="1" current={page} pageSize={limit} total={total} onChange={handleOnChange} />
         </div>
     );
 }

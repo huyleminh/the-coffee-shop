@@ -219,6 +219,7 @@
         align-items: flex-start;
 
         border-right: 1px solid #503a242a;
+        border-left: 1px solid #503a242a;
     }
 
     #exit {

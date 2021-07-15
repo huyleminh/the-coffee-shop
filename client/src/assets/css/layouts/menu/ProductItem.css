@@ -1,6 +1,6 @@
 .ant-card.ant-card-bordered.custom-card {
-    /* width: 210px;
-    height: 335px; */
+    width: 210px;
+    height: 335px;
     padding: 15px;
     border-radius: 7px;
     border: 1px solid #503a2444;
@@ -26,7 +26,7 @@
     height: 100%;
     z-index: 2;
     visibility: hidden;
-    transition: visibility 0.2s ase-in;
+    transition: visibility 0.2s ease-in;
 }
 
 .custom-cover img {
