@@ -39,6 +39,7 @@ class Product {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
+                c.name AS categoryName,
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
@@ -69,6 +70,7 @@ class Product {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
+                c.name AS categoryName,
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
@@ -100,6 +102,7 @@ class Product {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
+                c.name AS categoryName,
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
