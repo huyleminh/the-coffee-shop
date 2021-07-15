@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Radio, Space } from "antd";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import "../../../assets/css/layouts/menu/MenuPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
@@ -14,6 +15,8 @@ import ProductItem from "./Product/ProductItem";
 const { Content } = Layout;
 
 function MenuPage(props) {
+    const location = useLocation();
+    const history = useHistory();
     // Responsive filter bar
     const [isFilterVisible, setIsFilterVisible] = useState(false);
 
@@ -33,13 +36,29 @@ function MenuPage(props) {
         total: 0,
     });
 
-    const [filters, setFilters] = useState({
-        page: 1,
-        limit: 9,
+    const [filters, setFilters] = useState(() => {
+        const initialState = {
+            page: 1,
+            limit: 9,
+            filter: "",
+            search: "",
+        };
+
+        const params = queryString.parse(location.search);
+        if (params.filter) {
+            initialState.filter = params.filter;
+            initialState.search = "";
+        } else if (params.search) {
+            initialState.search = params.search;
+            initialState.filter = "";
+        }
+
+        console.log(initialState);
+
+        return initialState;
     });
 
     const toggleFilterBar = () => {
-        console.log("clicked");
         if (isFilterVisible) setIsFilterVisible(false);
         else setIsFilterVisible(true);
     };
@@ -48,11 +67,19 @@ function MenuPage(props) {
 
     const handleChangeFilter = (e) => {
         const target = e.target;
-        alert("Radio checked ", target.value);
+        history.push({
+            path: location.pathname,
+            search: queryString.stringify({ filter: target.value}),
+        });
+        setFilters({
+            ...filters,
+            filter: target.value,
+            page: 1,
+            limit: 9
+        })
     };
 
     const handlePageChange = (page) => {
-        console.log(page);
         setPaginationState({
             ...paginationState,
             page: page,
@@ -61,6 +88,7 @@ function MenuPage(props) {
             ...filters,
             page: page,
         });
+        setIsLoading(true);
     };
 
     useEffect(() => {
@@ -69,12 +97,20 @@ function MenuPage(props) {
 
         // Fetch products from db
         const fetchProducts = async () => {
-            const { page, limit } = filters;
+            const { page, limit, filter, search } = filters;
+
+            const params = {
+                page,
+                limit,
+            };
+
+            if (filter) params.filter = filter;
+            else if (search) params.search = search;
 
             try {
                 const categoriesRes = await ProductAPI.getCategories();
                 const response = await ProductAPI.getAllProducts(
-                    `${queryString.stringify({ page, limit })}`
+                    `${queryString.stringify(params)}`
                 );
 
                 if (response.status === 200) {
@@ -101,6 +137,7 @@ function MenuPage(props) {
     const productsList = totalProducts.map((item) => (
         <ProductItem
             product={item.product}
+            categoryName={item.categoryName}
             rating={item.rating}
             discount={item.discount}
             key={item.product.id}
@@ -127,7 +164,7 @@ function MenuPage(props) {
 
                     <div className="menu__group filter">
                         <h1>Categories</h1>
-                        <Radio.Group onChange={handleChangeFilter}>
+                        <Radio.Group onChange={handleChangeFilter} value={filters.filter}>
                             <Space direction="vertical">
                                 {isLoading ? (
                                     <Loading

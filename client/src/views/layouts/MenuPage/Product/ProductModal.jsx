@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductModal.css";
-import Latte from "../../../../assets/images/latte.jpg";
 
 ProductModal.propTypes = {
     handleVisible: PropTypes.func,
@@ -14,8 +13,9 @@ ProductModal.propTypes = {
         name: PropTypes.string,
         image: PropTypes.string,
         description: PropTypes.string || null,
+        categoryName: PropTypes.string,
         rate: PropTypes.number,
-        discount: PropTypes.string || null,
+        discount: PropTypes.number || null,
         oldPrice: PropTypes.number,
         newPrice: PropTypes.number,
     }),
@@ -99,12 +99,11 @@ function ProductModal(props) {
 
                         <div className="lower">
                             <span>
-                                <FontAwesomeIcon icon={faStar} id="star" />
-                                &nbsp; {details.rate}
+                                <FontAwesomeIcon icon={faStar} id="star" /> &nbsp; {details.rate !== 0 ? details.rate : "N/A"}
                             </span>
                             {details.discount ? (
                                 <>
-                                    <span id="discount">{details.rate}%</span>
+                                    <span id="discount">{details.discount}%</span>
                                     <span style={{ color: "#f72f2f" }}>
                                         {details.newPrice}&nbsp;vnd
                                     </span>
@@ -120,8 +119,7 @@ function ProductModal(props) {
                     <div className="product__control top">
                         <span>Category:&nbsp;</span>
                         <ul>
-                            <li>Category 1&#44;&nbsp;</li>
-                            <li>Category 1</li>
+                            <li>{details.categoryName}&nbsp;</li>
                         </ul>
                         <div className="amount-control">
                             <button id="desc" onClick={handleQuantityButton}>

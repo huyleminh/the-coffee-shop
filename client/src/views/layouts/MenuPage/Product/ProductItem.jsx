@@ -15,6 +15,7 @@ ProductItem.propTypes = {
         price: PropTypes.number,
         description: PropTypes.string || null,
     }),
+    categoryName: PropTypes.string,
     rating: PropTypes.shape({
         totalStar: PropTypes.number,
         totalRating: PropTypes.number,
@@ -28,7 +29,7 @@ ProductItem.propTypes = {
 };
 
 function ProductItem(props) {
-    const { product, rating, discount } = props;
+    const { product, categoryName, rating, discount } = props;
     const [isModalVisible, setIsModelVisible] = useState(false);
 
     //Initialize card before rendering
@@ -38,6 +39,7 @@ function ProductItem(props) {
             name: product.name,
             image: "",
             description: product.description,
+            categoryName: categoryName,
             rate: 0,
             discount: discount ? discount.percent : null,
             oldPrice: product.price,
@@ -45,8 +47,10 @@ function ProductItem(props) {
         };
 
         productCard.rate =
-            rating.totalRating !== 0 ? (rating.totalStar / rating.totalRating).toFixed(1) : 0;
-        productCard.newPrice = discount ? product.price * discount.percent : product.price;
+            rating.totalRating !== 0
+                ? parseInt((rating.totalStar / rating.totalRating).toFixed(1))
+                : 0;
+        productCard.newPrice = discount ? product.price * (1 - discount.percent) : product.price;
 
         return productCard;
     });
@@ -62,15 +66,6 @@ function ProductItem(props) {
     const handleModalVisible = () => {
         setIsModelVisible(false);
     };
-
-    const productModal = isModalVisible ? (
-        <ProductModal
-            handleVisible={handleModalVisible}
-            addToCart={handleAddToCart}
-            addToWishlist={handleAddToWishlist}
-            details={card}
-        />
-    ) : null;
 
     useEffect(() => {
         const getProductImage = async () => {
@@ -113,7 +108,7 @@ function ProductItem(props) {
                     <h2>{card.name}</h2>
                     <span>
                         <FontAwesomeIcon icon={faStar} />
-                        &nbsp; {card.rate}
+                        &nbsp; {card.rate !== 0 ? card.rate : "N/A"}
                     </span>
                     <ul>
                         {card.discount ? (
@@ -129,7 +124,14 @@ function ProductItem(props) {
                     </ul>
                 </div>
             </Card>
-            {productModal}
+            {isModalVisible ? (
+                <ProductModal
+                    handleVisible={handleModalVisible}
+                    addToCart={handleAddToCart}
+                    addToWishlist={handleAddToWishlist}
+                    details={card}
+                />
+            ) : null}
         </>
     );
 }
