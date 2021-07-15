@@ -1,17 +1,43 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Radio, Space } from "antd";
-import React, { useState } from "react";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
 import "../../../assets/css/layouts/menu/MenuPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
+import Loading from "../../../components/Loading";
 import CustomPagination from "../../../components/navigation/CustomPagination";
+import ProductAPI from "../../../services/Product/ProductAPI";
 import ProductItem from "./Product/ProductItem";
 
 const { Content } = Layout;
 
 function MenuPage(props) {
+    // Responsive filter bar
     const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+    // Loading products section
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Products list
+    const [totalProducts, setTotalProducts] = useState([]);
+
+    // Categories on filter bar
+    const [categories, setCategories] = useState([]);
+
+    // Pagination
+    const [paginationState, setPaginationState] = useState({
+        page: 1,
+        limit: 9,
+        total: 0,
+    });
+
+    const [filters, setFilters] = useState({
+        page: 1,
+        limit: 9,
+    });
+
     const toggleFilterBar = () => {
         console.log("clicked");
         if (isFilterVisible) setIsFilterVisible(false);
@@ -24,6 +50,68 @@ function MenuPage(props) {
         const target = e.target;
         alert("Radio checked ", target.value);
     };
+
+    const handlePageChange = (page) => {
+        console.log(page);
+        setPaginationState({
+            ...paginationState,
+            page: page,
+        });
+        setFilters({
+            ...filters,
+            page: page,
+        });
+    };
+
+    useEffect(() => {
+        //Scroll to list
+        document.querySelector(".menu").scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Fetch products from db
+        const fetchProducts = async () => {
+            const { page, limit } = filters;
+
+            try {
+                const categoriesRes = await ProductAPI.getCategories();
+                const response = await ProductAPI.getAllProducts(
+                    `${queryString.stringify({ page, limit })}`
+                );
+
+                if (response.status === 200) {
+                    const { pagination, products } = response.data;
+
+                    setTotalProducts(products);
+                    setPaginationState(pagination);
+
+                    setCategories(categoriesRes.data);
+                    setIsLoading(false);
+                } else if (response.status === 404) {
+                    alert("Products not found!");
+                    setIsLoading(false);
+                }
+            } catch (err) {
+                console.log(err);
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [filters]);
+
+    const productsList = totalProducts.map((item) => (
+        <ProductItem
+            product={item.product}
+            rating={item.rating}
+            discount={item.discount}
+            key={item.product.id}
+        />
+    ));
+
+    const categoriesList = categories.map((item) => (
+        <Radio value={item.name} key={item.id}>
+            {item.name}
+        </Radio>
+    ));
 
     return (
         <Content>
@@ -38,13 +126,24 @@ function MenuPage(props) {
                     </div>
 
                     <div className="menu__group filter">
-                        <h1>Filter</h1>
+                        <h1>Categories</h1>
                         <Radio.Group onChange={handleChangeFilter}>
                             <Space direction="vertical">
-                                <Radio value="cappucino1">Cappucino 1</Radio>
-                                <Radio value="cappucino2">Cappucino 2</Radio>
-                                <Radio value="cappucino3">Cappucino 3</Radio>
-                                <Radio value="cappucino4">Cappucino 4</Radio>
+                                {isLoading ? (
+                                    <Loading
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                        size="small"
+                                        tip=""
+                                    />
+                                ) : (
+                                    categoriesList.map((item) => item)
+                                )}
                             </Space>
                         </Radio.Group>
                     </div>
@@ -79,19 +178,25 @@ function MenuPage(props) {
                     >
                         <span>Filter</span>
                     </div>
-                    <div className="products">
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                        <ProductItem />
-                    </div>
-
-                    <CustomPagination page={1} total={50} limit={15} />
+                    {isLoading ? (
+                        <Loading
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        />
+                    ) : (
+                        <div className="products">{productsList.map((item) => item)}</div>
+                    )}
+                    <CustomPagination
+                        page={paginationState.page}
+                        total={paginationState.total}
+                        limit={paginationState.limit}
+                        pageChange={handlePageChange}
+                    />
                 </div>
             </div>
         </Content>

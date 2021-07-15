@@ -1,11 +1,11 @@
 import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card } from "antd";
-import React, { useState } from "react";
-import "../../../../assets/css/layouts/menu/ProductItem.css";
-import Latte from "../../../../assets/images/latte.jpg";
-import ProductModal from "./ProductModal";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import "../../../../assets/css/layouts/menu/ProductItem.css";
+import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
+import ProductModal from "./ProductModal";
 
 ProductItem.propTypes = {
     product: PropTypes.shape({
@@ -19,18 +19,37 @@ ProductItem.propTypes = {
         totalStar: PropTypes.number,
         totalRating: PropTypes.number,
     }),
-    discount: PropTypes.shape({
-        percent: PropTypes.number,
-        startDate: PropTypes.string,
-        endDate: PropTypes.string,
-    }) || null,
+    discount:
+        PropTypes.shape({
+            percent: PropTypes.number,
+            startDate: PropTypes.string,
+            endDate: PropTypes.string,
+        }) || null,
 };
 
 function ProductItem(props) {
     const { product, rating, discount } = props;
-
-    const [id, setId] = useState(product.id);
     const [isModalVisible, setIsModelVisible] = useState(false);
+
+    //Initialize card before rendering
+    const [card, setCard] = useState(() => {
+        const productCard = {
+            id: product.id,
+            name: product.name,
+            image: "",
+            description: product.description,
+            rate: 0,
+            discount: discount ? discount.percent : null,
+            oldPrice: product.price,
+            newPrice: product.price,
+        };
+
+        productCard.rate =
+            rating.totalRating !== 0 ? (rating.totalStar / rating.totalRating).toFixed(1) : 0;
+        productCard.newPrice = discount ? product.price * discount.percent : product.price;
+
+        return productCard;
+    });
 
     const handleAddToCart = () => {
         alert("Item added.");
@@ -49,8 +68,27 @@ function ProductItem(props) {
             handleVisible={handleModalVisible}
             addToCart={handleAddToCart}
             addToWishlist={handleAddToWishlist}
+            details={card}
         />
     ) : null;
+
+    useEffect(() => {
+        const getProductImage = async () => {
+            const ref = Storage.ref(`products/${product.image}`);
+            let image = null;
+            try {
+                const url = await ref.getDownloadURL();
+                image = url;
+            } catch (e) {
+                console.log(e);
+                image = require("../../../../assets/images/latte.jpg").default;
+            }
+            setCard({ ...card, image });
+        };
+
+        getProductImage();
+        // eslint-disable-next-line
+    }, []);
 
     return (
         <>
@@ -59,8 +97,8 @@ function ProductItem(props) {
                 cover={
                     <div className="custom-cover">
                         <div className="opacity" onClick={() => setIsModelVisible(true)}></div>
-                        <span className="sale">25%</span>
-                        <img src={Latte} alt="product" />
+                        {card.discount ? <span className="sale">{`${card.discount}%`}</span> : null}
+                        <img src={card.image} alt="product" />
                         <FontAwesomeIcon
                             icon={faHeart}
                             className="favourite"
@@ -72,14 +110,22 @@ function ProductItem(props) {
                 className="custom-card"
             >
                 <div className="custom-body" onClick={() => setIsModelVisible(true)}>
-                    <h2>Latte</h2>
+                    <h2>{card.name}</h2>
                     <span>
                         <FontAwesomeIcon icon={faStar} />
-                        &nbsp; 4.5
+                        &nbsp; {card.rate}
                     </span>
                     <ul>
-                        <li style={{ textDecoration: "line-through" }}>100000 đ</li>
-                        <li style={{ color: "#f72f2f" }}>75000 đ</li>
+                        {card.discount ? (
+                            <>
+                                <li style={{ textDecoration: "line-through" }}>
+                                    {card.oldPrice}&nbsp;vnd
+                                </li>
+                                <li style={{ color: "#f72f2f" }}>{card.newPrice}&nbsp;vnd</li>
+                            </>
+                        ) : (
+                            <li>{card.oldPrice}&nbsp;vnd</li>
+                        )}
                     </ul>
                 </div>
             </Card>

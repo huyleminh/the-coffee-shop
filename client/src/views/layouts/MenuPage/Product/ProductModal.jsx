@@ -9,11 +9,27 @@ ProductModal.propTypes = {
     handleVisible: PropTypes.func,
     addToCart: PropTypes.func,
     addToWishlist: PropTypes.func,
+    details: PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        image: PropTypes.string,
+        description: PropTypes.string || null,
+        rate: PropTypes.number,
+        discount: PropTypes.string || null,
+        oldPrice: PropTypes.number,
+        newPrice: PropTypes.number,
+    }),
+};
+
+ProductModal.defaultProps = {
+    handleVisible: null,
+    addToCart: null,
+    addToWishlist: null,
 };
 
 function ProductModal(props) {
     const [quantity, setQuantity] = useState("1");
-    const { handleVisible, addToCart, addToWishlist } = props;
+    const { handleVisible, addToCart, addToWishlist, details } = props;
 
     const handleOnchangeQuantity = (e) => {
         const target = e.target;
@@ -54,43 +70,51 @@ function ProductModal(props) {
         <div className="product__modal">
             <div className="modal-overlay" onClick={handleVisible}></div>
             <div className="product__content" id="modal-content">
-                <img src={Latte} alt="detail" />
+                <img src={details.image} alt="detail" />
 
                 <div className="product__right">
                     <div className="product__top">
                         <div className="upper">
-                            <h1>Latte</h1>
+                            <h1>{details.name}</h1>
                             <FontAwesomeIcon
                                 icon={faHeart}
                                 id="favourite"
                                 onClick={addToWishlistModal}
                             />
-                            <span
-                                style={{
-                                    textDecoration: "line-through",
-                                    marginLeft: "auto",
-                                }}
-                            >
-                                100000 đ
-                            </span>
+                            {details.discount ? (
+                                <span
+                                    style={{
+                                        textDecoration: "line-through",
+                                        marginLeft: "auto",
+                                    }}
+                                >
+                                    {details.oldPrice}&nbsp;vnd
+                                </span>
+                            ) : (
+                                <span style={{ marginLeft: "auto" }}>
+                                    {details.oldPrice}&nbsp;vnd
+                                </span>
+                            )}
                         </div>
 
                         <div className="lower">
                             <span>
                                 <FontAwesomeIcon icon={faStar} id="star" />
-                                &nbsp; 4.5
+                                &nbsp; {details.rate}
                             </span>
-                            <span id="discount">25%</span>
-                            <span style={{ color: "#f72f2f" }}>75000 đ</span>
+                            {details.discount ? (
+                                <>
+                                    <span id="discount">{details.rate}%</span>
+                                    <span style={{ color: "#f72f2f" }}>
+                                        {details.newPrice}&nbsp;vnd
+                                    </span>
+                                </>
+                            ) : null}
                         </div>
                     </div>
 
                     <span id="content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-                        finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
-                        Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,
-                        vestibulum tristique risus ligula a nisl. Nam mi purus, tristique at
-                        bibendum vel, elementum scelerisque dolor.
+                        {details.description ? details.description : "Default product description."}
                     </span>
 
                     <div className="product__control top">
