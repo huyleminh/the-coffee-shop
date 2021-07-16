@@ -195,6 +195,12 @@
     border-color: #503a24;
 }
 
+.profileForm .profileForm_items .ant-radio-group-outline {
+    display: flex;
+    margin-left: 123px;
+    margin-right: 120px;
+}
+
 .profileForm .profileForm_items .ant-radio-inner::after {
     background-color: #503a24;
 }
@@ -204,20 +210,22 @@
 .profileForm .profileForm_items {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 80%;
 
     box-sizing: border-box;
     margin-bottom: 30px;
+    margin-left: 60px;
 }
 
 .profileForm .profileForm_items label {
+    display: flex;
     width: 100px;
     height: 100%;
     color: #503a24;
-    text-align: right;
 
-    margin-right: 20px;
+    align-items: center;
     font-weight: 600;
+    margin-right: 25px;
 }
 
 .profileForm .profileForm_items > input {
@@ -227,6 +235,10 @@
     height: 40px;
     padding: 5px 15px;
     width: 100%;
+}
+
+.profileForm .profileForm_items > input:focus {
+    border: 2px solid #665230;
 }
 
 .profileForm .profileForm_items > #address_grid {
@@ -244,6 +256,10 @@
     padding: 5px 15px;
 }
 
+.profileForm .profileForm_items > #address_grid > input:focus {
+    border: 2px solid #665230;
+}
+
 .profileForm .profileForm_items > #address_grid > input:first-child {
     margin-bottom: 30px;
 }
@@ -253,14 +269,6 @@
     grid-column-start: 1;
     grid-column-end: 3;
 }
-
-/* .profileForm .profileForm_items > #address_grid > #ward {
-
-}
-
-.profileForm .profileForm_items > #address_grid > #district {
-
-} */
 
 .profileForm .profileForm_items.btn-group {
     justify-content: center;
@@ -275,6 +283,7 @@
     cursor: pointer;
     border-radius: 8px;
     margin: 0;
+    font-weight: bold;
 }
 
 .profileForm .profileForm_items button:first-child {
@@ -283,6 +292,10 @@
 
 .profileForm .profileForm_items button:hover {
     background-color: #665230;
+}
+
+.profileForm .profileForm_items input:focus::-webkit-input-placeholder {
+    color: transparent;
 }
 
 @media only screen and (min-width: 1201px) and (max-width: 1439px) {
@@ -347,3 +360,28 @@
         align-items: center;
     }
 }
+
+@media only screen and (max-width: 951px) {
+    .profileForm .profileForm_items > #address_grid {
+        grid-template-columns: repeat(1, auto);
+    }
+
+    .profileForm .profileForm_items > #address_grid > #address {
+        width: 100%;
+        grid-column-start: 1;
+        grid-column-end: 1;
+    }
+
+    .profileForm .profileForm_items > #address_grid > input:nth-child(2) {
+        margin-bottom: 30px;
+    }
+
+    .profileForm .profileForm_items .ant-radio-group-outline {
+        margin-left: 18px;
+        margin-right: 0px;
+    }
+}
+
+/*@media only screen and (max-width: 561px) {
+
+}*/

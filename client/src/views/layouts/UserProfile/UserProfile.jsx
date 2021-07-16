@@ -11,6 +11,7 @@ const { Content } = Layout;
 
 function UserProfile() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+    const [isDisabled, setDisabled] = useState(true);
     const toggleSidebar = () => {
         console.log("clicked");
         if (isSidebarVisible) setIsSidebarVisible(false);
@@ -19,6 +20,7 @@ function UserProfile() {
 
     const toggleEdit = () => {
         console.log("clicked");
+        setDisabled(false);
     };
 
     const handleSave = () => {
@@ -27,7 +29,9 @@ function UserProfile() {
 
     const handleCancel = () => {
         console.log("clicked");
+        setDisabled(true);
     };
+
     const activeClassname = isSidebarVisible ? "active" : null;
 
     return (
@@ -75,33 +79,55 @@ function UserProfile() {
                     <div className="profileForm">
                         <div className="profileForm_items">
                             <label>Full name</label>
-                            <input type="text" />
+                            <input type="text" disabled={isDisabled}/>
                         </div>
                         <div className="profileForm_items">
                             <label>Phone</label>
-                            <input type="text" />
+                            <input type="text" disabled={isDisabled}/>
                         </div>
                         <div className="profileForm_items">
-                            <label>Address</label>
+                            <label id="address_label">Address</label>
                             <div id="address_grid">
-                                <input type="text" id="address" />
-                                <input type="text" id="ward" />
-                                <input type="text" id="district" />
+                                <input type="text" id="address" disabled={isDisabled}/>
+                                <input type="text" id="ward" disabled={isDisabled}/>
+                                <input type="text" id="district" disabled={isDisabled}/>
                             </div>
                         </div>
                         <div className="profileForm_items">
                             <label>City</label>
-                            <input type="text" />
+                            <input type="text" disabled={isDisabled}/>
                         </div>
                         <div className="profileForm_items">
-                                <label>Gender</label>
-                                <Radio.Group>
-                                    <Space direction="horizontal">
-                                        <Radio value="male">Male</Radio>
-                                        <Radio value="female">Female</Radio>
-                                    </Space>
-                                </Radio.Group>
-                            </div>
+                            <label>Gender</label>
+                            <Radio.Group>
+                                <Space direction="horizontal">
+                                    <Radio value="male" disabled={isDisabled}>Male</Radio>
+                                    <Radio value="female" disabled={isDisabled}>Female</Radio>
+                                </Space>
+                            </Radio.Group>
+                        </div>
+                        <div className="profileForm_items btn-group">
+                            <button onClick={handleSave}> Save</button>
+                            <button onClick={handleCancel}>Cancel</button>
+                        </div>
+                    </div>
+
+                    <div className="myProfile">
+                        <h1>SECURITY</h1>
+                    </div>
+                    <div className="profileForm">
+                        <div className="profileForm_items">
+                            <label>Current Password</label>
+                            <input type="text" placeholder="****************" disabled={isDisabled}/>
+                        </div>
+                        <div className="profileForm_items">
+                            <label>New Password</label>
+                            <input type="text" placeholder="Enter New Password" disabled={isDisabled}/>
+                        </div>
+                        <div className="profileForm_items">
+                            <label>Confirm Password</label>
+                            <input type="text" placeholder="Confirm New Password" disabled={isDisabled}/>
+                        </div>
                         <div className="profileForm_items btn-group">
                             <button onClick={handleSave}> Save</button>
                             <button onClick={handleCancel}>Cancel</button>
