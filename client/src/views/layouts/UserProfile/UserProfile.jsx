@@ -43,10 +43,10 @@ function UserProfile() {
                             <a href="/profile">Profile</a>
                         </li>
                         <li>
-                            <a href="#">Order History</a>
+                            <a href="/profile">Order History</a>
                         </li>
                         <li>
-                            <a href="#">Voucher</a>
+                            <a href="/profile">Voucher</a>
                         </li>
                     </ul>
                 </div>
@@ -64,35 +64,36 @@ function UserProfile() {
                     <div className={`profile__bar ${activeClassname}`} onClick={toggleSidebar}>
                         <span></span>
                     </div>
+
                     <div className="myProfile">
                         <h1>MY PROFILE</h1>
                         <button className="" onClick={toggleEdit}>
                             Edit
                         </button>
                     </div>
+
                     <div className="profileForm">
-                        <form>
-                            <div className="profileForm_items">
-                                <label>Full name</label>
-                                <input type="text" />
+                        <div className="profileForm_items">
+                            <label>Full name</label>
+                            <input type="text" />
+                        </div>
+                        <div className="profileForm_items">
+                            <label>Phone</label>
+                            <input type="text" />
+                        </div>
+                        <div className="profileForm_items">
+                            <label>Address</label>
+                            <div id="address_grid">
+                                <input type="text" id="address" />
+                                <input type="text" id="ward" />
+                                <input type="text" id="district" />
                             </div>
-                            <div className="profileForm_items">
-                                <label>Phone</label>
-                                <input type="text" />
-                            </div>
-                            <div className="profileForm_items">
-                                <label>Address</label>
-                                <div id="address_grid">
-                                    <input type="text" id="address"/>
-                                    <input type="text" id="ward"/>
-                                    <input type="text" id="district"/>
-                                </div>
-                            </div>
-                            <div className="profileForm_items">
-                                <label>City</label>
-                                <input type="text" />
-                            </div>
-                            <div className="profileForm_items">
+                        </div>
+                        <div className="profileForm_items">
+                            <label>City</label>
+                            <input type="text" />
+                        </div>
+                        <div className="profileForm_items">
                                 <label>Gender</label>
                                 <Radio.Group>
                                     <Space direction="horizontal">
@@ -101,15 +102,10 @@ function UserProfile() {
                                     </Space>
                                 </Radio.Group>
                             </div>
-                            <div className="profileForm_items">
-                                <button type="submit" onClick={handleSave}>
-                                    Save
-                                </button>
-                                <button type="submit" onClick={handleCancel}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
+                        <div className="profileForm_items btn-group">
+                            <button onClick={handleSave}> Save</button>
+                            <button onClick={handleCancel}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>

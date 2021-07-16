@@ -127,10 +127,14 @@
     transition: visibility 0.5s ease-in;
 }
 
+/* My profile */
+
 .myProfile {
     width: 100%;
     display: flex;
     justify-content: space-between;
+
+    margin-bottom: 20px;
 }
 
 .myProfile h1 {
@@ -143,13 +147,17 @@
 .myProfile button {
     background-color: #503a24;
     color: #ffffff;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: 600;
     cursor: pointer;
+
+    display: flex;
+    justify-content: center;
     align-items: center;
-    text-align: center;
+
     border-radius: 10px;
     margin: 0px;
-    padding: 10px 25px 10px 25px;
+    padding: 8px 30px;
 }
 
 .myProfile button:hover {
@@ -157,8 +165,19 @@
     color: #ffffff;
 }
 
+/* Main profile */
+
 .profile__manipulation {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Profile form */
+.profileForm {
+    display: flex;
+    flex-direction: column;
     width: 100%;
 }
 
@@ -176,72 +195,94 @@
     border-color: #503a24;
 }
 
-.profileForm > form {
-    display: flex;
-    flex-direction: column;
-}
-
 .profileForm .profileForm_items .ant-radio-inner::after {
     background-color: #503a24;
 }
 
+/* Form item */
+
 .profileForm .profileForm_items {
     display: flex;
+    align-items: center;
     width: 100%;
+
+    box-sizing: border-box;
+    margin-bottom: 30px;
 }
 
 .profileForm .profileForm_items label {
     width: 100px;
+    height: 100%;
     color: #503a24;
-    padding: 20px;
-    margin: 0px 15px 0px 125px;
     text-align: right;
+
+    margin-right: 20px;
+    font-weight: 600;
 }
 
-.profileForm .profileForm_items:nth-child(1) {
+.profileForm .profileForm_items > input {
+    outline: none;
     border-radius: 5px;
+    border: 1px solid #503a247e;
     height: 40px;
-    margin: 10px;
-    padding: 5px;
-    width: 55%;
+    padding: 5px 15px;
+    width: 100%;
 }
 
-/* .profileForm .profileForm_items input{
+.profileForm .profileForm_items > #address_grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    column-gap: 50px;
+}
+
+.profileForm .profileForm_items > #address_grid > input {
+    outline: none;
     border-radius: 5px;
+    border: 1px solid #503a247e;
     height: 40px;
-    margin: 10px;
-    padding: 5px;
-    width: 55%;
+    padding: 5px 15px;
+}
+
+.profileForm .profileForm_items > #address_grid > input:first-child {
+    margin-bottom: 30px;
+}
+
+.profileForm .profileForm_items > #address_grid > #address {
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+/* .profileForm .profileForm_items > #address_grid > #ward {
+
+}
+
+.profileForm .profileForm_items > #address_grid > #district {
+
 } */
 
-.profileForm .profileForm_items button[type="submit"] {
+.profileForm .profileForm_items.btn-group {
+    justify-content: center;
+}
+
+.profileForm .profileForm_items button {
     background-color: #503a24;
     color: #ffffff;
-    align-items: center;
     text-align: center;
+
     width: 90px;
-    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 0;
 }
 
-#address_grid {
-    width: 55%;
-    display: grid;
-    grid-template-areas:
-    'top top'
-    'bottom_left bottom_right';
+.profileForm .profileForm_items button:first-child {
+    margin-right: 20px;
 }
 
-#address_grid > #address {
-    width: 100%;
-    grid-area: top;
-}
-
-#address_grid > #ward {
-    grid-area: bottom_left;
-}
-
-#address_grid > #district {
-    grid-area: bottom_right;
+.profileForm .profileForm_items button:hover {
+    background-color: #665230;
 }
 
 @media only screen and (min-width: 1201px) and (max-width: 1439px) {
