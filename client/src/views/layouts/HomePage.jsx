@@ -9,6 +9,7 @@ import ScrollTopButton from "../../components/ScrollTopButton";
 import PageNotFound from "../errors/PageNotFound";
 import LandingPage from "./LandingPage/LandingPage";
 import MenuPage from "./MenuPage/MenuPage";
+import UserProfile from "./UserProfile/UserProfile";
 
 function HomePage() {
     const history = useHistory();
@@ -75,7 +76,7 @@ function HomePage() {
 
                 <Layout className="container">
                     <Switch>
-                        <Route exact path="/profile" />
+                        <Route exact path="/profile" component={UserProfile}/>
                         <Route exact path="/menu" component={MenuPage} />
                         <Route exact path="/cart" />
                         <Route exact path="/wishlist" />
