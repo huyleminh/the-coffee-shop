@@ -2,7 +2,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Radio, Space } from "antd";
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "../../../assets/css/layouts/menu/MenuPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
@@ -31,6 +31,9 @@ function MenuPage(props) {
 
     // Pagination
     const [paginationState, setPaginationState] = useState({ page: 1, limit: 9, total: 0 });
+
+    //Sort
+    const [sortBy, setSortBy] = useState("");
 
     const [filters, setFilters] = useState(() => {
         const initialState = { page: 1, limit: 9, filter: "", search: "" };
@@ -79,14 +82,43 @@ function MenuPage(props) {
     };
 
     // Handle search term changes
+    const typingTimeoutRef = useRef(null);
+    const onSubmit = props;
+
     const handleSearchTerm = (e) => {
-        const target = e.target;
-        console.log(target.value);
+        if (!onSubmit) return;
+
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+            const target = e.target;
+            console.log(target.value);
+
+            history.push({
+                path: location.pathname,
+                search: queryString.stringify({ search: target.value.trim() }),
+            });
+
+            setFilters({
+                ...filters,
+                search: target.value.trim(),
+                page: 1,
+                limit: 9,
+            });
+
+            setIsLoading(true);
+        }, 1000);
 
         // Huong dan
         // người dùng sẽ nhập tên sản phẩm vào để search
         // chỉ cần lấy value ra, set lên chỗ setFilter (set cho đúng search) là được, setIsLoading(false) luôn
         // lưu ý kĩ thuật debounce trước khi code, xem video trong discord mới gửi có 1 bài về search để biết thêm
+    };
+
+    const handleSortBy = (e) => {
+        console.log(products);
     };
 
     useEffect(() => {
@@ -188,7 +220,7 @@ function MenuPage(props) {
 
                     <div className="menu__group sort">
                         <h1>Sort by</h1>
-                        <Radio.Group onChange={handleChangeFilter}>
+                        <Radio.Group value={sortBy} onChange={handleChangeFilter}>
                             <Space direction="vertical">
                                 <Radio value="popularity">Popularity</Radio>
                                 <Radio value="price-asc">Price: Low to high</Radio>
