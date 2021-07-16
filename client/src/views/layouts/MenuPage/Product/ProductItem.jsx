@@ -8,52 +8,25 @@ import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
 
 ProductItem.propTypes = {
-    product: PropTypes.shape({
+    details: PropTypes.shape({
         id: PropTypes.string,
         name: PropTypes.string,
-        image: PropTypes.string || null,
-        price: PropTypes.number,
-        description: PropTypes.string || null,
+        image: PropTypes.string,
+        description: PropTypes.string,
+        categoryName: PropTypes.string,
+        rate: PropTypes.number,
+        discount: PropTypes.number || null,
+        oldPrice: PropTypes.number,
+        newPrice: PropTypes.number,
     }),
-    categoryName: PropTypes.string,
-    rating: PropTypes.shape({
-        totalStar: PropTypes.number,
-        totalRating: PropTypes.number,
-    }),
-    discount:
-        PropTypes.shape({
-            percent: PropTypes.number,
-            startDate: PropTypes.string,
-            endDate: PropTypes.string,
-        }) || null,
 };
 
 function ProductItem(props) {
-    const { product, categoryName, rating, discount } = props;
+    const { details } = props;
     const [isModalVisible, setIsModelVisible] = useState(false);
 
     //Initialize card before rendering
-    const [card, setCard] = useState(() => {
-        const productCard = {
-            id: product.id,
-            name: product.name,
-            image: "",
-            description: product.description,
-            categoryName: categoryName,
-            rate: 0,
-            discount: discount ? discount.percent : null,
-            oldPrice: product.price,
-            newPrice: product.price,
-        };
-
-        productCard.rate =
-            rating.totalRating !== 0
-                ? parseInt((rating.totalStar / rating.totalRating).toFixed(1))
-                : 0;
-        productCard.newPrice = discount ? product.price * (1 - discount.percent) : product.price;
-
-        return productCard;
-    });
+    const [card, setCard] = useState(details);
 
     const handleAddToCart = () => {
         alert("Item added.");
@@ -69,7 +42,7 @@ function ProductItem(props) {
 
     useEffect(() => {
         const getProductImage = async () => {
-            const ref = Storage.ref(`products/${product.image}`);
+            const ref = Storage.ref(`products/${card.image}`);
             let image = null;
             try {
                 const url = await ref.getDownloadURL();

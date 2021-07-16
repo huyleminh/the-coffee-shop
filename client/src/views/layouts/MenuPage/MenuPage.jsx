@@ -1,8 +1,6 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Layout, Radio, Space } from "antd";
+import { Layout } from "antd";
 import queryString from "query-string";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "../../../assets/css/layouts/menu/MenuPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
@@ -10,7 +8,8 @@ import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
 import CustomPagination from "../../../components/navigation/CustomPagination";
 import ProductAPI from "../../../services/Product/ProductAPI";
-import ProductItem from "./Product/ProductItem";
+import ProductsList from "./Product/ProductsList";
+import SidebarFilter from "./SidebarFilter/SidebarFilter";
 
 const { Content } = Layout;
 
@@ -33,7 +32,11 @@ function MenuPage(props) {
     const [paginationState, setPaginationState] = useState({ page: 1, limit: 9, total: 0 });
 
     //Sort
-    const [sortBy, setSortBy] = useState("");
+    const [sortBy, setSortBy] = useState(() => {
+        const params = queryString.parse(location.search);
+        if (params.order) return params.order;
+        else return "default";
+    });
 
     const [filters, setFilters] = useState(() => {
         const initialState = { page: 1, limit: 9, filter: "", search: "" };
@@ -49,25 +52,22 @@ function MenuPage(props) {
         return initialState;
     });
 
-    const toggleFilterBar = () => {
-        if (isFilterVisible) setIsFilterVisible(false);
-        else setIsFilterVisible(true);
-    };
-
-    const activeClassname = isFilterVisible ? "active" : null;
-
     // Filter by category
-    const handleChangeFilter = (e) => {
-        const target = e.target;
+    const handleChangeFilter = (newFilter) => {
+        const params = { ...filters, filter: newFilter, order: sortBy };
+        delete params["page"];
+        delete params["limit"];
+        delete params["search"];
+
         //Change url params
         history.push({
             path: location.pathname,
-            search: queryString.stringify({ filter: target.value }),
+            search: queryString.stringify(params),
         });
         // Rerender
         setFilters({
             ...filters,
-            filter: target.value,
+            filter: newFilter,
             page: 1,
             limit: 9,
         });
@@ -82,57 +82,47 @@ function MenuPage(props) {
     };
 
     // Handle search term changes
-    const typingTimeoutRef = useRef(null);
-    const onSubmit = props;
+    const handleSearchTerm = (searchTerm) => {
+        const params = { ...filters, order: sortBy, search: searchTerm };
+        delete params["page"];
+        delete params["limit"];
+        delete params["filter"];
 
-    const handleSearchTerm = (e) => {
-        if (!onSubmit) return;
-
-        if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-        }
-
-        typingTimeoutRef.current = setTimeout(() => {
-            const target = e.target;
-            console.log(target.value);
-
-            history.push({
-                path: location.pathname,
-                search: queryString.stringify({ search: target.value.trim() }),
-            });
-
-            setFilters({
-                ...filters,
-                search: target.value.trim(),
-                page: 1,
-                limit: 9,
-            });
-
-            setIsLoading(true);
-        }, 1000);
-
-        // Huong dan
-        // người dùng sẽ nhập tên sản phẩm vào để search
-        // chỉ cần lấy value ra, set lên chỗ setFilter (set cho đúng search) là được, setIsLoading(false) luôn
-        // lưu ý kĩ thuật debounce trước khi code, xem video trong discord mới gửi có 1 bài về search để biết thêm
+        history.push({
+            path: location.pathname,
+            search: queryString.stringify(params),
+        });
+        setFilters({
+            ...filters,
+            search: searchTerm,
+            filter: "",
+            page: 1,
+            limit: 9,
+        });
+        setIsLoading(true);
     };
 
-    const handleSortBy = (e) => {
-        console.log(products);
+    const handleSortBy = (newSort) => {
+        const params = { ...filters, order: newSort };
+        delete params["page"];
+        delete params["limit"];
+        Object.keys(params).forEach((key) => !params[key] && delete params[key]);
+
+        history.push({
+            path: location.pathname,
+            search: queryString.stringify(params),
+        });
+
+        setSortBy(params.order);
     };
 
     useEffect(() => {
-        //Scroll to list
         document.querySelector(".menu").scrollIntoView({ behavior: "smooth", block: "start" });
 
-        // Fetch products from db
         const fetchProducts = async () => {
-            const { page, limit, filter, search } = filters;
-
-            const params = { page, limit };
-
-            if (filter) params.filter = filter;
-            else if (search) params.search = search;
+            const params = { ...filters };
+            Object.keys(params).forEach((key) => !params[key] && delete params[key]);
+            if (params.filter === "Default") delete params["filter"];
 
             try {
                 const categoriesRes = await ProductAPI.getCategories();
@@ -146,7 +136,14 @@ function MenuPage(props) {
                     setTotalProducts(products);
                     setPaginationState(pagination);
 
-                    setCategories(categoriesRes.data);
+                    const newCaterogies = [
+                        {
+                            id: "default",
+                            name: "Default",
+                        },
+                        ...categoriesRes.data,
+                    ];
+                    setCategories(newCaterogies);
                     setIsLoading(false);
                 } else if (response.status === 404) {
                     alert("Products not found!");
@@ -161,90 +158,29 @@ function MenuPage(props) {
         fetchProducts();
     }, [filters]);
 
-    const productsList = totalProducts.map((item) => (
-        <ProductItem
-            product={item.product}
-            categoryName={item.categoryName}
-            rating={item.rating}
-            discount={item.discount}
-            key={item.product.id}
-        />
-    ));
-
-    const categoriesList = categories.map((item) => (
-        <Radio value={item.name} key={item.id}>
-            {item.name}
-        </Radio>
-    ));
-
+    const activeClassname = isFilterVisible ? "active" : null;
     return (
         <Content>
             <Hero title="Menu" sologan="Add your favourite drink to cart" image={MenuImage} />
 
             <div className="wrapper menu">
-                <div className={`menu__filter ${activeClassname}`}>
-                    <FontAwesomeIcon icon={faTimes} id="exit" onClick={toggleFilterBar} />
-                    <div className="menu__group search">
-                        <label htmlFor="search"></label>
-                        <input
-                            type="text"
-                            name="search"
-                            id="search"
-                            placeholder="Search by name"
-                            onChange={handleSearchTerm}
-                        />
-                    </div>
-
-                    <div className="menu__group filter">
-                        <h1>Categories</h1>
-                        <Radio.Group onChange={handleChangeFilter} value={filters.filter}>
-                            <Space direction="vertical">
-                                {isLoading ? (
-                                    <Loading
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                        size="small"
-                                        tip=""
-                                    />
-                                ) : (
-                                    categoriesList.map((item) => item)
-                                )}
-                            </Space>
-                        </Radio.Group>
-                    </div>
-
-                    <div className="menu__group sort">
-                        <h1>Sort by</h1>
-                        <Radio.Group value={sortBy} onChange={handleChangeFilter}>
-                            <Space direction="vertical">
-                                <Radio value="popularity">Popularity</Radio>
-                                <Radio value="price-asc">Price: Low to high</Radio>
-                                <Radio value="price-desc">Price: High to Low</Radio>
-                                <Radio value="alphabet-asc">A-Z</Radio>
-                                <Radio value="alphabet-desc">Z-A</Radio>
-                            </Space>
-                        </Radio.Group>
-                    </div>
-                </div>
-
-                {isFilterVisible ? (
-                    <div
-                        className="menu-overlay"
-                        onClick={() => {
-                            isFilterVisible && setIsFilterVisible(false);
-                        }}
-                    ></div>
-                ) : null}
-
+                <SidebarFilter
+                    isLoading={isLoading}
+                    isFilterVisible={isFilterVisible}
+                    filter={filters.filter}
+                    sort={sortBy}
+                    categoriesList={categories}
+                    handleSearchTerm={handleSearchTerm}
+                    handleChangeFilter={handleChangeFilter}
+                    handleSortBy={handleSortBy}
+                    setFilterVisible={setIsFilterVisible}
+                />
                 <div className="menu__products">
                     <div
                         className={`menu__filter-bar ${activeClassname}`}
-                        onClick={toggleFilterBar}
+                        onClick={() => {
+                            setIsFilterVisible(true);
+                        }}
                     >
                         <span>Filter</span>
                     </div>
@@ -259,8 +195,11 @@ function MenuPage(props) {
                             }}
                         />
                     ) : (
-                        <div className="products">{productsList.map((item) => item)}</div>
+                        <div className="products">
+                            <ProductsList products={totalProducts} filter={sortBy} />
+                        </div>
                     )}
+
                     <CustomPagination
                         page={paginationState.page}
                         total={paginationState.total}
