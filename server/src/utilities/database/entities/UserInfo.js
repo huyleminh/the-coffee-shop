@@ -2,7 +2,15 @@ import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 
 class UserInfo {
-    constructor(id, fullname, address, phoneNumber, gender, updatedAt, createdAt) {
+    constructor(
+        id,
+        fullname,
+        address,
+        phoneNumber,
+        gender,
+        updatedAt,
+        createdAt
+    ) {
         this.id = id;
         this.fullname = fullname;
         this.address = address;
@@ -33,7 +41,7 @@ class UserInfo {
     };
 
     insert() {
-        const values = Object.values(this)
+        const values = Object.values(this);
 
         return new Promise((resolve, reject) => {
             // (id, fullname, address, phoneNumber, gender, updatedAt, createdAt)
@@ -41,14 +49,13 @@ class UserInfo {
             VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    resolve();
+                if (error) {
+                    reject(error);
+                    return;
                 }
-            );
+
+                resolve();
+            });
         });
     }
 
@@ -60,8 +67,8 @@ class UserInfo {
             Object.defineProperty(clone, key, {
                 value: origin[key],
                 writable: true,
-                enumerable: true
-            })
+                enumerable: true,
+            });
         }
 
         return clone;
@@ -97,7 +104,7 @@ class UserInfo {
                 }
             });
         });
-    }
+    };
 
     static getAllByAttribute = (name, value) => {
         return new Promise((resolve, reject) => {
@@ -113,12 +120,14 @@ class UserInfo {
                     reject(new Error("Error: 'rows' is undefined"));
                     return;
                 } else {
-                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(
+                        rows
+                    );
                     resolve(userInfoList);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static getAllByAttributes = (keys, values) => {
         return new Promise((resolve, reject) => {
@@ -135,12 +144,14 @@ class UserInfo {
                     reject(new Error("Error: 'rows' is undefined"));
                     return;
                 } else {
-                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(
+                        rows
+                    );
                     resolve(userInfoList);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static getAllByUsernameAndPhoneNumber = (username, phoneNumber) => {
         return new Promise((resolve, reject) => {
@@ -150,7 +161,10 @@ class UserInfo {
             ON login.id = info.id
             WHERE login.username = ? OR info.phoneNumber = ?`;
 
-            DatabaseConnection.query(sql, [username, phoneNumber], (error, rows) => {
+            DatabaseConnection.query(
+                sql,
+                [username, phoneNumber],
+                (error, rows) => {
                     if (error) {
                         reject(error);
                         return;
@@ -159,13 +173,15 @@ class UserInfo {
                     if (rows === undefined) {
                         reject(new Error("Error: 'rows' is undefined"));
                     } else {
-                        const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                        const userInfoList = UserInfo.toArrayFromDatabaseObject(
+                            rows
+                        );
                         resolve(userInfoList);
                     }
                 }
             );
         });
-    }
+    };
 
     static getAll = () => {
         return new Promise((resolve, reject) => {
@@ -180,18 +196,19 @@ class UserInfo {
                 if (rows === undefined) {
                     reject(new Error("Error: 'rows' is undefined"));
                 } else {
-                    const userInfoList = UserInfo.toArrayFromDatabaseObject(rows);
+                    const userInfoList = UserInfo.toArrayFromDatabaseObject(
+                        rows
+                    );
                     resolve(userInfoList);
                 }
             });
         });
-    }
+    };
 
     update(keys, values) {
-        const id = this.id
+        const id = this.id;
 
-        for (let i = 0; i < keys.length; i++)
-            this[keys[i]] = values[i];
+        for (let i = 0; i < keys.length; i++) this[keys[i]] = values[i];
 
         return new Promise((resolve, reject) => {
             const setStatement = keys.join("=?,") + "=?";
@@ -206,11 +223,11 @@ class UserInfo {
                 }
 
                 resolve();
-            })
-        })
+            });
+        });
     }
 
-    static updateByAttributes = (id, keys, values) => {
+    static updateAttributes = (id, keys, values) => {
         return new Promise((resolve, reject) => {
             const setStatement = keys.join("=?,") + "=?";
             const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.user_info
@@ -224,9 +241,9 @@ class UserInfo {
                 }
 
                 resolve();
-            })
-        })
-    }
+            });
+        });
+    };
 }
 
 export default UserInfo;
