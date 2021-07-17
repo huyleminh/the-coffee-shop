@@ -87,12 +87,12 @@ function ProductItem(props) {
                         {card.discount ? (
                             <>
                                 <li style={{ textDecoration: "line-through" }}>
-                                    {card.oldPrice}&nbsp;vnd
+                                    {card.oldPrice}&nbsp;VND
                                 </li>
-                                <li style={{ color: "#f72f2f" }}>{card.newPrice}&nbsp;vnd</li>
+                                <li style={{ color: "#f72f2f" }}>{card.newPrice}&nbsp;VND</li>
                             </>
                         ) : (
-                            <li>{card.oldPrice}&nbsp;vnd</li>
+                            <li>{card.oldPrice}&nbsp;VND</li>
                         )}
                     </ul>
                 </div>

@@ -16,10 +16,10 @@ class UserController {
             status: 200,
             data: {
                 userInfo: userInfo.cloneExceptAttributes(["id"]),
-                userLogin: userLogin.cloneExceptAttributes(["id"])
-            }
+                userLogin: userLogin.cloneExceptAttributes(["id", "password"]),
+            },
         });
-    }
+    };
 
     static editProfile = async (req, res) => {
         // this object has {id, username, role}, but we only need id.
@@ -32,7 +32,7 @@ class UserController {
             return;
         }
 
-        const phoneNumber = dataFromRequest["phoneNumber"]
+        const phoneNumber = dataFromRequest["phoneNumber"];
         if (phoneNumber !== undefined) {
             const [user] = await UserInfo.getAllByAttribute("phoneNumber", phoneNumber);
             if (user !== undefined && user.id !== userNeedEdit.id) {
@@ -47,10 +47,12 @@ class UserController {
             delete dataFromRequest["password"];
         }
 
-        const updateUserInfo = await userNeedEdit.update(
-            Object.keys(dataFromRequest),
-            Object.values(dataFromRequest)
-        )
+        if (Object.keys(dataFromRequest).length !== 0) {
+            const updateUserInfo = await userNeedEdit.update(
+                Object.keys(dataFromRequest),
+                Object.values(dataFromRequest)
+            );
+        }
         res.send({ status: 204 });
     };
 }

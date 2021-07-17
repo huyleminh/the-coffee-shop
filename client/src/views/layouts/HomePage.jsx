@@ -5,6 +5,7 @@ import "../../assets/css/layouts/HomePage.css";
 import Footer from "../../components/layouts/Footer";
 import Header from "../../components/layouts/Header";
 import Loading from "../../components/Loading";
+import PrivateRoute from "../../components/routes/PrivateRoute";
 import ScrollTopButton from "../../components/ScrollTopButton";
 import PageNotFound from "../errors/PageNotFound";
 import LandingPage from "./LandingPage/LandingPage";
@@ -17,7 +18,7 @@ function HomePage() {
     const [userStatus, setUserStatus] = useState({ isLogin: false, role: 3 });
 
     const clearLocal = () => {
-        localStorage.removeItem("user");
+        localStorage.clear();
     };
 
     const handleLogout = () => {
@@ -39,6 +40,7 @@ function HomePage() {
                     if (new Date().valueOf() > expiredIn) {
                         alert("Your session has expired.");
                         history.push("/login");
+                        return;
                     } else {
                         setUserStatus({ isLogin: true, role: role });
                     }
@@ -76,7 +78,7 @@ function HomePage() {
 
                 <Layout className="container">
                     <Switch>
-                        <Route exact path="/profile" component={UserProfile}/>
+                        <PrivateRoute exact path="/profile" component={UserProfile} />
                         <Route exact path="/menu" component={MenuPage} />
                         <Route exact path="/cart" />
                         <Route exact path="/wishlist" />

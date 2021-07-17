@@ -36,7 +36,10 @@ function SidebarFilter(props) {
 
     const handleSubmitSearchTerm = (e) => {
         const target = e.target;
-        if (!target.value || target.value.match(/^(\s)+$/g)) return;
+        if (!target.value || target.value.match(/^(\s)+$/g)) {
+            setSearchTerm("");
+            return;
+        }
         if (!handleSearchTerm) return;
         if (typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);
@@ -92,7 +95,7 @@ function SidebarFilter(props) {
 
                 <div className="menu__group filter">
                     <h1>Categories</h1>
-                    <Radio.Group onChange={handleFilter} defaultValue="" value={filter}>
+                    <Radio.Group onChange={handleFilter} value={filter}>
                         <Space direction="vertical">
                             {isLoading ? (
                                 <Loading

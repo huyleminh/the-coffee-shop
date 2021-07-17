@@ -22,7 +22,7 @@ function Forbidden() {
                 backgroundSize: "cover",
             }}
         >
-            <div class="returnButtonContainer">
+            <div className="returnButtonContainer">
                 <div className="returnButtonDivFobidden">
                     <button className="returnButton" onClick={goHome}>
                         Go home

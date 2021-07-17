@@ -19,10 +19,7 @@ const generateUserId = (userIdList) => {
 class AuthController {
     static postLogin = async (req, res) => {
         const { username, password } = req.body;
-        const [userLoginFromDB] = await UserLogin.getAllByAttribute(
-            "username",
-            username
-        );
+        const [userLoginFromDB] = await UserLogin.getAllByAttribute("username", username);
 
         if (userLoginFromDB === undefined) {
             // username is not exists.
@@ -59,7 +56,7 @@ class AuthController {
         } else {
             jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
                 if (err) res.send({ status: 403 });
-                res.send({ status: 200 });
+                res.send({ status: 200, data: { role: data.role } });
             });
         }
     };
@@ -72,7 +69,7 @@ class AuthController {
         );
 
         //Handle missing address key in signup request
-        userInfoRequest.address = ""
+        userInfoRequest.address = "";
 
         if (userInfoFromDB.length !== 0) {
             res.send({ status: 409 });

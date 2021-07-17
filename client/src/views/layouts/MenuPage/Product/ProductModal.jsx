@@ -88,11 +88,11 @@ function ProductModal(props) {
                                         marginLeft: "auto",
                                     }}
                                 >
-                                    {details.oldPrice}&nbsp;vnd
+                                    {details.oldPrice}&nbsp;VND
                                 </span>
                             ) : (
                                 <span style={{ marginLeft: "auto" }}>
-                                    {details.oldPrice}&nbsp;vnd
+                                    {details.oldPrice}&nbsp;VND
                                 </span>
                             )}
                         </div>
@@ -105,7 +105,7 @@ function ProductModal(props) {
                                 <>
                                     <span id="discount">{details.discount}%</span>
                                     <span style={{ color: "#f72f2f" }}>
-                                        {details.newPrice}&nbsp;vnd
+                                        {details.newPrice}&nbsp;VND
                                     </span>
                                 </>
                             ) : null}
