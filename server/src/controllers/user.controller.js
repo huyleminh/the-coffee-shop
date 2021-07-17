@@ -10,10 +10,10 @@ class UserController {
             status: 200,
             data: {
                 userInfo: userInfo.cloneExceptAttributes(["id"]),
-                userLogin: userLogin.cloneExceptAttributes(["id", "password"])
-            }
+                userLogin: userLogin.cloneExceptAttributes(["id", "password"]),
+            },
         });
-    }
+    };
 
     static editProfile = async (req, res) => {
         const userInfo = res.locals.userInfo
@@ -30,7 +30,6 @@ class UserController {
             }
             hasEditPassword = true
         }
-
 
         const phoneNumber = payload["phoneNumber"]
         if (phoneNumber !== undefined) {
@@ -58,6 +57,12 @@ class UserController {
             )
         }
 
+        if (Object.keys(dataFromRequest).length !== 0) {
+            const updateUserInfo = await userNeedEdit.update(
+                Object.keys(dataFromRequest),
+                Object.values(dataFromRequest)
+            );
+        }
         res.send({ status: 204 });
     };
 }

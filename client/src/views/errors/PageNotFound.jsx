@@ -30,7 +30,7 @@ function NotFound() {
                 backgroundSize: "cover",
             }}
         >
-            <div class="returnButtonContainer">
+            <div className="returnButtonContainer">
                 <div className="returnButtonDiv">
                     <button className="returnButton" onClick={goHome}>
                         Go home

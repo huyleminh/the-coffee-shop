@@ -302,11 +302,17 @@
     .profile__sidebar {
         width: var(--filter-sider-default) - 50px;
     }
+    .profile__manipulation {
+        margin: 0px 0px 0px 250px;
+    }
 }
 
 @media only screen and (min-width: 1440px) and (max-width: 1599px) {
     .profile__sidebar {
         width: var(--filter-sider-default) - 50px;
+    }
+    .profile__manipulation {
+        margin: 0px 0px 0px 250px;
     }
 }
 

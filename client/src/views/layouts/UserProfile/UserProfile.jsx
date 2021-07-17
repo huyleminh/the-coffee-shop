@@ -1,36 +1,96 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Layout, Radio, Space } from "antd";
-import React, { useState } from "react";
+import { Layout } from "antd";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/profile/UserProfile.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import defaultAvatar from "../../../assets/images/store-logo.png";
 import Hero from "../../../components/layouts/Hero";
+import Loading from "../../../components/Loading";
+import UserAPI from "../../../services/User/UserAPI";
+import UserProfileForm from "./UserProfileForm";
+import UserSecurityForm from "./UserSecurityForm";
 
 const { Content } = Layout;
 
 function UserProfile() {
+    const history = useHistory();
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-    const [isDisabled, setDisabled] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [profile, setProfile] = useState({
+        address: "",
+        city: "",
+        createdAt: "",
+        district: "",
+        fullname: "",
+        gender: "",
+        infoUpdated: "",
+        passwordUpdated: "",
+        phoneNumber: "",
+        role: 3,
+        username: "username",
+        ward: "",
+    });
+
     const toggleSidebar = () => {
-        console.log("clicked");
         if (isSidebarVisible) setIsSidebarVisible(false);
         else setIsSidebarVisible(true);
     };
 
-    const toggleEdit = () => {
-        console.log("clicked");
-        setDisabled(false);
-    };
+    useEffect(() => {
+        document.querySelector(".profile__sidebar").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+        const fetchUserProfile = async () => {
+            try {
+                const token = JSON.parse(localStorage.getItem("user")).token;
+                const response = await UserAPI.getUserProfile(token);
+                if (response.status === 200) {
+                    const resProfile = {
+                        ...response.data.userInfo,
+                        infoUpdated: response.data.userInfo.updatedAt,
+                        ...response.data.userLogin,
+                        passwordUpdated: response.data.userLogin.updatedAt,
+                    };
+                    delete resProfile["updatedAt"];
 
-    const handleSave = () => {
-        console.log("clicked");
-    };
+                    if (!resProfile.address) {
+                        resProfile.address = "";
+                        resProfile.ward = "";
+                        resProfile.district = "";
+                        resProfile.city = "";
+                    } else {
+                        const splited = resProfile.address.split("&&");
+                        resProfile.address = splited[0] === "undefined" ? "" : splited[0];
+                        resProfile.ward = splited[1] === "undefined" ? "" : splited[1];
+                        resProfile.district = splited[2] === "undefined" ? "" : splited[2];
+                        resProfile.city = splited[3] === "undefined" ? "" : splited[3];
+                    }
 
-    const handleCancel = () => {
-        console.log("clicked");
-        setDisabled(true);
-    };
+                    resProfile.gender = resProfile.gender === 0 ? "male" : "female";
+                    localStorage.setItem("profile", JSON.stringify(resProfile));
+
+                    setProfile(resProfile);
+                    setIsLoading(false);
+                } else if (response.status === 404) {
+                    alert(response.message);
+                    history.push("/404");
+                } else if (response.status === 403) {
+                    alert("You are not allowed.");
+                    history.push("/403");
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong.");
+                history.push("/403");
+            }
+        };
+
+        fetchUserProfile();
+        // eslint-disable-next-line
+    }, []);
 
     const activeClassname = isSidebarVisible ? "active" : null;
 
@@ -41,7 +101,7 @@ function UserProfile() {
                 <div className={`profile__sidebar ${activeClassname}`}>
                     <FontAwesomeIcon icon={faTimes} id="exit" onClick={toggleSidebar} />
                     <img src={defaultAvatar} alt="defaultAvatar" className="avatar"></img>
-                    <h1 className="username">Username</h1>
+                    <h1 className="username">{profile.username}</h1>
                     <ul className="nav__sidebar">
                         <li>
                             <a href="/profile">Profile</a>
@@ -66,73 +126,25 @@ function UserProfile() {
 
                 <div className="profile__manipulation">
                     <div className={`profile__bar ${activeClassname}`} onClick={toggleSidebar}>
-                        <span></span>
+                        <span>Profile sidebar</span>
                     </div>
 
-                    <div className="myProfile">
-                        <h1>MY PROFILE</h1>
-                        <button className="" onClick={toggleEdit}>
-                            Edit
-                        </button>
-                    </div>
-
-                    <div className="profileForm">
-                        <div className="profileForm_items">
-                            <label>Full name</label>
-                            <input type="text" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items">
-                            <label>Phone</label>
-                            <input type="text" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items">
-                            <label id="address_label">Address</label>
-                            <div id="address_grid">
-                                <input type="text" id="address" disabled={isDisabled}/>
-                                <input type="text" id="ward" disabled={isDisabled}/>
-                                <input type="text" id="district" disabled={isDisabled}/>
-                            </div>
-                        </div>
-                        <div className="profileForm_items">
-                            <label>City</label>
-                            <input type="text" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items">
-                            <label>Gender</label>
-                            <Radio.Group>
-                                <Space direction="horizontal">
-                                    <Radio value="male" disabled={isDisabled}>Male</Radio>
-                                    <Radio value="female" disabled={isDisabled}>Female</Radio>
-                                </Space>
-                            </Radio.Group>
-                        </div>
-                        <div className="profileForm_items btn-group">
-                            <button onClick={handleSave}> Save</button>
-                            <button onClick={handleCancel}>Cancel</button>
-                        </div>
-                    </div>
-
-                    <div className="myProfile">
-                        <h1>SECURITY</h1>
-                    </div>
-                    <div className="profileForm">
-                        <div className="profileForm_items">
-                            <label>Current Password</label>
-                            <input type="text" placeholder="****************" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items">
-                            <label>New Password</label>
-                            <input type="text" placeholder="Enter New Password" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items">
-                            <label>Confirm Password</label>
-                            <input type="text" placeholder="Confirm New Password" disabled={isDisabled}/>
-                        </div>
-                        <div className="profileForm_items btn-group">
-                            <button onClick={handleSave}> Save</button>
-                            <button onClick={handleCancel}>Cancel</button>
-                        </div>
-                    </div>
+                    {isLoading ? (
+                        <Loading
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        />
+                    ) : (
+                        <>
+                            <UserProfileForm profile={profile} />
+                            <UserSecurityForm />
+                        </>
+                    )}
                 </div>
             </div>
         </Content>

@@ -11,6 +11,7 @@ import LoginWorkflow from "../../workflow/LoginWorkflow";
 function Login() {
     (() => {
         localStorage.removeItem("user");
+        localStorage.removeItem("profile");
     })();
 
     const history = useHistory();

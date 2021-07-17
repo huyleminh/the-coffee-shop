@@ -39,7 +39,7 @@ function MenuPage(props) {
     });
 
     const [filters, setFilters] = useState(() => {
-        const initialState = { page: 1, limit: 9, filter: "", search: "" };
+        const initialState = { page: 1, limit: 9, filter: "All", search: "" };
 
         const params = queryString.parse(location.search);
         if (params.filter) {
@@ -47,7 +47,6 @@ function MenuPage(props) {
             initialState.search = "";
         } else if (params.search) {
             initialState.search = params.search;
-            initialState.filter = "";
         }
         return initialState;
     });
@@ -122,7 +121,7 @@ function MenuPage(props) {
         const fetchProducts = async () => {
             const params = { ...filters };
             Object.keys(params).forEach((key) => !params[key] && delete params[key]);
-            if (params.filter === "Default") delete params["filter"];
+            if (params.filter === "All") delete params["filter"];
 
             try {
                 const categoriesRes = await ProductAPI.getCategories();
@@ -138,8 +137,8 @@ function MenuPage(props) {
 
                     const newCaterogies = [
                         {
-                            id: "default",
-                            name: "Default",
+                            id: "All",
+                            name: "All",
                         },
                         ...categoriesRes.data,
                     ];
