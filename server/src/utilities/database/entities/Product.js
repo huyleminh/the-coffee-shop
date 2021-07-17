@@ -2,15 +2,9 @@ import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 import DatabaseConnection from "../DatabaseConnection.js";
 
 class Product {
-    constructor(id, name, image, price, description, discountId, updatedAt, createdAt) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.price = price;
-        this.description = description;
-        this.discountId = discountId;
-        this.updatedAt = updatedAt;
-        this.createdAt = createdAt;
+    constructor(productId, userId) {
+        this.id = productId;
+        this.name = userId;
     }
 
     // rows: [RowDataPacket{}].
@@ -21,16 +15,7 @@ class Product {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new Product(
-                row.id,
-                row.name,
-                row.image,
-                row.price,
-                row.description,
-                row.discountId,
-                row.updatedAt,
-                row.createdAt
-            );
+            return new Product(row.productId, row.userId);
         });
     };
 
@@ -46,24 +31,24 @@ class Product {
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_category pc ON p.id = pc.productId
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.category c ON c.id = pc.categoryId
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_rating pr ON p.id = pr.productId
-            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId;`
+            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId;`;
 
             DatabaseConnection.query(sql, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
@@ -82,20 +67,20 @@ class Product {
 
             DatabaseConnection.query(sql, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static filterProducts = (filterValue) => {
         return new Promise((resolve, reject) => {
@@ -114,20 +99,20 @@ class Product {
 
             DatabaseConnection.query(sql, filterValue, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 }
 
 export default Product;
