@@ -1,0 +1,38 @@
+GET http://localhost:5000/api/products?page=1&limit=9
+Content-Type: application/json
+
+###
+GET http://localhost:5000/api/categories
+Content-Type: application/json
+
+###
+GET http://localhost:5000/api/products?filter=Tea&page=1&limit=9
+Content-Type: application/json
+
+###
+GET http://localhost:5000/api/user/profile/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUyOTIwMSwiZXhwIjoxNjI2NTMxMDAxfQ.uDA86fKcTJAUBxF47QMuTJymBN12n8hAS7-MdhS3WTA
+
+###
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "huytest01",
+    "password": "123456789hh"
+}
+
+###
+PATCH http://localhost:5000/api/user/profile/edit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUyOTIwMSwiZXhwIjoxNjI2NTMxMDAxfQ.uDA86fKcTJAUBxF47QMuTJymBN12n8hAS7-MdhS3WTA
+
+{
+    "password": "123456789huy"
+}
+
+###
+GET http://localhost:5000/api/auth/verify
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUwNzczNSwiZXhwIjoxNjI2NTA5NTM1fQ.BUFk_sl66Iv-xEDRret4y6UQ8L8vuIg3nliMx1kZC2Q
