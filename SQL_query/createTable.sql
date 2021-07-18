@@ -125,19 +125,20 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`ingredient` (
   `name` VARCHAR(50) NULL,
   `quantity` FLOAT NULL,
   `unitOfMeasurement` VARCHAR(20) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
+  CONSTRAINT PK_INGREDIENT PRIMARY KEY (`id`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
+
 -- ------------------------------------------------------
 -- Table `heroku_a51da3167c7e5af`.`product_ingredient`
 -- ------------------------------------------------------
 CREATE TABLE `heroku_a51da3167c7e5af`.`product_ingredient` (
   `productId` VARCHAR(36) NOT NULL,
   `ingredientId` VARCHAR(36) NOT NULL,
-   INDEX `index_product` (`productId` ASC),
-   INDEX `index_ingredien` (`ingredientId` ASC))
+  CONSTRAINT PK_PRODUCT_INGREDIENT PRIMARY KEY (productId, ingredientId)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
@@ -148,10 +149,10 @@ COLLATE = utf8mb4_bin;
 CREATE TABLE `heroku_a51da3167c7e5af`.`cart` (
   `productId` VARCHAR(36) NOT NULL,
   `userId` CHAR(7) NOT NULL,
-  `quantity` INT NULL,
-  PRIMARY KEY (`productId`, `userId`),
-  UNIQUE INDEX `productId_UNIQUE` (`productId` ASC),
-  UNIQUE INDEX `userId_UNIQUE` (`userId` ASC))
+  `quantity` INT NOT NULL,
+  
+  CONSTRAINT PK_CART PRIMARY KEY (`productId`, `userId`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
@@ -162,12 +163,12 @@ COLLATE = utf8mb4_bin;
 CREATE TABLE `heroku_a51da3167c7e5af`.`wishlist` (
   `productId` VARCHAR(36) NOT NULL,
   `userId` CHAR(7) NOT NULL,
-  PRIMARY KEY (`productId`, `userId`),
-  INDEX `productId_INDEX` (`productId` ASC),
-  INDEX `userId_INDEX` (`userId` ASC))
+  CONSTRAINT PK_WISHLIST PRIMARY KEY (`productId`, `userId`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
+
 -- ------------------------------------------------------
 -- Table `heroku_a51da3167c7e5af`.`order`
 -- ------------------------------------------------------
@@ -177,7 +178,9 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`order` (
   `createdAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `status` TINYINT(1) NOT NULL,
   `isPaid` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`id`))
+  `payMethod` TINYINT(1) NOT NULL,
+  CONSTRAINT PK_ORDER PRIMARY KEY (`id`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
@@ -189,14 +192,17 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product_order` (
   `orderId` VARCHAR(36) NOT NULL,
   `quantity` INT NOT NULL,
   `price` FLOAT NOT NULL,
-  PRIMARY KEY (`productId`, `orderId`))
+  CONSTRAINT PK_PRODUCT_ORDER PRIMARY KEY (`productId`, `orderId`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
+
+
 -- ------------------------------------------------------
 -- create FOREIGN KEY
 -- ------------------------------------------------------
--- FK_PRODUCT_CATEGORY-
+-- FK_PRODUCT_CATEGORY
 -- ------------------------------------------------------
 ALTER TABLE `heroku_a51da3167c7e5af`.`product_category`
 ADD CONSTRAINT FK_PRODUCT_CATEGORY_PRODUCT
