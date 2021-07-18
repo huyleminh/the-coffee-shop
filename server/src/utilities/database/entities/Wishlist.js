@@ -1,12 +1,9 @@
 import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 class Wishlist {
-    constructor(id, name, image, discount, price) {
-        this.id = id;
-        this.name = name;
-        this.id = image;
-        this.name = discount;
-        this.id = price;
+    constructor(productId,userId) {
+        this.productId = productId;
+        this.userId = userId;
     }
 
     // rows: [RowDataPacket{}].
@@ -18,11 +15,8 @@ class Wishlist {
 
         return jsonData.map((row) => {
             return new Category(
-                row.id,
-                row.name,
-                row.image,
-                row.discount,
-                row.price
+                row.productId,
+                row.userId
             );
         });
     };
