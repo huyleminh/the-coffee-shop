@@ -18,7 +18,8 @@ function HomePage() {
     const [userStatus, setUserStatus] = useState({ isLogin: false, role: 3 });
 
     const clearLocal = () => {
-        localStorage.clear();
+        localStorage.removeItem("user");
+        localStorage.removeItem("profile");
     };
 
     const handleLogout = () => {
@@ -26,6 +27,7 @@ function HomePage() {
         if (!check) return;
         clearLocal();
         setUserStatus({ isLogin: false, role: 3 });
+        history.push("/");
     };
 
     useEffect(() => {
