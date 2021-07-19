@@ -4,6 +4,7 @@ import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
 import productsRouter from "./routes/products.route.js";
 import categoriesRouter from "./routes/categories.route.js";
+import wishlistRouter from "./routes/wishlist.route.js";
 
 dotenv.config();
 
@@ -18,10 +19,7 @@ app.use(function (req, res, next) {
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
-    res.header(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, PATCH, DELETE"
-    )
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
     next();
 });
 
@@ -29,6 +27,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
+app.use("/api/wishlist", wishlistRouter);
 
 app.listen(PORT, () => {
     console.log(

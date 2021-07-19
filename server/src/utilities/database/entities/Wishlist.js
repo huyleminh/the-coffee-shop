@@ -50,7 +50,7 @@ class Wishlist {
             FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist W
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON W.productId=P.id
             LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId=D.id
-            WHERE W.userId='%${userId}%'`;
+            WHERE W.userId='${userId}'`;
 
             DatabaseConnection.query(sql, (error, rows) => {
                 if (error) {
@@ -93,7 +93,7 @@ class Wishlist {
             const sql = `
             DELETE FROM 
             heroku_a51da3167c7e5af.wishlist W
-            WHERE W.productId='%${productId}%'`;
+            WHERE W.productId='${productId}'`;
 
             DatabaseConnection.query(sql, (error) => {
                 if (error) {
