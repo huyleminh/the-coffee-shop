@@ -14,7 +14,7 @@ cartRouter.get(
 cartRouter.post(
     "/add",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     CartController.addProduct
 );
 
