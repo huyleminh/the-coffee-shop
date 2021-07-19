@@ -11,7 +11,8 @@ class Cart {
     static getAll = () => {
         return new Promise((resolve, reject) => {
             const sqlQuery = `SELECT * 
-            FROM ${DatabaseConfig.CONFIG.DATABASE}.cart AS c;`;
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.cart;`;
+		
             DatabaseConnection.query(sqlQuery, (error, result) => {
                 if (error) {
                     reject(error);
@@ -28,18 +29,18 @@ class Cart {
         });
     };
 
-    static GetCartUserId=(userId)=>{
+    static getCartByUserId = (userId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-            SELECT 
-	            P.id, P.image, P.price,
-                p.discountId, D.percent, D.startDate, D.endDate
-            FROM ${DatabaseConfig.CONFIG.DATABASE}.cart C
-            JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON C.productId=P.id
-            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId=D.id
-            WHERE C.userId='${userId}'`;
+				SELECT 
+				P.id, P.image, P.price,
+					p.discountId, D.percent, D.startDate, D.endDate
+				FROM ${DatabaseConfig.CONFIG.DATABASE}.cart C
+				JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON C.productId = P.id
+				LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId = D.id
+				WHERE C.userId = ?`;
            
-            DatabaseConnection.query(sql, (error, rows) => {
+            DatabaseConnection.query(sql, userId, (error, rows) => {
                 if (error) {
                     reject(error);
                     return;
