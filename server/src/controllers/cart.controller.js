@@ -3,9 +3,9 @@ import Cart from "../utilities/database/entities/Cart.js";
 class CartController {
     static getProduct = async (req, res) => {
         const userInfo = res.locals.userInfo;
-        const productrList = await Cart.GetCartUserId(userInfo.id);
+        const productList = await Cart.getCartUserId(userInfo.id);
 
-        const productInCart = productrList.map((product) => {
+        const productInCart = productList.map((product) => {
             let discount = null;
             if (product.discountId !== null) {
                 discount = {
@@ -16,18 +16,16 @@ class CartController {
             }
 
             return {
-                product: {
-                    id: product.id,
-                    name: product.name,
-                    image: product.image,
-                    price: product.price,
-                    description: product.description,
-                    quantity: product.quantity,
-                },
+                id: product.id,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                quantity: product.quantity,
                 discount,
             };
         });
-        res.send({status:200,data:productInCart})
+        
+        res.send({ status: 200 ,data: productInCart })
     };
 
     static addProduct = async (req, res) => {
