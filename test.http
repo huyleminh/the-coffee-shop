@@ -19,8 +19,8 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "username": "huytest01",
-    "password": "123456789hh"
+    "username": "employee01",
+    "password": "1234567e"
 }
 
 ###
@@ -36,3 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 GET http://localhost:5000/api/auth/verify
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUwNzczNSwiZXhwIjoxNjI2NTA5NTM1fQ.BUFk_sl66Iv-xEDRret4y6UQ8L8vuIg3nliMx1kZC2Q
+###
+GET http://localhost:5000/api/cart/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjY2ODAwNjEsImV4cCI6MTYyNjY4MTg2MX0.B900zX4XBeekFUV10RKqwt3IphP2R8Qf8PIxTAUmmnc
