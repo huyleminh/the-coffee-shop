@@ -48,23 +48,6 @@
     font-size: 1.5rem;
     color: #503a24;
 }
-.menu__group .ant-radio-wrapper > span {
-    color: #503a24;
-}
-
-.menu__group .ant-radio-checked .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-wrapper:hover .ant-radio,
-.ant-radio:hover .ant-radio-inner,
-.ant-radio-input:focus + .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-inner::after {
-    background-color: #503a24;
-}
 
 /* Search entry */
 .menu__group.search > label {

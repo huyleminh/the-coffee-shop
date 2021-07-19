@@ -8,6 +8,7 @@ import Loading from "../../components/Loading";
 import PrivateRoute from "../../components/routes/PrivateRoute";
 import ScrollTopButton from "../../components/ScrollTopButton";
 import PageNotFound from "../errors/PageNotFound";
+import CheckoutPage from "./Checkout/CheckoutPage";
 import LandingPage from "./LandingPage/LandingPage";
 import MenuPage from "./MenuPage/MenuPage";
 import UserProfile from "./UserProfile/UserProfile";
@@ -84,6 +85,7 @@ function HomePage() {
                         <Route exact path="/menu" component={MenuPage} />
                         <Route exact path="/cart" />
                         <Route exact path="/wishlist" />
+                        <Route exact path="/checkout" component={CheckoutPage} />
                         <Route exact path="/" component={LandingPage} />
                         <Route>
                             <Redirect to="/404">
