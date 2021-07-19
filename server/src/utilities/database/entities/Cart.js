@@ -8,39 +8,48 @@ class Cart {
         this.quantity = quantity;
     }
 
-    static getAll = () => {
+    static getCartByUserId = (userId) => {
         return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * 
-            FROM ${DatabaseConfig.CONFIG.DATABASE}.cart;`;
-		
-            DatabaseConnection.query(sqlQuery, (error, result) => {
+            const sql = `
+			SELECT
+                p.id, p.name, p.image, p.price,
+                c.quantity,
+				p.discountId, d.percent, d.startDate, d.endDate
+			FROM ${DatabaseConfig.CONFIG.DATABASE}.cart c
+			JOIN ${DatabaseConfig.CONFIG.DATABASE}.product p ON c.productId = p.id
+			LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON p.discountId = d.id
+			WHERE c.userId = ?`;
+
+            DatabaseConnection.query(sql, userId, (error, rows) => {
                 if (error) {
                     reject(error);
                     return;
                 }
 
-                if (result === undefined) {
-                    reject(new Error("Error: 'result' is underfined"));
-                } else {
-                    const cartInfo = Cart.toArrayFromDatabaseObject(result);
-                    resolve(cartInfo);
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"));
+                else {
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
             });
         });
-    };
+    }
 
-    static getCartByUserId = (userId) => {
+    static getProductByUserIdAndProductId = (userId, productId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-				SELECT 
-				P.id, P.image, P.price,
-					p.discountId, D.percent, D.startDate, D.endDate
-				FROM ${DatabaseConfig.CONFIG.DATABASE}.cart C
-				JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON C.productId = P.id
-				LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId = D.id
-				WHERE C.userId = ?`;
-           
-            DatabaseConnection.query(sql, userId, (error, rows) => {
+			SELECT
+                p.id, p.name, p.image, p.price,
+                c.quantity,
+				p.discountId, d.percent, d.startDate, d.endDate
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.cart c
+			JOIN ${DatabaseConfig.CONFIG.DATABASE}.product p ON c.productId = p.id
+			LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON p.discountId = d.id
+			WHERE c.userId = ? AND c.productId = ?`;
+
+            DatabaseConnection.query(sql, [userId, productId], (error, rows) => {
                 if (error) {
                     reject(error);
                     return;
@@ -63,10 +72,7 @@ class Cart {
             INSERT ${DatabaseConfig.CONFIG.DATABASE}.cart (productId, userId, quantity)
             VALUES (?, ?, ?);`;
 
-            DatabaseConnection.query(
-                sql,
-                [productId, userId, quantity],
-                (error) => {
+            DatabaseConnection.query(sql, [productId, userId, quantity], (error) => {
                     if (error) {
                         reject(error);
                         return;
@@ -77,6 +83,22 @@ class Cart {
             );
         });
     };
+
+    static deleteByUserIdAndProductId = (userId, productId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.cart
+            WHERE userId = ? AND productId = ?;`;
+
+            DatabaseConnection.query(sql, [userId, productId], (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            })
+        })
+    }
 }
 
 export default Cart;
