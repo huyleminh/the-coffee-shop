@@ -1,4 +1,5 @@
 import Wishlist from "../utilities/database/entities/Wishlist.js";
+import { validate as uuidValidate } from "uuid";
 class WishlistController {
     static getProductInWishlist = async (req, res) => {
         const userInfo = res.locals.userInfo;
@@ -26,6 +27,20 @@ class WishlistController {
             };
         });
         res.send({ status: 200, data: productInWishlist });
+    };
+
+    static addProductIntoWishlist = async (req, res) => {
+        const userInfo = res.locals.userInfo;
+
+        const ProductInfo = res.locals.payload;
+        console.log(ProductInfo.productId,userInfo.id);
+        // if (uuidValidate(ProductInfo)) {
+        //     const NewWishlist = new Wishlist(ProductInfo, userInfo);
+        //     const insertToDB = await NewWishlist.insert();
+        //     res.send({ status: 200 });
+        // }
+        const insertToDB = await Wishlist.insert(ProductInfo.productId, userInfo.id);
+        res.send({ status: 200 });
     };
 }
 export default WishlistController;

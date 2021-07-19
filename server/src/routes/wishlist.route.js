@@ -10,4 +10,10 @@ wishlistRouter.get(
     AuthorizationMiddleware.verifyInfoInToken,
     WishlistController.getProductInWishlist
 );
+wishlistRouter.post(
+    "/add",
+    AuthorizationMiddleware.verifyToken,
+    AuthorizationMiddleware.verifyInfoInToken,
+    WishlistController.addProductIntoWishlist
+);
 export default wishlistRouter;

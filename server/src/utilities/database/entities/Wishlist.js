@@ -1,7 +1,7 @@
 import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 class Wishlist {
-    constructor(productId,userId) {
+    constructor(productId, userId) {
         this.productId = productId;
         this.userId = userId;
     }
@@ -14,10 +14,7 @@ class Wishlist {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new Category(
-                row.productId,
-                row.userId
-            );
+            return new Category(row.productId, row.userId);
         });
     };
 
@@ -69,15 +66,13 @@ class Wishlist {
         });
     };
 
-    insert() {
-        const values = Object.values(this);
-
+    static insert(productId, userId) {
         return new Promise((resolve, reject) => {
             // (ProductId,UserId)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.wishlist
-            VALUES (?, ?);`;
+            VALUES ('${productId}', '${userId}');`;
 
-            DatabaseConnection.query(sql, values, (error) => {
+            DatabaseConnection.query(sql, (error) => {
                 if (error) {
                     reject(error);
                     return;

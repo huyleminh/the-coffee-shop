@@ -41,3 +41,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 GET http://localhost:5000/api/wishlist/get
 Content-Type: application/json
 Authorization: Bearer 
+
+###
+POST http://localhost:5000/api/wishlist/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY3MTA5NzEsImV4cCI6MTYyNjcxMjc3MX0.U5rlqT1zxruLsfxcXwDa4XMiCcEU-aP5nE5fBEHREOs
+
+{
+    "productId": "5de298df-5a13-4dbd-ad7e-94a8d892aa09"
+}
