@@ -26,9 +26,10 @@
     align-items: flex-start;
 
     border-right: 1px solid #503a242a;
+    border-left: 1px solid #503a242a;
 }
 
-#exit {
+.menu__filter #hide {
     visibility: hidden;
 }
 
@@ -46,23 +47,6 @@
 .menu__group > h1 {
     font-size: 1.5rem;
     color: #503a24;
-}
-.menu__group .ant-radio-wrapper > span {
-    color: #503a24;
-}
-
-.menu__group .ant-radio-checked .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-wrapper:hover .ant-radio,
-.ant-radio:hover .ant-radio-inner,
-.ant-radio-input:focus + .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-inner::after {
-    background-color: #503a24;
 }
 
 /* Search entry */
@@ -218,9 +202,10 @@
         align-items: flex-start;
 
         border-right: 1px solid #503a242a;
+        border-left: 1px solid #503a242a;
     }
 
-    #exit {
+    .menu__filter #hide {
         visibility: visible;
         color: #503a24;
         font-weight: 600;

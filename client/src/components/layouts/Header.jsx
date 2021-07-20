@@ -1,30 +1,44 @@
 import { faBars, faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/css/layouts/Header.css";
+import { HomePageEventsHandler } from "../../Events";
 
 Header.propsType = {
     userStatus: PropTypes.object,
-    state: PropTypes.object,
-    toggleHeaderBar: PropTypes.func,
-    handleLogout: PropTypes.func,
 };
 
 function Header(props) {
-    const { userStatus, state, toggleHeaderBar, handleLogout } = props;
-    const headerClassname = state.isScroll ? "header-scroll" : "header-static";
-    const visibleClassname = state.isVisible ? "visible" : "";
+    const { userStatus } = props;
+    const [isScroll, setIsScroll] = useState(false);
+    const [isBar, setIsBar] = useState(false);
 
     const handleBarClick = () => {
-        if (!toggleHeaderBar) return;
-        toggleHeaderBar();
+        const prev = isBar;
+        setIsBar(!prev)
     };
 
     const handleLogoutClick = () => {
-        if (!handleLogout) return;
-        handleLogout();
+        HomePageEventsHandler.trigger("logout");
     };
+
+    useEffect(() => {
+        const scrollHeader = () => {
+            const scrollY = window.scrollY;
+            if (scrollY > 0) {
+                setIsScroll(true);
+            } else setIsScroll(false);
+        };
+
+        window.addEventListener("scroll", scrollHeader);
+        return () => {
+            window.removeEventListener("scroll", scrollHeader);
+        };
+    }, []);
+
+    const headerClassname = isScroll ? "header-scroll" : "header-static";
+    const visibleClassname = isBar ? "visible" : "";
 
     return (
         <div className={`header wrapper ${headerClassname}`}>

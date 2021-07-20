@@ -1,15 +1,169 @@
-.not-found {
-    background-image: url("../images/404.png");
-    width: 100%;
-    height: 90vh;
-
-    background-position: center;
-    background-repeat: none;
+.notFoundPage {
+    background-image: "../../assets/images/404.png";
     background-size: cover;
+    display: flex;
+    margin-top: 0px;
+    width: 100%;
+    height: 100vh;
+    background-position: center;
+    justify-content: center;
+}
+
+.returnButtonContainer {
+    height: 100vh;
+    position: relative;
+}
+
+.returnButtonDiv {
+    margin: 0;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+}
+
+.returnButton {
+    width: 140px;
+    background: #4c3d23;
+
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    color: #fff;
+
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.returnButton:hover {
+    background-color: #b88031;
+}
+
+.goLoginButton {
+    width: 140px;
+    background: #4c3d23;
+
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    color: #fff;
+
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.goLoginButton:hover {
+    background-color: #b88031;
+}
+
+.returnButtonDiv button:hover {
+    background-color: #b88031;
 }
 
 .btn-block {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media only screen and (max-width: 992px) {
+    .returnButton {
+        background-color: #4c3d23;
+        width: 140px;
+    }
+
+    .returnButton:hover {
+        background-color: #b88031;
+    }
+    .returnButtonDiv button:hover {
+        background-color: #b88031;
+    }
+
+    .goLoginButton {
+        width: 140px;
+        background: #4c3d23;
+
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        color: #fff;
+
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .goLoginButton:hover {
+        background-color: #b88031;
+    }
+}
+
+@media only screen and (min-width: 993px) and (max-width: 1420px) {
+    .returnButton {
+        background-color: #4c3d23;
+        width: 140px;
+    }
+
+    .returnButton:hover {
+        background-color: #614e2d;
+    }
+    .returnButtonDiv button:hover {
+        background-color: #614e2d;
+    }
+
+    .goLoginButton {
+        width: 140px;
+        background: #4c3d23;
+
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        color: #fff;
+
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .goLoginButton:hover {
+        background-color: #b88031;
+    }
+}
+
+@media only screen and (min-width: 1420px) {
+    .returnButton {
+        background-color: #4c3d23;
+        width: 140px;
+    }
+
+    .returnButton:hover {
+        background-color: #614e2d;
+    }
+    .returnButtonDiv button:hover {
+        background-color: #614e2d;
+    }
+
+    .goLoginButton {
+        width: 140px;
+        background: #4c3d23;
+
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        color: #fff;
+
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .goLoginButton:hover {
+        background-color: #b88031;
+    }
 }

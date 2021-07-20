@@ -138,21 +138,27 @@ class UserLogin {
         });
     }
 
-    static updatePassword = (id, password) => {
+    // only can update password and role.
+    update = (keys, values) => {
+        const id = this.id;
+
+        for (let i = 0; i < keys.length; i++) this[keys[i]] = values[i];
+
         return new Promise((resolve, reject) => {
+            const setStatement = keys.join("=?,") + "=?";
             const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.user_login
-            SET password = ?
+            SET ${setStatement}
             WHERE id = '${id}';`;
 
-            DatabaseConnection.query(sql, password, (error) => {
+            DatabaseConnection.query(sql, values, (error) => {
                 if (error) {
                     reject(error);
                     return;
                 }
 
                 resolve();
-            })
-        })
+            });
+        });
     }
 }
 

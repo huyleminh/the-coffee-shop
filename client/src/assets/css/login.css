@@ -100,7 +100,12 @@ a:hover {
     font-size: 14px;
 }
 
-button[type="submit"] {
+.signin__IconFbGg {
+    padding-left: 0em;
+    white-space: 3em;
+}
+
+.signin__form__controll form button[type="submit"] {
     height: 55px;
     background: #503a24;
 
@@ -115,7 +120,7 @@ button[type="submit"] {
     cursor: pointer;
 }
 
-button[type="submit"]:hover {
+.signin__form__controll form button[type="submit"]:hover {
     background-color: #665230;
 }
 
@@ -151,8 +156,8 @@ button[type="submit"]:hover {
         height: 40px;
     }
 
-    button[type="submit"] {
-        height: 40px;
+    .signin__form__controll form button[type="submit"] {
+        height: 45px;
         font-size: 1rem;
         font-weight: 600;
     }
@@ -179,8 +184,8 @@ button[type="submit"]:hover {
         height: 40px;
     }
 
-    button[type="submit"] {
-        height: 40px;
+    .signin__form__controll form button[type="submit"] {
+        height: 45px;
         font-size: 1rem;
         font-weight: 600;
     }

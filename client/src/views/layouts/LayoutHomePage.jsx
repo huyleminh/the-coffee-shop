@@ -4,12 +4,13 @@ import LayoutAdmin from "../Admin/LayoutAdmin";
 import LayoutEmployee from "../Employee/LayoutEmployee";
 import PageNotFound from "../errors/PageNotFound";
 import HomePage from "./HomePage";
+import PrivateRoute from "../../components/routes/PrivateRoute";
 
 function LayoutHomePage(props) {
     return (
         <Switch>
-            <Route path={`/admin`} component={LayoutAdmin} />
-            <Route path={`/employee`} component={LayoutEmployee} />
+            <PrivateRoute path={`/admin`} component={LayoutAdmin} />
+            <PrivateRoute path={`/employee`} component={LayoutEmployee} />
             <Route path="/" component={HomePage} />
             <Route>
                 <Redirect to="/404">
