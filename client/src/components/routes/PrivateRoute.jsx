@@ -66,7 +66,7 @@ function PrivateRoute(props) {
 
     if (isAuth) {
         const AuthenticatedLayout = component;
-        return <Route {...rest} render={<AuthenticatedLayout />} />;
+        return <Route {...rest} component={AuthenticatedLayout} />;
     } else {
         alert("You are not allowed to access this page!");
         return <Redirect to="/403" />;

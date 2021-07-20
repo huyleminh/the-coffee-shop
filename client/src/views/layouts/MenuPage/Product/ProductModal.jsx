@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductModal.css";
+import { MenuPageEventsHandler } from "../../../../Events";
 
 ProductModal.propTypes = {
     handleVisible: PropTypes.func,
@@ -99,7 +100,8 @@ function ProductModal(props) {
 
                         <div className="lower">
                             <span>
-                                <FontAwesomeIcon icon={faStar} id="star" /> &nbsp; {details.rate !== 0 ? details.rate : "N/A"}
+                                <FontAwesomeIcon icon={faStar} id="star" /> &nbsp;{" "}
+                                {details.rate !== 0 ? details.rate : "N/A"}
                             </span>
                             {details.discount ? (
                                 <>
@@ -138,7 +140,13 @@ function ProductModal(props) {
                     </div>
 
                     <div className="product__control bottom">
-                        <button>Related product</button>
+                        <button
+                            onClick={() =>
+                                MenuPageEventsHandler.trigger("filter", details.categoryName)
+                            }
+                        >
+                            Related product
+                        </button>
                         <button onClick={addToCartModal}>Add to cart</button>
                     </div>
                 </div>

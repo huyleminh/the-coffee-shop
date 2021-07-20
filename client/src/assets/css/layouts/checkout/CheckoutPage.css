@@ -1,0 +1,274 @@
+.checkout {
+    width: 100%;
+    min-height: 1000px;
+    height: auto;
+
+    padding-top: 30px;
+    padding-bottom: 30px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.checkout__top {
+    flex-grow: 1;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.checkout__right {
+    width: 45%;
+    height: auto;
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+
+.checkout__right > h1 {
+    font-size: 1.5rem;
+    color: var(--main-color);
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.checkout__right .checkout__information,
+.checkout__right .checkout__payment,
+.checkout__right .checkout__summary {
+    width: 100%;
+    height: auto;
+    border: 1px solid #503a2473;
+    border-radius: 5px;
+
+    padding: 30px 15px;
+}
+
+.checkout__right .checkout__information .checkout__information-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.checkout__right .checkout__information .checkout__information-item label {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #503a24;
+    font-size: 1.15rem;
+}
+
+.checkout__right .checkout__information .checkout__information-item input,
+.checkout__right .checkout__voucher input {
+    width: 100%;
+    outline: none;
+    border: 1px solid #503a24a9;
+    border-radius: 5px;
+    padding: 8px 20px;
+    color: #503a24;
+}
+
+.checkout__right .checkout__payment {
+    font-weight: 600;
+}
+
+.checkout__right .checkout__voucher {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkout__right .checkout__voucher button {
+    margin-bottom: 0;
+    margin-left: 10px;
+    background-color: #503a24;
+    color: #fff;
+    font-weight: 600;
+}
+
+.checkout__right .checkout__voucher input {
+    text-transform: uppercase;
+}
+
+.checkout__right .checkout__voucher button:hover {
+    background-color: #684b2e;
+}
+
+.checkout__right .checkout__summary {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout__right .checkout__summary .checkout__summary-item {
+    width: 100%;
+    height: 50px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.checkout__right .checkout__summary .checkout__summary-item span {
+    text-align: right;
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.checkout__right .checkout__summary .checkout__summary-item span:first-child {
+    color: #503a24;
+    font-size: 1.4rem;
+}
+
+.checkout__right .checkout__summary .checkout__summary-item span:last-child {
+    font-size: 1.4rem;
+}
+
+.checkout__right .checkout__summary .checkout__summary-item:last-child span {
+    font-size: 1.55rem;
+}
+
+.checkout__buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.checkout__buttons button {
+    font-weight: 600;
+    margin-bottom: 0;
+    font-size: 1.25rem;
+}
+
+.checkout__buttons #buy-more {
+    background-color: #fff;
+    border: 1px solid #503a249a;
+}
+
+.checkout__buttons #buy-more:hover {
+    background: #f8f8f8;
+}
+
+.checkout__buttons #confirm {
+    background-color: #503a24;
+    color: #fff;
+}
+
+.checkout__buttons #confirm:hover {
+    background-color: #684b2e;
+}
+
+@media only screen and (min-width: 560px) and (max-width: 767px) {
+    .checkout__top {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .checkout__right {
+        margin: 0;
+        width: 100%;
+        padding: 0 15%;
+    }
+
+    .checkout__right .checkout__information,
+    .checkout__right .checkout__payment,
+    .checkout__right .checkout__summary,
+    .checkout__right .checkout__voucher {
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 900px) {
+    .checkout__top {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .checkout__right {
+        margin: 0;
+        width: 100%;
+        padding: 0 20%;
+    }
+
+    .checkout__right .checkout__information,
+    .checkout__right .checkout__payment,
+    .checkout__right .checkout__summary,
+    .checkout__right .checkout__voucher {
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (min-width: 901px) and (max-width: 1024px) {
+    .checkout__top {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .checkout__right {
+        margin: 0;
+        width: 100%;
+        padding: 0 25%;
+    }
+
+    .checkout__right .checkout__information,
+    .checkout__right .checkout__payment,
+    .checkout__right .checkout__summary,
+    .checkout__right .checkout__voucher {
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1200px) {
+    .checkout__right {
+        width: 53%;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item span:first-child {
+        color: #503a24;
+        font-size: 1.2rem;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item span:last-child {
+        font-size: 1.2rem;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item:last-child span {
+        font-size: 1.45rem;
+    }
+}
+
+@media only screen and (min-width: 1201px) and (max-width: 1439px) {
+    .checkout__right {
+        width: 50%;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item span:first-child {
+        color: #503a24;
+        font-size: 1.2rem;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item span:last-child {
+        font-size: 1.2rem;
+    }
+
+    .checkout__right .checkout__summary .checkout__summary-item:last-child span {
+        font-size: 1.45rem;
+    }
+}
+
+@media only screen and (min-width: 1440px) and (max-width: 1599px) {
+    .checkout__right {
+        width: 50%;
+    }
+    .checkout__right .checkout__summary .checkout__summary-item:last-child span {
+        font-size: 1.55rem;
+    }
+}
+
+@media only screen and (min-width: 1600px) and (max-width: 1900px) {
+}

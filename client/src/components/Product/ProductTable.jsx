@@ -27,6 +27,7 @@ function ProductTable(props) {
                     return (
                         <img
                             src={image.src}
+                            alt="table"
                             width={image.width}
                             height={image.height}
                             loading="lazy"
@@ -68,10 +69,10 @@ function ProductTable(props) {
                         min={0}
                         value={quantity}
                         onChange={(value) => handleQuantity(record, value)}
+                        disabled={props.disabled}
                     />
                 );
             },
-            editable: true,
         },
         {
             title: "Total",
@@ -84,23 +85,42 @@ function ProductTable(props) {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => {
+                if (!action) return <></>;
                 const icon =
                     action === "cart" ? (
-                        <span className="table-cart" onClick={() => handleAction(record.key)}>
-                            <FontAwesomeIcon icon={faShoppingCart} />
-                        </span>
+                        <div>
+                            <span className="table-cart" onClick={() => handleAction(record.key)}>
+                                <FontAwesomeIcon icon={faShoppingCart} />
+                            </span>
+                            <button
+                                className="table-deleted"
+                                onClick={() => handleDeleted(record.key)}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    ) : action === "wishlist" ? (
+                        <div>
+                            <span
+                                className="table-wishlist"
+                                onClick={() => handleAction(record.key)}
+                            >
+                                <FontAwesomeIcon icon={faHeart} />
+                            </span>
+                            <button
+                                className="table-deleted"
+                                onClick={() => handleDeleted(record.key)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                     ) : (
-                        <span className="table-wishlist" onClick={() => handleAction(record.key)}>
-                            <FontAwesomeIcon icon={faHeart} />
-                        </span>
+                        <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
+                            Delete
+                        </button>
                     );
 
-                return (
-                    <div>
-                        {icon}
-                        <button className="table-deleted" onClick={() => handleDeleted(record.key)}>Delete</button>
-                    </div>
-                );
+                return icon;
             },
         },
     ];
