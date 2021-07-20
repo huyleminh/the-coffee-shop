@@ -1,3 +1,6 @@
+import DatabaseConnection from "../DatabaseConnection.js"
+import DatabaseConfig from "../../../configs/DatabaseConfig.js"
+
 class Order {
     constructor(id, userId, createdAt, status, isPaid, payMethod, deliveryAddress) {
         this.id = id
@@ -25,6 +28,25 @@ class Order {
             );
         });
     };
+
+    insert() {
+        const values = Object.values(this);
+
+        return new Promise((resolve, reject) => {
+            // (id, userId, createdAt, status, isPaid, payMethod, deliveryAddress)
+            const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.order
+            VALUES (?, ?, ?, ?, ?, ?, ?);`;
+
+            DatabaseConnection.query(sql, values, (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
 }
 
 export default Order

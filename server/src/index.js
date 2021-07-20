@@ -32,7 +32,7 @@ app.use("/api/user", userRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/cart", cartRouter);
-app.user("/api/checkout", checkoutRouter);
+app.use("/api/checkout", checkoutRouter);
 
 app.listen(PORT, () => {
     console.log(
