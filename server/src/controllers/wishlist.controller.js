@@ -1,6 +1,15 @@
 import Wishlist from "../utilities/database/entities/Wishlist.js";
 import { validate as uuidValidate } from "uuid";
 class WishlistController {
+    static checkProductInWishlist = async (productId, userId) => {
+        const WishlistData = await Wishlist.getByUserId(userId);
+
+        for (var i = 0; i < WishlistData.length; i++) {
+            if (WishlistData[i].productId === productId) return true;
+        }
+        return false;
+    };
+
     static getProductInWishlist = async (req, res) => {
         const userInfo = res.locals.userInfo;
 
@@ -32,15 +41,49 @@ class WishlistController {
     static addProductIntoWishlist = async (req, res) => {
         const userInfo = res.locals.userInfo;
 
-        const ProductInfo = res.locals.payload;
-        console.log(ProductInfo.productId,userInfo.id);
-        // if (uuidValidate(ProductInfo)) {
-        //     const NewWishlist = new Wishlist(ProductInfo, userInfo);
-        //     const insertToDB = await NewWishlist.insert();
-        //     res.send({ status: 200 });
-        // }
-        const insertToDB = await Wishlist.insert(ProductInfo.productId, userInfo.id);
-        res.send({ status: 200 });
+        const productInfo = res.locals.payload;
+        if (!uuidValidate(productInfo.productId)) {
+            res.send({ status: 404, message: "Productid invalid" });
+        } else {
+            if (
+                await this.checkProductInWishlist(
+                    productInfo.productId,
+                    res.locals.userInfo.id
+                )
+            ) {
+                res.send({
+                    status: 404,
+                    message: "Productid already in the wishlist",
+                });
+            } else {
+                const insertToDB = await Wishlist.insert(
+                    productInfo.productId,
+                    userInfo.id
+                );
+                res.send({ status: 200 });
+            }
+        }
+    };
+
+    static DeleteProductInWishlist = async (req, res) => {
+        const productInfo = res.locals.params;
+        if (!uuidValidate(productInfo.productId)) {
+            res.send({ status: 404, message: "Productid invalid" });
+        } else {
+            if (!
+                await this.checkProductInWishlist(
+                    productInfo.productId,
+                    res.locals.userInfo.id
+                )
+            ) {
+                res.send({ status: 404, message: "Productid not found" });
+            } else {
+                const deleteDB = await Wishlist.DeleteProductInWishlist(
+                    productInfo.productId
+                );
+                res.send({ status: 200 });
+            }
+        }
     };
 }
 export default WishlistController;

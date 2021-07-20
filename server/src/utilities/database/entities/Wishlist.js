@@ -14,7 +14,7 @@ class Wishlist {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new Category(row.productId, row.userId);
+            return new Wishlist(row.productId, row.userId);
         });
     };
 
@@ -38,11 +38,32 @@ class Wishlist {
         });
     };
 
+    static getByUserId = (userId) => {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist
+            WHERE userId='${userId}';`;
+            DatabaseConnection.query(sqlQuery, (error, result) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (result === undefined) {
+                    reject(new Error("Error: 'result' is underfined"));
+                } else {
+                    const wishlistInfo =
+                        Wishlist.toArrayFromDatabaseObject(result);
+                    resolve(wishlistInfo);
+                }
+            });
+        });
+    };
+
     static getProductInWishlist = (userId) => {
         return new Promise((resolve, reject) => {
             const sql = `
             SELECT 
-	            P.id, P.image, P.price,
+	            P.id, P.name, P.image, P.price,
                 p.discountId, D.percent, D.startDate, D.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist W
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON W.productId=P.id
@@ -87,8 +108,8 @@ class Wishlist {
         return new Promise((resolve, reject) => {
             const sql = `
             DELETE FROM 
-            heroku_a51da3167c7e5af.wishlist W
-            WHERE W.productId='${productId}'`;
+            ${DatabaseConfig.CONFIG.DATABASE}.wishlist
+            WHERE productId='${productId}'`;
 
             DatabaseConnection.query(sql, (error) => {
                 if (error) {

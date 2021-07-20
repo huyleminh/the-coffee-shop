@@ -16,4 +16,10 @@ wishlistRouter.post(
     AuthorizationMiddleware.verifyInfoInToken,
     WishlistController.addProductIntoWishlist
 );
+wishlistRouter.delete(
+    "/delete",
+    AuthorizationMiddleware.verifyToken,
+    AuthorizationMiddleware.verifyInfoInToken,
+    WishlistController.DeleteProductInWishlist
+);
 export default wishlistRouter;

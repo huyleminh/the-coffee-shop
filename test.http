@@ -40,13 +40,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 ###
 GET http://localhost:5000/api/wishlist/get
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY3OTkyNDYsImV4cCI6MTYyNjgwMTA0Nn0.sezgig5QknwvERWM4fXrWaeCtQQz8JlcT-v9w3ngfFc
 
 ###
 POST http://localhost:5000/api/wishlist/add
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY3MTA5NzEsImV4cCI6MTYyNjcxMjc3MX0.U5rlqT1zxruLsfxcXwDa4XMiCcEU-aP5nE5fBEHREOs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY3OTkyNDYsImV4cCI6MTYyNjgwMTA0Nn0.sezgig5QknwvERWM4fXrWaeCtQQz8JlcT-v9w3ngfFc
 
 {
-    "productId": "5de298df-5a13-4dbd-ad7e-94a8d892aa09"
+    "productId": "1d009b21-e1d0-4686-9e85-ac6a63e6f9a7"
 }
+
+###
+DELETE http://localhost:5000/api/wishlist/delete?productId=1d009b21-e1d0-4686-9e85-ac6a63e6f9a7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY3OTkyNDYsImV4cCI6MTYyNjgwMTA0Nn0.sezgig5QknwvERWM4fXrWaeCtQQz8JlcT-v9w3ngfFc
