@@ -1,5 +1,6 @@
 import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
+import mysql from "mysql"
 
 class Cart {
     constructor(productId, userId, quantity) {
@@ -18,7 +19,7 @@ class Cart {
 			FROM ${DatabaseConfig.CONFIG.DATABASE}.cart c
 			JOIN ${DatabaseConfig.CONFIG.DATABASE}.product p ON c.productId = p.id
 			LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON p.discountId = d.id
-			WHERE c.userId = ?`;
+			WHERE c.userId = ?;`;
 
             DatabaseConnection.query(sql, userId, (error, rows) => {
                 if (error) {
@@ -47,7 +48,7 @@ class Cart {
             FROM ${DatabaseConfig.CONFIG.DATABASE}.cart c
 			JOIN ${DatabaseConfig.CONFIG.DATABASE}.product p ON c.productId = p.id
 			LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON p.discountId = d.id
-			WHERE c.userId = ? AND c.productId = ?`;
+			WHERE c.userId = ? AND c.productId = ?;`;
 
             DatabaseConnection.query(sql, [userId, productId], (error, rows) => {
                 if (error) {
@@ -96,6 +97,23 @@ class Cart {
                 }
 
                 resolve();
+            })
+        })
+    }
+
+    static updateByUserIdAndProductId = (userId, productId, quantity) => {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.cart
+            SET quantity = ?
+            WHERE userId = ? AND productId = ?;`
+
+            DatabaseConnection.query(sql, [quantity, userId, productId], (error) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                resolve()
             })
         })
     }

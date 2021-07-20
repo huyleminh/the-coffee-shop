@@ -25,4 +25,11 @@ cartRouter.delete(
     CartController.deleteProduct
 )
 
+cartRouter.patch(
+    "/edit",
+    AuthorizationMiddleware.verifyToken,
+    AuthorizationMiddleware.verifyDataInToken,
+    CartController.editProduct
+)
+
 export default cartRouter;
