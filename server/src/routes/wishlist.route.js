@@ -7,19 +7,19 @@ const wishlistRouter = express.Router();
 wishlistRouter.get(
     "/get",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     WishlistController.getProductInWishlist
 );
 wishlistRouter.post(
     "/add",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     WishlistController.addProductIntoWishlist
 );
 wishlistRouter.delete(
     "/delete",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     WishlistController.DeleteProductInWishlist
 );
 export default wishlistRouter;

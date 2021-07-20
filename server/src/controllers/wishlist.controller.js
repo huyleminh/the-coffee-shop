@@ -70,11 +70,11 @@ class WishlistController {
         if (!uuidValidate(productInfo.productId)) {
             res.send({ status: 404, message: "Productid invalid" });
         } else {
-            if (!
-                await this.checkProductInWishlist(
+            if (
+                !(await this.checkProductInWishlist(
                     productInfo.productId,
                     res.locals.userInfo.id
-                )
+                ))
             ) {
                 res.send({ status: 404, message: "Productid not found" });
             } else {
