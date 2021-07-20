@@ -7,6 +7,7 @@ import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
 import CustomPagination from "../../../components/navigation/CustomPagination";
+import { MenuPageEventsHandler } from "../../../Events";
 import ProductAPI from "../../../services/Product/ProductAPI";
 import ProductsList from "./Product/ProductsList";
 import SidebarFilter from "./SidebarFilter/SidebarFilter";
@@ -116,6 +117,21 @@ function MenuPage(props) {
     };
 
     useEffect(() => {
+        MenuPageEventsHandler.subcribe("changeSortBy", handleSortBy);
+        MenuPageEventsHandler.subcribe("search", handleSearchTerm);
+        MenuPageEventsHandler.subcribe("filter", handleChangeFilter);
+        MenuPageEventsHandler.subcribe("toggleSideBar", setIsFilterVisible);
+
+        return () => {
+            MenuPageEventsHandler.unSubcribe("changeSortBy", handleSortBy);
+            MenuPageEventsHandler.unSubcribe("search", handleSearchTerm);
+            MenuPageEventsHandler.unSubcribe("filter", handleChangeFilter);
+            MenuPageEventsHandler.unSubcribe("toggleSideBar", setIsFilterVisible);
+        };
+        // eslint-disable-next-line
+    }, []);
+
+    useEffect(() => {
         document.querySelector(".menu").scrollIntoView({ behavior: "smooth", block: "start" });
 
         const fetchProducts = async () => {
@@ -169,10 +185,6 @@ function MenuPage(props) {
                     filter={filters.filter}
                     sort={sortBy}
                     categoriesList={categories}
-                    handleSearchTerm={handleSearchTerm}
-                    handleChangeFilter={handleChangeFilter}
-                    handleSortBy={handleSortBy}
-                    setFilterVisible={setIsFilterVisible}
                 />
                 <div className="menu__products">
                     <div

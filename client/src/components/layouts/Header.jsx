@@ -3,14 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../assets/css/layouts/Header.css";
+import { HomePageEventsHandler } from "../../Events";
 
 Header.propsType = {
     userStatus: PropTypes.object,
-    handleLogout: PropTypes.func,
 };
 
 function Header(props) {
-    const { userStatus, handleLogout } = props;
+    const { userStatus } = props;
     const [isScroll, setIsScroll] = useState(false);
     const [isBar, setIsBar] = useState(false);
 
@@ -20,8 +20,7 @@ function Header(props) {
     };
 
     const handleLogoutClick = () => {
-        if (!handleLogout) return;
-        handleLogout();
+        HomePageEventsHandler.trigger("logout");
     };
 
     useEffect(() => {

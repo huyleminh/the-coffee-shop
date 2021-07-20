@@ -7,6 +7,10 @@
     border-radius: 5px;
     cursor: pointer;
     margin-left: 10px;
+    margin-bottom: 0;
+    width: 80px;
+    height: 40px;
+    padding: 10px;
 }
 
 .table-deleted:hover {
@@ -28,4 +32,12 @@
 
 .table-wishlist:hover {
     color: #ff0000;
+}
+
+.table-ready {
+    background-color: #109627;
+    display: block;
+    padding: 8px;
+    color: #fff;
+    width: fit-content;
 }
