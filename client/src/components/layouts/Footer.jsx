@@ -14,6 +14,8 @@ const schedule = [
     { id: 7, date: "Sunday", startHour: "8:00 AM", endHour: "7:00 PM" },
 ];
 
+const today = new Date().toDateString().split(" ")[0];
+
 function Footer() {
     return (
         <div className="footer">
@@ -60,7 +62,7 @@ function Footer() {
                     <h2>Opening hours</h2>
                     <div className="footer__time">
                         {schedule.map((item) => {
-                            const style = item.id === 7 ? { color: "#fff670" } : {};
+                            const style = item.date.match(today) ? { color: "#fff670" } : {};
                             return (
                                 <div className="times" style={style} key={item.id}>
                                     <li>{item.date}</li>

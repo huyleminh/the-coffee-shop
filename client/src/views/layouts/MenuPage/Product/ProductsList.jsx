@@ -31,7 +31,7 @@ function ProductsList(props) {
                 ? parseInt((rating.totalStar / rating.totalRating).toFixed(1))
                 : 0;
         productCard.newPrice = discount
-            ? product.price * (1 - discount.percent / 100)
+            ? product.price * (1 - discount.percent)
             : product.price;
 
         return productCard;

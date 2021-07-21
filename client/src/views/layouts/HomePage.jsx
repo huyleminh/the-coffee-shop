@@ -7,7 +7,9 @@ import Header from "../../components/layouts/Header";
 import Loading from "../../components/Loading";
 import PrivateRoute from "../../components/routes/PrivateRoute";
 import ScrollTopButton from "../../components/ScrollTopButton";
+import { HomePageEventsHandler } from "../../Events";
 import PageNotFound from "../errors/PageNotFound";
+import CheckoutPage from "./Checkout/CheckoutPage";
 import LandingPage from "./LandingPage/LandingPage";
 import MenuPage from "./MenuPage/MenuPage";
 import UserProfile from "./UserProfile/UserProfile";
@@ -18,7 +20,8 @@ function HomePage() {
     const [userStatus, setUserStatus] = useState({ isLogin: false, role: 3 });
 
     const clearLocal = () => {
-        localStorage.clear();
+        localStorage.removeItem("user");
+        localStorage.removeItem("profile");
     };
 
     const handleLogout = () => {
@@ -26,7 +29,16 @@ function HomePage() {
         if (!check) return;
         clearLocal();
         setUserStatus({ isLogin: false, role: 3 });
+        history.push("/");
     };
+
+    useEffect(() => {
+        HomePageEventsHandler.subcribe("logout", handleLogout);
+
+        return () => {
+            HomePageEventsHandler.unSubcribe("logout", handleLogout);
+        };
+    }, []);
 
     useEffect(() => {
         const checkLogin = async () => {
@@ -74,7 +86,7 @@ function HomePage() {
     else
         return (
             <div>
-                <Header userStatus={userStatus} handleLogout={handleLogout} />
+                <Header userStatus={userStatus} />
 
                 <Layout className="container">
                     <Switch>
@@ -82,6 +94,7 @@ function HomePage() {
                         <Route exact path="/menu" component={MenuPage} />
                         <Route exact path="/cart" />
                         <Route exact path="/wishlist" />
+                        <PrivateRoute exact path="/checkout" component={CheckoutPage} />
                         <Route exact path="/" component={LandingPage} />
                         <Route>
                             <Redirect to="/404">
