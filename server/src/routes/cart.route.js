@@ -8,7 +8,7 @@ cartRouter.get(
     "/get",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    CartController.getProduct
+    CartController.getProducts
 );
 
 cartRouter.post(
@@ -29,7 +29,7 @@ cartRouter.patch(
     "/edit",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    CartController.editProduct
+    CartController.editProducts
 )
 
 export default cartRouter;
