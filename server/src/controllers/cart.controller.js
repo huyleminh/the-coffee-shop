@@ -17,12 +17,14 @@ class CartController {
             }
 
             return {
-                id: product.id,
-                name: product.name,
-                image: product.image,
-                price: product.price,
-                quantity: product.quantity,
+                product: {
+                    id: product.id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price,
+                },
                 discount,
+                quantity: product.quantity,
             };
         });
 
