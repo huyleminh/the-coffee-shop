@@ -67,3 +67,19 @@
     display: flex;
     margin: 10px 0px 10px 10px;
 }
+
+.btn_cart_selected {
+    height: 40px;
+    border: 1px solid #503a2446;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    color: #61462c;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.btn_cart_selected:hover {
+    background-color: #9c7044;
+    color: #fff;
+}

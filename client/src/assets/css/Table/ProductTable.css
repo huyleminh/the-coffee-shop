@@ -13,6 +13,11 @@
     padding: 10px;
 }
 
+.table-deleted:active {
+    background-color: #503a24;
+    color: #fff;
+}
+
 .table-deleted:hover {
     background-color: #cf0239;
 }
@@ -24,10 +29,16 @@
     cursor: pointer;
     font-size: 1.15rem;
     color: #503a24;
+    border-radius: 5px;
 }
 
 .table-cart {
     color: #61462c;
+}
+
+.table-cart:hover {
+    background-color: #9c7044;
+    color: #fff;
 }
 
 .table-wishlist:hover {
@@ -40,4 +51,12 @@
     padding: 8px;
     color: #fff;
     width: fit-content;
+}
+
+.img_style {
+    border-radius: 5px;
+}
+
+.price_style {
+    margin: 0px;
 }

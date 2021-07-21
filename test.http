@@ -36,3 +36,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 GET http://localhost:5000/api/auth/verify
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUwNzczNSwiZXhwIjoxNjI2NTA5NTM1fQ.BUFk_sl66Iv-xEDRret4y6UQ8L8vuIg3nliMx1kZC2Q
+
+###
+GET http://localhost:5000/api/wishlist/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUwNzczNSwiZXhwIjoxNjI2NTA5NTM1fQ.BUFk_sl66Iv-xEDRret4y6UQ8L8vuIg3nliMx1kZC2Q

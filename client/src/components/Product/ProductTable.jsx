@@ -32,6 +32,7 @@ function ProductTable(props) {
                             width={image.width}
                             height={image.height}
                             loading="lazy"
+                            className="img_style"
                         />
                     );
                 else return <></>;
@@ -48,14 +49,14 @@ function ProductTable(props) {
                 if (priceObj.discount) {
                     const newPrice = (1 - priceObj.discount) * priceObj.price;
                     return (
-                        <ul>
+                        <ul className="price_style">
                             <li style={{ textDecoration: "line-through" }}>{priceObj.price} VND</li>
                             <li style={{ color: "#f00" }}>{newPrice} VND</li>
                         </ul>
                     );
                 } else
                     return (
-                        <ul>
+                        <ul className="price_style">
                             <li>{priceObj.price} VND</li>
                         </ul>
                     );
@@ -88,11 +89,11 @@ function ProductTable(props) {
             render: (action, record) => {
                 const icon =
                     action === "cart" ? (
-                        <span className="table-cart" onClick={() => handleAction(record.key)}>
+                        <span title="Add to cart" className="table-cart" onClick={() => handleAction(record.key)}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </span>
                     ) : action === "wishlist" ? (
-                        <span className="table-cart" onClick={() => handleAction(record.key)}>
+                        <span title="Add to wishlist" className="table-wishlist" onClick={() => handleAction(record.key)}>
                             <FontAwesomeIcon icon={faHeart} />
                         </span>
                     ) : (
@@ -103,7 +104,7 @@ function ProductTable(props) {
                     <div>
                         {icon}
                         <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
-                            Delete
+                            Remove
                         </button>
                     </div>
                 );

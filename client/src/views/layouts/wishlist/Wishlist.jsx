@@ -1,13 +1,13 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { Layout } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/wishlist/Wishlist.css";
 import MenuImage from "../../../assets/images/menu.jpg";
-import defaultAvatar from "../../../assets/images/store-logo.png";
 import Hero from "../../../components/layouts/Hero";
 import ProductTable from "../../../components/Product/ProductTable";
+import Loading from "../../../components/Loading";
 
 const { Content } = Layout;
 
@@ -15,7 +15,11 @@ function Wishlist() {
     const history = useHistory();
     const [numberOfSelected, setNumberOfItem] = useState(0);
     const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
+        const fetchWishlist = async () => {
+            
+        }
         setData([
             {
                 key: "1",
@@ -31,7 +35,7 @@ function Wishlist() {
                 },
                 quantity: 0,
                 total: 0,
-                action: "cart",
+                action: "wishlist",
             },
             {
                 key: "2",
@@ -112,7 +116,7 @@ function Wishlist() {
                 quantity: 0,
                 total: 0,
                 action: "cart",
-            }
+            },
         ]);
     }, []);
 
@@ -121,19 +125,40 @@ function Wishlist() {
     };
 
     const handleQuantity = (record, value) => {
-        let clone = [...data]
-        
+        let clone = [...data];
+
         for (let item in data) {
             if (record["key"] === data[item]["key"]) {
-                clone[item]["quantity"] = value
-                clone[item]["total"] = value * clone[item]["price"]["price"] * (1 - clone[item]["price"]["discount"])
+                clone[item]["quantity"] = value;
+                clone[item]["total"] =
+                    value * clone[item]["price"]["price"] * (1 - clone[item]["price"]["discount"]);
             }
         }
-        setData(clone)
+        setData(clone);
     };
 
     const handleGoToMenu = () => {
         history.push("/menu");
+    };
+
+    const handleSelected = (keys, rows) => {
+        let count = 0;
+        for (let item in keys) {
+            count = count + 1;
+        }
+        setNumberOfItem(count);
+    };
+
+    const handleRemoveItem = (key) => {
+        console.log(key);
+    };
+
+    const handleRemoveSelected = () => {
+        console.log("Click")
+    };
+
+    const handleCartSelected = () => {
+        console.log("Click")
     };
 
     return (
@@ -144,8 +169,15 @@ function Wishlist() {
                     <div className="cmd_item">
                         <span>{numberOfSelected} item(s) selected</span>
                     </div>
-                    <div className="cmd_item">
-                        <button className="btn_delete_selected" onClick={handleGoToMenu}>Delete</button>
+                    <div className="cmd_item" title="Add selected item(s) to cart">
+                        <button className="btn_cart_selected" onClick={handleCartSelected}>
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                        </button>
+                    </div>
+                    <div className="cmd_item" title="Remove selected item(s) from wishlist">
+                        <button className="table-deleted" onClick={handleRemoveSelected}>
+                            Remove
+                        </button>
                     </div>
                 </div>
                 <ProductTable
@@ -154,11 +186,15 @@ function Wishlist() {
                     disable
                     hiddens={["quantity", "total"]}
                     handleDeleted={handleRemove}
+                    handleSelected={handleSelected}
+                    handleDeleted={handleRemoveItem}
                 />
                 <div>
-                    <button className="btn_go_menu" onClick={handleGoToMenu}>VISIT MENU</button>
+                    <button className="btn_go_menu" onClick={handleGoToMenu}>
+                        VISIT MENU
+                    </button>
                 </div>
-            </div>   
+            </div>
         </Content>
     );
 }
