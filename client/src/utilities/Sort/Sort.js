@@ -15,7 +15,6 @@ class Sort {
     };
 
     static sortProductsByKeyDesc = (products, key) => {
-        console.log(key);
         if (products.length === 0 || products.length === 1) return products;
 
         const clone = JSON.parse(JSON.stringify(products));
