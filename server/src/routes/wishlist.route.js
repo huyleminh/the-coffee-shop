@@ -8,18 +8,18 @@ wishlistRouter.get(
     "/get",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    WishlistController.getProductInWishlist
+    WishlistController.getProduct
 );
 wishlistRouter.post(
     "/add",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    WishlistController.addProductIntoWishlist
+    WishlistController.addProduct
 );
 wishlistRouter.delete(
     "/delete",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    WishlistController.DeleteProductInWishlist
+    WishlistController.deleteProduct
 );
 export default wishlistRouter;
