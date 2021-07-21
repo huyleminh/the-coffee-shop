@@ -7,14 +7,14 @@ const userRouter = express.Router();
 userRouter.get(
     "/profile/get",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     UserController.getProfile
 );
 
 userRouter.patch(
     "/profile/edit",
     AuthorizationMiddleware.verifyToken,
-    AuthorizationMiddleware.verifyInfoInToken,
+    AuthorizationMiddleware.verifyDataInToken,
     UserController.editProfile
 );
 
