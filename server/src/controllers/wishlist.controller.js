@@ -1,20 +1,11 @@
 import Wishlist from "../utilities/database/entities/Wishlist.js";
-import { validate as uuidValidate } from "uuid";
+import Product from "../utilities/database/entities/Product.js";
+
 class WishlistController {
-    static checkProductInWishlist = async (productId, userId) => {
-        const WishlistData = await Wishlist.getByUserId(userId);
-
-        for (var i = 0; i < WishlistData.length; i++) {
-            if (WishlistData[i].productId === productId) return true;
-        }
-        return false;
-    };
-
-    static getProductInWishlist = async (req, res) => {
+    static getProducts = async (req, res) => {
         const userInfo = res.locals.userInfo;
-
-        const productrList = await Wishlist.getProductInWishlist(userInfo.id);
-        const productInWishlist = productrList.map((product) => {
+        const productList = await Wishlist.getAllProductByUserId(userInfo.id);
+        const productInWishlist = productList.map(product => {
             let discount = null;
             if (product.discountId !== null) {
                 discount = {
@@ -30,60 +21,61 @@ class WishlistController {
                     name: product.name,
                     image: product.image,
                     price: product.price,
-                    description: product.description,
                 },
                 discount,
             };
         });
+
         res.send({ status: 200, data: productInWishlist });
     };
 
-    static addProductIntoWishlist = async (req, res) => {
+    static addProduct = async (req, res) => {
         const userInfo = res.locals.userInfo;
+        const { productId } = res.locals.payload;
 
-        const productInfo = res.locals.payload;
-        if (!uuidValidate(productInfo.productId)) {
-            res.send({ status: 404, message: "Productid invalid" });
+        const [productInProductTable] = await Product.getSpecificProduct(productId)
+        if (productInProductTable === undefined) {
+            res.send({ status: 404, message: "This product does not exist" });
+            return
+        }
+
+        const [productInWishlist] = await Wishlist.getProductByUserIdAndProductId(
+            userInfo.id,
+            productId
+        )
+        if (productInWishlist !== undefined) {
+            res.send({
+                status: 409,
+                message: "This product has existed in your wishlist",
+            });
         } else {
-            if (
-                await this.checkProductInWishlist(
-                    productInfo.productId,
-                    res.locals.userInfo.id
-                )
-            ) {
-                res.send({
-                    status: 404,
-                    message: "Productid already in the wishlist",
-                });
-            } else {
-                const insertToDB = await Wishlist.insert(
-                    productInfo.productId,
-                    userInfo.id
-                );
-                res.send({ status: 200 });
-            }
+            const insertProduct = await Wishlist.insert(
+                productId,
+                userInfo.id
+            );
+            res.send({ status: 200 });
         }
     };
 
-    static DeleteProductInWishlist = async (req, res) => {
-        const productInfo = res.locals.params;
-        if (!uuidValidate(productInfo.productId)) {
-            res.send({ status: 404, message: "Productid invalid" });
-        } else {
-            if (
-                !(await this.checkProductInWishlist(
-                    productInfo.productId,
-                    res.locals.userInfo.id
-                ))
-            ) {
-                res.send({ status: 404, message: "Productid not found" });
-            } else {
-                const deleteDB = await Wishlist.DeleteProductInWishlist(
-                    productInfo.productId
-                );
-                res.send({ status: 200 });
-            }
+    static deleteProduct = async (req, res) => {
+        const userInfo = res.locals.userInfo
+        const { productId } = res.locals.params;
+        const [productInWishList] = await Wishlist.getProductByUserIdAndProductId(
+            userInfo.id,
+            productId
+        )
+
+        if (productInWishList === undefined) {
+            res.send({
+                status: 404,
+                message: "This product does not exist in your wishlist"
+            });
+            return
         }
+
+        const deleteProduct = await Wishlist.deleteProduct(productId);
+        res.send({ status: 200 });
     };
 }
+
 export default WishlistController;
