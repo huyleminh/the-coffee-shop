@@ -1,5 +1,6 @@
 import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
+
 class Wishlist {
     constructor(productId, userId) {
         this.productId = productId;
@@ -18,59 +19,46 @@ class Wishlist {
         });
     };
 
-    static getAll = () => {
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist;`;
-            DatabaseConnection.query(sqlQuery, (error, result) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (result === undefined) {
-                    reject(new Error("Error: 'result' is underfined"));
-                } else {
-                    const wishlistInfo =
-                        Wishlist.toArrayFromDatabaseObject(result);
-                    resolve(wishlistInfo);
-                }
-            });
-        });
-    };
-
-    static getByUserId = (userId) => {
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist
-            WHERE userId='${userId}';`;
-            DatabaseConnection.query(sqlQuery, (error, result) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (result === undefined) {
-                    reject(new Error("Error: 'result' is underfined"));
-                } else {
-                    const wishlistInfo =
-                        Wishlist.toArrayFromDatabaseObject(result);
-                    resolve(wishlistInfo);
-                }
-            });
-        });
-    };
-
-    static getProductInWishlist = (userId) => {
+    static getAllProductByUserId = (userId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-            SELECT 
+            SELECT
 	            P.id, P.name, P.image, P.price,
                 p.discountId, D.percent, D.startDate, D.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist W
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON W.productId=P.id
             LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId=D.id
-            WHERE W.userId='${userId}'`;
+            WHERE W.userId = ?`;
 
-            DatabaseConnection.query(sql, (error, rows) => {
+            DatabaseConnection.query(sql, userId, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"));
+                else {
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
+                }
+            });
+        });
+    };
+
+    static getProductByUserIdAndProductId = (userId, productId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            SELECT
+	            P.id, P.name, P.image, P.price,
+                p.discountId, D.percent, D.startDate, D.endDate
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist W
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.product P ON W.productId = P.id
+            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId = D.id
+            WHERE W.userId = ? AND W.productId = ?`;
+
+            DatabaseConnection.query(sql, [userId, productId], (error, rows) => {
                 if (error) {
                     reject(error);
                     return;
@@ -89,11 +77,11 @@ class Wishlist {
 
     static insert(productId, userId) {
         return new Promise((resolve, reject) => {
-            // (ProductId,UserId)
+            // (productId, userId)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.wishlist
-            VALUES ('${productId}', '${userId}');`;
+            VALUES (?, ?);`;
 
-            DatabaseConnection.query(sql, (error) => {
+            DatabaseConnection.query(sql, [productId, userId], (error) => {
                 if (error) {
                     reject(error);
                     return;
@@ -104,14 +92,14 @@ class Wishlist {
         });
     }
 
-    static DeleteProductInWishlist = (productId) => {
+    static deleteProduct = (productId) => {
         return new Promise((resolve, reject) => {
             const sql = `
-            DELETE FROM 
+            DELETE FROM
             ${DatabaseConfig.CONFIG.DATABASE}.wishlist
-            WHERE productId='${productId}'`;
+            WHERE productId = ?`;
 
-            DatabaseConnection.query(sql, (error) => {
+            DatabaseConnection.query(sql, productId, (error) => {
                 if (error) {
                     reject(error);
                     return;
