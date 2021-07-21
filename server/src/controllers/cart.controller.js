@@ -2,7 +2,7 @@ import Cart from "../utilities/database/entities/Cart.js";
 import Product from "../utilities/database/entities/Product.js"
 
 class CartController {
-    static getProduct = async (req, res) => {
+    static getProducts = async (req, res) => {
         const userInfo = res.locals.userInfo;
         const productList = await Cart.getCartByUserId(userInfo.id);
 
@@ -35,13 +35,19 @@ class CartController {
 
         // Validate product in cart
         const [product] = await Product.getSpecificProduct(productId)
-
-        if (product === undefined)
+        if (product === undefined) {
             res.send({ status: 404, message: "This product does not exist" })
-        else {
-            const cart = await Cart.insert(productId, userInfo.id, quantity);
-            res.send({ status: 200 });
+            return
         }
+
+        const [productInCart] = await Cart.getProductByUserIdAndProductId(userInfo.id, productId)
+        if (productInCart !== undefined) {
+            res.send({ status: 409, message: "This product has existed in your cart" })
+            return
+        }
+
+        const cart = await Cart.insert(productId, userInfo.id, quantity);
+        res.send({ status: 200 });
     };
 
     static deleteProduct = async (req, res) => {
@@ -59,7 +65,7 @@ class CartController {
         }
     }
 
-    static editProduct = async (req, res) => {
+    static editProducts = async (req, res) => {
         const userInfo = res.locals.userInfo
         const payload = res.locals.payload
 
