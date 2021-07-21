@@ -10,8 +10,5 @@
     "client": "cd client && npm run dev"
   },
   "author": "Ga chien pro max",
-  "license": "ISC",
-  "dependencies": {
-    "uuid": "^8.3.2"
-  }
+  "license": "ISC"
 }
