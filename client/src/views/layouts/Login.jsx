@@ -96,7 +96,6 @@ function Login() {
                 </div>
                 <div className="signin__form__bottom">
                     <span>
-                        <br />
                         <h3 style={{ textIndent: "1.4em", fontWeight: "750" }}> Or </h3>
                         <div className="signin__IconFbGg">
                             <pre>

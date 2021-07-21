@@ -106,9 +106,9 @@ class UserInfo {
         });
     };
 
-    static getAllByAttribute = (name, value) => {
+    static getAllByAttribute = (key, value) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_info WHERE ${name} = ?;`;
+            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_info WHERE ${key} = ?;`;
 
             DatabaseConnection.query(sql, value, (error, rows) => {
                 if (error) {
