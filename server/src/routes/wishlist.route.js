@@ -8,7 +8,7 @@ wishlistRouter.get(
     "/get",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    WishlistController.getProduct
+    WishlistController.getProducts
 );
 wishlistRouter.post(
     "/add",
