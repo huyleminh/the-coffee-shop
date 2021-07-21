@@ -1,12 +1,13 @@
 import Cart from "../utilities/database/entities/Cart.js";
 import UserInfo from "../utilities/database/entities/UserInfo.js";
+
 class CheckoutController {
-    static getUserInfo = async (req, res, next) => {
+    static getUserInfo = async (req, res) => {
         const userInfo = res.locals.userInfo;
 
         res.send({
             status: 200,
-            userInfo: {
+            data: {
                 name: userInfo.fullname,
                 address: userInfo.address,
                 phoneNumber: userInfo.phoneNumber,
