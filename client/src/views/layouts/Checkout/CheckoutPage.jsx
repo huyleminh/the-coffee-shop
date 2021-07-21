@@ -23,7 +23,6 @@ function CheckoutPage(props) {
             },
             quantity: "1",
             total: 75000,
-            action: "remove",
         },
         {
             key: "2",
@@ -34,7 +33,6 @@ function CheckoutPage(props) {
             },
             quantity: "1",
             total: 75000,
-            action: "remove",
         },
         {
             key: "3",
@@ -45,7 +43,6 @@ function CheckoutPage(props) {
             },
             quantity: "1",
             total: 75000,
-            action: "remove",
         },
         {
             key: "4",
@@ -56,7 +53,6 @@ function CheckoutPage(props) {
             },
             quantity: "1",
             total: 75000,
-            action: "remove",
         },
     ];
 
@@ -67,7 +63,7 @@ function CheckoutPage(props) {
 
     const handleBackToMenu = () => {
         history.push("/menu");
-    }
+    };
 
     return (
         <Content>
@@ -80,6 +76,7 @@ function CheckoutPage(props) {
                         pagination={{ position: ["bottomCenter"], pageSize: 10 }}
                         readonly
                         disabled
+                        hiddens={["image", "action"]}
                         handleDeleted={handleDeleted}
                     />
 
@@ -116,11 +113,7 @@ function CheckoutPage(props) {
 
                         <h1>Voucher</h1>
                         <div className="checkout__voucher">
-                            <input
-                                type="text"
-                                name="voucher"
-                                placeholder="Enter your voucher"
-                            />
+                            <input type="text" name="voucher" placeholder="Enter your voucher" />
                             <button>Apply</button>
                         </div>
 
@@ -146,7 +139,9 @@ function CheckoutPage(props) {
                 </div>
 
                 <div className="checkout__buttons">
-                    <button id="buy-more" onClick={handleBackToMenu}>&#60; Buy more</button>
+                    <button id="buy-more" onClick={handleBackToMenu}>
+                        &#60; Buy more
+                    </button>
                     <button id="confirm">Confirm</button>
                 </div>
             </div>
