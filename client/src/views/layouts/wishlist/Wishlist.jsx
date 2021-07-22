@@ -16,22 +16,34 @@ const { Content } = Layout;
 function Wishlist() {
     const history = useHistory();
     const [numberOfSelected, setNumberOfItem] = useState(0);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(() => {
+        const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+        return wishlist ? wishlist : [];
+    });
+
+    const [images, setImages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         const fetchWishlist = async () => {
-            try {
-                const user = JSON.parse(localStorage.getItem("user"));
-                if (!user) {
-                    localStorage.removeItem("user");
-                    const wishlist = JSON.parse(localStorage.getItem("wishlist"));
-                    if (!wishlist) {
-                        setData([]);
-                    } else {
-                        setData(wishlist);
-                    }
-                } else {
-                    if (!user.token) {
+            const user = JSON.parse(localStorage.getItem("user"));
+
+            if (!user || !user.token) {
+                localStorage.removeItem("user");
+                setIsLoading(false);
+            } else {
+                try {
+                    const response = await WishlistAPI.getWishlist(user.token);
+                    if (response.status === 200) {
+                        const resWishlist = response.data;
+                        console.log(resWishlist);
+                        setData(resWishlist);
+                        localStorage.setItem("wishlist", JSON.stringify(resWishlist));
+                    } else if (
+                        response.status === 404 ||
+                        response.status === 401 ||
+                        response.status === 403
+                    ) {
                         localStorage.removeItem("user");
                         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
                         if (!wishlist) {
@@ -39,41 +51,34 @@ function Wishlist() {
                         } else {
                             setData(wishlist);
                         }
-                    } else {
-                        const response = await WishlistAPI.getWishlist(user.token);
-                        console.log(response);
-                        if (response.status === 200) {
-                            const resWishlist = response.data;
-                            setData(resWishlist);
-                            localStorage.setItem("wishlist", JSON.stringify(resWishlist));
-                        } else if (
-                            response.status === 404 ||
-                            response.status === 401 ||
-                            response.status === 403
-                        ) {
-                            localStorage.removeItem("user");
-                            const wishlist = JSON.parse(localStorage.getItem("wishlist"));
-                            if (!wishlist) {
-                                setData([]);
-                            } else {
-                                setData(wishlist);
-                            }
-                        }
                     }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong.");
             }
         };
 
         fetchWishlist();
     }, []);
 
-    var numItem = 0;
-    var numIMG = 0;
+    useEffect(() => {
+        const fetchImages = async () => {
+            const imagePromises = data.map((item) => {
+                const image = item.product.image;
+                if (image) return Storage.ref(`products/${item.product.image}`).getDownloadURL();
+                else return Storage.ref(`products/latte.jpg`).getDownloadURL();
+            });
 
-    const tempArray = data.map(function (item) {
+            const images = await Promise.all(imagePromises);
+            setImages(images);
+            setIsLoading(false);
+        };
+
+        fetchImages();
+    }, [data]);
+
+    const tempArray = data.map(function (item, index) {
         let row = {};
         row.key = item.product.id;
         row.product = item.product.name;
@@ -89,31 +94,14 @@ function Wishlist() {
             }
         }
 
-        const getProductImage = async () => {
-            const ref = Storage.ref(`products/${item.product.image}`);
-            let image = null;
-            try {
-                const url = await ref.getDownloadURL();
-                image = url;
-                row.image = { src: image, width: 100, height: 100 };
-                console.log("bbbbb")
-                numIMG = numIMG + 1;
-                if (numIMG === numItem) {
-                    setIsLoading(false);
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        };
-
-        getProductImage();
-        numItem = numItem + 1;
+        if (item.product.image)
+            row.image = {
+                src: images[index],
+                width: "100px",
+                height: "100px",
+            };
         return row;
     });
-
-    const handleRemove = (key) => {
-        console.log(key);
-    };
 
     /*const handleQuantity = (record, value) => {
         let clone = [...data];
@@ -188,7 +176,6 @@ function Wishlist() {
                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                             disable
                             hiddens={["quantity", "total"]}
-                            handleDeleted={handleRemove}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
                         />

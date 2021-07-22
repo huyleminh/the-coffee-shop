@@ -40,7 +40,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 ###
 GET http://localhost:5000/api/wishlist/get
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY5NDQwNzUsImV4cCI6MTYyNjk0NTg3NX0.IVhPHe9E1OeKQOW-VB9pO0CLSIPh-pfgxtQl-YxaIAA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY5Nzc0NzIsImV4cCI6MTYyNjk3OTI3Mn0.Yyxc5p_vraQuW9qU-zqi9SBmhmDmagdvrUqhAGaS7v4
 
 ###
 POST http://localhost:5000/api/wishlist/add

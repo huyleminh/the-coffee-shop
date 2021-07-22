@@ -39,7 +39,7 @@ function HomePage() {
         return () => {
             HomePageEventsHandler.unSubcribe("logout", handleLogout);
         };
-    }, []);
+    });
 
     useEffect(() => {
         const checkLogin = async () => {
