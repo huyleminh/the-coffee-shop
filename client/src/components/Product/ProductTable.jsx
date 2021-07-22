@@ -2,8 +2,9 @@ import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import PropTypes from "prop-types";
 import { Table, InputNumber } from "antd";
-import React from "react";
+import { React, useEffect, useState } from "react";
 import "../../assets/css/Table/ProductTable.css";
+import { Storage } from "../../utilities/firebase/FirebaseConfig";
 
 ProductTable.propTypes = {};
 
@@ -18,6 +19,33 @@ function ProductTable(props) {
         handleAction,
         handleQuantity,
     } = props;
+
+    const [isLoading, setIsLoading] = useState(true)
+    const [data, setData] = useState(records)
+    const [imgList, setImg] = useState([])
+
+
+    console.log(records)
+    console.log("aaaa")
+
+
+    /*useEffect(() => {
+        let imgArray = []
+        const getIMG = async (props) => {
+            let value = await props.then(value => {
+                return value
+            }).catch(error => console.log(error))
+            setData(value)
+            imgArray.push(value)
+        }
+        for (let item of records) {
+            const url = Storage.ref(`products/${item.image}`).getDownloadURL()
+            getIMG(url)
+        }
+        console.log(data)
+        setImg(imgArray)
+        
+    }, [])*/
 
     const columns = [
         {

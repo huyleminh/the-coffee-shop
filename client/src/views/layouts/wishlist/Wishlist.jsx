@@ -8,6 +8,8 @@ import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
 import ProductTable from "../../../components/Product/ProductTable";
 import Loading from "../../../components/Loading";
+import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
+import { Storage } from "../../../utilities/firebase/FirebaseConfig";
 
 const { Content } = Layout;
 
@@ -18,113 +20,102 @@ function Wishlist() {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const fetchWishlist = async () => {
-            
-        }
-        setData([
-            {
-                key: "1",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "wishlist",
-            },
-            {
-                key: "2",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "cart",
-            },
-            {
-                key: "3",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "cart",
-            },
-            {
-                key: "4",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "cart",
-            },
-            {
-                key: "5",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "cart",
-            },
-            {
-                key: "6",
-                image: {
-                    src: "https://i.pinimg.com/564x/b4/60/38/b460382e96eb99db245f89cf9ace4462.jpg",
-                    width: 100,
-                    height: 100,
-                },
-                product: "Siesta",
-                price: {
-                    discount: 0,
-                    price: 10000000,
-                },
-                quantity: 0,
-                total: 0,
-                action: "cart",
-            },
-        ]);
+            try {
+                const user = JSON.parse(localStorage.getItem("user"));
+                if (!user) {
+                    localStorage.removeItem("user");
+                    const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+                    if (!wishlist) {
+                        setData([]);
+                    } else {
+                        setData(wishlist);
+                    }
+                } else {
+                    if (!user.token) {
+                        localStorage.removeItem("user");
+                        const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+                        if (!wishlist) {
+                            setData([]);
+                        } else {
+                            setData(wishlist);
+                        }
+                    } else {
+                        const response = await WishlistAPI.getWishlist(user.token);
+                        console.log(response);
+                        if (response.status === 200) {
+                            const resWishlist = response.data;
+                            setData(resWishlist);
+                            localStorage.setItem("wishlist", JSON.stringify(resWishlist));
+                        } else if (
+                            response.status === 404 ||
+                            response.status === 401 ||
+                            response.status === 403
+                        ) {
+                            localStorage.removeItem("user");
+                            const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+                            if (!wishlist) {
+                                setData([]);
+                            } else {
+                                setData(wishlist);
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong.");
+            }
+        };
+
+        fetchWishlist();
     }, []);
+
+    var numItem = 0;
+    var numIMG = 0;
+
+    const tempArray = data.map(function (item) {
+        let row = {};
+        row.key = item.product.id;
+        row.product = item.product.name;
+        row.action = "cart";
+        if (!item.discount) {
+            row.price = { price: item.product.price, discount: 0 };
+        } else {
+            const dateTemp = new Date(item.discount.endDate);
+            if (Date.now() <= dateTemp.valueOf()) {
+                row.price = { price: item.product.price, discount: item.discount.percent };
+            } else {
+                row.price = { price: item.product.price, discount: 0 };
+            }
+        }
+
+        const getProductImage = async () => {
+            const ref = Storage.ref(`products/${item.product.image}`);
+            let image = null;
+            try {
+                const url = await ref.getDownloadURL();
+                image = url;
+                row.image = { src: image, width: 100, height: 100 };
+                console.log("bbbbb")
+                numIMG = numIMG + 1;
+                if (numIMG === numItem) {
+                    setIsLoading(false);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        getProductImage();
+        numItem = numItem + 1;
+        return row;
+    });
 
     const handleRemove = (key) => {
         console.log(key);
     };
 
-    const handleQuantity = (record, value) => {
+    /*const handleQuantity = (record, value) => {
         let clone = [...data];
 
         for (let item in data) {
@@ -135,7 +126,7 @@ function Wishlist() {
             }
         }
         setData(clone);
-    };
+    };*/
 
     const handleGoToMenu = () => {
         history.push("/menu");
@@ -154,11 +145,11 @@ function Wishlist() {
     };
 
     const handleRemoveSelected = () => {
-        console.log("Click")
+        console.log("Click");
     };
 
     const handleCartSelected = () => {
-        console.log("Click")
+        console.log("Click");
     };
 
     return (
@@ -180,15 +171,30 @@ function Wishlist() {
                         </button>
                     </div>
                 </div>
-                <ProductTable
-                    records={data}
-                    pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-                    disable
-                    hiddens={["quantity", "total"]}
-                    handleDeleted={handleRemove}
-                    handleSelected={handleSelected}
-                    handleDeleted={handleRemoveItem}
-                />
+                {isLoading ? (
+                    <Loading
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    />
+                ) : (
+                    <>
+                        <ProductTable
+                            records={tempArray}
+                            pagination={{ position: ["bottomCenter"], pageSize: 5 }}
+                            disable
+                            hiddens={["quantity", "total"]}
+                            handleDeleted={handleRemove}
+                            handleSelected={handleSelected}
+                            handleDeleted={handleRemoveItem}
+                        />
+                    </>
+                )}
+
                 <div>
                     <button className="btn_go_menu" onClick={handleGoToMenu}>
                         VISIT MENU
