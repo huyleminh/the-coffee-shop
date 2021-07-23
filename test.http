@@ -52,10 +52,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiL
 }
 
 ###
-DELETE http://localhost:5000/api/wishlist/delete?productId=1d009b21-e1d0-4686-9e85-ac6a63e6f9a7
+DELETE http://localhost:5000/api/wishlist/delete?productId=6dcadbfc-5300-484c-b58a-228974efb09e
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjcwNTQ1NTIsImV4cCI6MTYyNzA1NjM1Mn0._vvHI-lAIBl5BxVVDiH3wKa42FU7unB5brINk_AFX_I
 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjY2ODAwNjEsImV4cCI6MTYyNjY4MTg2MX0.B900zX4XBeekFUV10RKqwt3IphP2R8Qf8PIxTAUmmnc
 ###
 GET http://localhost:5000/api/checkout/get
 Content-Type: application/json

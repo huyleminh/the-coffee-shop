@@ -28,7 +28,6 @@ ProductItem.propTypes = {
 function ProductItem(props) {
     const { details } = props;
     const [isModalVisible, setIsModelVisible] = useState(false);
-    console.log(details);
 
     //Initialize card before rendering
     const [card, setCard] = useState(details);

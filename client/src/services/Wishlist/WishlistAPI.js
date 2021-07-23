@@ -14,6 +14,13 @@ class WishlistAPI {
         }
         return ClientAPI.post("/wishlist/add", { productId }, config)
     }
+
+    static deleteItem = (token, params) => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}`}
+        }
+        return ClientAPI.delete(`/wishlist/delete?productId=${params}`, config)
+    }
 }
 
 export default WishlistAPI
