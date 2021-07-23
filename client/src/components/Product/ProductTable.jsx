@@ -1,7 +1,7 @@
 import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import PropTypes from "prop-types";
-import { Table, InputNumber } from "antd";
+import { InputNumber, Table } from "antd";
 import React from "react";
 import "../../assets/css/Table/ProductTable.css";
 
@@ -12,11 +12,14 @@ function ProductTable(props) {
         records,
         pagination,
         readonly,
+        hiddens,
         handleSelected,
         handleDeleted,
         handleAction,
         handleQuantity,
     } = props;
+
+    // const [isLoading, setIsLoading] = useState(true)
 
     const columns = [
         {
@@ -31,6 +34,7 @@ function ProductTable(props) {
                             width={image.width}
                             height={image.height}
                             loading="lazy"
+                            className="img_style"
                         />
                     );
                 else return <></>;
@@ -47,14 +51,14 @@ function ProductTable(props) {
                 if (priceObj.discount) {
                     const newPrice = (1 - priceObj.discount) * priceObj.price;
                     return (
-                        <ul>
+                        <ul className="price_style">
                             <li style={{ textDecoration: "line-through" }}>{priceObj.price} VND</li>
                             <li style={{ color: "#f00" }}>{newPrice} VND</li>
                         </ul>
                     );
                 } else
                     return (
-                        <ul>
+                        <ul className="price_style">
                             <li>{priceObj.price} VND</li>
                         </ul>
                     );
@@ -85,42 +89,27 @@ function ProductTable(props) {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => {
-                if (!action) return <></>;
                 const icon =
                     action === "cart" ? (
-                        <div>
-                            <span className="table-cart" onClick={() => handleAction(record.key)}>
-                                <FontAwesomeIcon icon={faShoppingCart} />
-                            </span>
-                            <button
-                                className="table-deleted"
-                                onClick={() => handleDeleted(record.key)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        <span title="Add to cart" className="table-cart" onClick={() => handleAction(record.key)}>
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                        </span>
                     ) : action === "wishlist" ? (
-                        <div>
-                            <span
-                                className="table-wishlist"
-                                onClick={() => handleAction(record.key)}
-                            >
-                                <FontAwesomeIcon icon={faHeart} />
-                            </span>
-                            <button
-                                className="table-deleted"
-                                onClick={() => handleDeleted(record.key)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        <span title="Add to wishlist" className="table-wishlist" onClick={() => handleAction(record.key)}>
+                            <FontAwesomeIcon icon={faHeart} />
+                        </span>
                     ) : (
-                        <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
-                            Delete
-                        </button>
+                        <></>
                     );
 
-                return icon;
+                return (
+                    <div>
+                        {icon}
+                        <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
+                            Remove
+                        </button>
+                    </div>
+                );
             },
         },
     ];
@@ -132,17 +121,21 @@ function ProductTable(props) {
         },
     };
 
+    const columnsFiltered = Array.isArray(hiddens)
+        ? columns.filter((column) => hiddens.indexOf(column.dataIndex) === -1)
+        : columns;
+
     return (
         <div style={{ width: "100%" }}>
             {readonly ? (
-                <Table columns={columns} dataSource={records} pagination={pagination} />
+                <Table columns={columnsFiltered} dataSource={records} pagination={pagination} />
             ) : (
                 <Table
                     rowSelection={{
                         type: "checkbox",
                         ...rowSelection,
                     }}
-                    columns={columns}
+                    columns={columnsFiltered}
                     dataSource={records}
                     pagination={pagination}
                 />

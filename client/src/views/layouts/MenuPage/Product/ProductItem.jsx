@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductItem.css";
 import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
+import WishlistAPI from "../../../../services/Wishlist/WishlistAPI.js"
+import ColumnGroup from "antd/lib/table/ColumnGroup";
 
 ProductItem.propTypes = {
     details: PropTypes.shape({
@@ -18,6 +20,8 @@ ProductItem.propTypes = {
         discount: PropTypes.number || null,
         oldPrice: PropTypes.number,
         newPrice: PropTypes.number,
+        startDate: PropTypes.string,
+        endDate: PropTypes.string,
     }),
 };
 
@@ -34,6 +38,32 @@ function ProductItem(props) {
 
     const handleAddToWishlist = () => {
         alert("Item added.");
+        const addWishlist = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const wishlist = JSON.parse(localStorage.getItem("wishlist"))
+            console.log(wishlist)
+            if (!user || !user.token) {
+                localStorage.removeItem("user");
+                wishlist.push({"product": {"id": card.id, "name": card.name, "image": `img_${card.id}`, "price": card.price}})
+            } else {
+                try {
+                    const response = await WishlistAPI.addToWishlist(user.token, card.id);
+                    if (response.status === 200) {
+                        console.log("success");
+                    } else if (
+                        response.status === 404 ||
+                        response.status === 409 ||
+                        response.status === 403
+                    ) {
+                        console.log(response.message)
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
+                }
+            }
+        }
+        addWishlist()
     };
 
     const handleModalVisible = () => {
