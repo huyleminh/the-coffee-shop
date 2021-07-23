@@ -55,6 +55,8 @@
 
 .img_style {
     border-radius: 5px;
+    border: 1px solid #503a24;
+    object-fit: cover;
 }
 
 .price_style {

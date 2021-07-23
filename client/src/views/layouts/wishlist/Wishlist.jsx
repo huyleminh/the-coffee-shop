@@ -74,7 +74,6 @@ function Wishlist() {
             setImages(images);
             setIsLoading(false);
         };
-
         fetchImages();
     }, [data]);
 
@@ -97,8 +96,8 @@ function Wishlist() {
         if (item.product.image)
             row.image = {
                 src: images[index],
-                width: "100px",
-                height: "100px",
+                width: "150px",
+                height: "150px",
             };
         return row;
     });

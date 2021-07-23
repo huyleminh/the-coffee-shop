@@ -1,5 +1,6 @@
 .wishlist {
-    min-height: 1000px;
+    min-height: 1200px;
+    height: auto;
 }
 
 .command_bar {
