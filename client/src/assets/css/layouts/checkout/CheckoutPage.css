@@ -64,6 +64,7 @@
 }
 
 .checkout__right .checkout__information .checkout__information-item input,
+.checkout__right .checkout__information .checkout__information-item textarea,
 .checkout__right .checkout__voucher input {
     width: 100%;
     outline: none;
@@ -71,6 +72,10 @@
     border-radius: 5px;
     padding: 8px 20px;
     color: #503a24;
+}
+
+.checkout__right .checkout__information .checkout__information-item textarea {
+    overflow: hidden;
 }
 
 .checkout__right .checkout__payment {
@@ -147,11 +152,14 @@
 
 .checkout__buttons #buy-more {
     background-color: #fff;
-    border: 1px solid #503a249a;
+    border: 1px solid #9c7044;
+    color: #503a24;
+    transition: color 0.2s, background-color 0.2s;
 }
 
 .checkout__buttons #buy-more:hover {
-    background: #f8f8f8;
+    background-color: #9c7044;
+    color: #fff;
 }
 
 .checkout__buttons #confirm {
