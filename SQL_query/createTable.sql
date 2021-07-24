@@ -184,6 +184,11 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`order` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
+
+ALTER TABLE `heroku_a51da3167c7e5af`.`order` 
+ADD COLUMN `fullname` VARCHAR(50) NOT NULL AFTER `payMethod`,
+ADD COLUMN `deliveryAddress` VARCHAR(150) NOT NULL AFTER 'fullname',
+ADD COLUMN `phoneNumber` CHAR(10) NOT NULL AFTER `deliveryAddress`;
 -- ------------------------------------------------------
 -- Table `heroku_a51da3167c7e5af`.`product_order`
 -- ------------------------------------------------------
