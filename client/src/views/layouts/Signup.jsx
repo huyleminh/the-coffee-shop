@@ -119,7 +119,7 @@ function Signup() {
                             onChange={handleChange}
                         />
 
-                        <span style={{ textAlign: "center" }}>
+                        <span style={{ textAlign: "center", margin: "20px 0px 10px 0px" }}>
                             Already have an account? <a href="/login">Login</a>
                         </span>
                         <button type="submit" onClick={handleSubmit}>

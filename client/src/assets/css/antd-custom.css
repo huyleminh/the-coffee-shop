@@ -90,10 +90,13 @@
 
 .ant-table-thead > tr > th {
     color: #503a24;
+    font-size: 1.1em;
+    text-align: center;
 }
 
 .ant-table-cell {
     color: #503a24;
+    text-align: center;
 }
 
 /* Input number */

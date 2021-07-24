@@ -6,6 +6,9 @@ import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductItem.css";
 import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
+import WishlistAPI from "../../../../services/Wishlist/WishlistAPI.js";
+// eslint-disable-next-line
+import ColumnGroup from "antd/lib/table/ColumnGroup";
 
 ProductItem.propTypes = {
     details: PropTypes.shape({
@@ -18,6 +21,8 @@ ProductItem.propTypes = {
         discount: PropTypes.number || null,
         oldPrice: PropTypes.number,
         newPrice: PropTypes.number,
+        startDate: PropTypes.string,
+        endDate: PropTypes.string,
     }),
 };
 
@@ -33,7 +38,101 @@ function ProductItem(props) {
     };
 
     const handleAddToWishlist = () => {
-        alert("Item added.");
+        const addWishlist = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+            const imageRegex = /(img_).*(.jpg)|(.png)|(.jpeg)|(.jfif)/g;
+            console.log(wishlist);
+            const item = {
+                product: {
+                    id: card.id,
+                    name: card.name,
+                    image: card.image.match(imageRegex),
+                    price: card.discount ? card.newPrice : card.oldPrice,
+                },
+                discount: card.discount
+                    ? {
+                          percent: card.discount / 100,
+                          startDate: card.startDate,
+                          endDate: card.endDate,
+                      }
+                    : null,
+            };
+            var existed = false;
+            if (!user || !user.token) {
+                console.log(item);
+                localStorage.removeItem("user");
+                existed = false;
+                for (let i of wishlist) {
+                    if (i["product"]["id"] === item["product"]["id"]) {
+                        i = item;
+                        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                        existed = true;
+                        alert("Product already existed in your wishlist.");
+                        break;
+                    }
+                }
+                if (!existed) {
+                    wishlist.push(item);
+                    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                    alert("Item added.");
+                }
+            } else {
+                try {
+                    const response = await WishlistAPI.addToWishlist(user.token, card.id);
+                    if (response.status === 200) {
+                        console.log("success");
+                        alert("Item added.");
+                    } else if (response.status === 404) {
+                        if (response.message === "This user does not exist") {
+                            localStorage.removeItem("user");
+                            existed = false;
+                            for (let i of wishlist) {
+                                if (i["product"]["id"] === item["product"]["id"]) {
+                                    i = item;
+                                    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                                    existed = true;
+                                    alert("Product already existed in your wishlist.");
+                                    break;
+                                }
+                            }
+                            if (!existed) {
+                                wishlist.push(item);
+                                localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                                alert("Item added.");
+                            }
+                        } else {
+                            console.log(response.message);
+                            alert(response.message);
+                        }
+                    } else if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem("user");
+                        existed = false;
+                        for (let i of wishlist) {
+                            if (i["product"]["id"] === item["product"]["id"]) {
+                                i = item;
+                                localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                                existed = true;
+                                alert("Product already existed in your wishlist.");
+                                break;
+                            }
+                        }
+                        if (!existed) {
+                            wishlist.push(item);
+                            localStorage.setItem("wishlist", JSON.stringify(wishlist));
+                            alert("Item added.");
+                        }
+                    } else if (response.status === 409) {
+                        console.log(response.message);
+                        alert("Product already existed in your wishlist.");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
+                }
+            }
+        };
+        addWishlist();
     };
 
     const handleModalVisible = () => {
