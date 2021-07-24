@@ -123,6 +123,7 @@ function Wishlist() {
 
     const handleSelected = (keys, rows) => {
         let count = 0;
+        // eslint-disable-next-line
         for (let item in keys) {
             count = count + 1;
         }

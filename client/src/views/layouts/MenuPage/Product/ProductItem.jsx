@@ -7,6 +7,7 @@ import "../../../../assets/css/layouts/menu/ProductItem.css";
 import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
 import WishlistAPI from "../../../../services/Wishlist/WishlistAPI.js";
+// eslint-disable-next-line
 import ColumnGroup from "antd/lib/table/ColumnGroup";
 
 ProductItem.propTypes = {
