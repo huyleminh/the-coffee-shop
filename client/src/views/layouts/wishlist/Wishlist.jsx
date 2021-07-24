@@ -151,6 +151,7 @@ function Wishlist() {
                     alert("Remove successfully.")
                     localStorage.setItem("wishlist", JSON.stringify(newWishlist))
                     setData(newWishlist)
+                    setIsSending(false)
                 }
             } else {
                 try {
@@ -160,6 +161,7 @@ function Wishlist() {
                         alert("Remove successfully.");
                         localStorage.setItem("wishlist", JSON.stringify(newWishlist))
                         setData(newWishlist)
+                        setIsSending(false)
                     } else if (response.status === 404) {
                         if (response.message === "This user does not exist") {
                             localStorage.removeItem("user");
@@ -167,6 +169,7 @@ function Wishlist() {
                                 alert("Remove successfully.")
                                 localStorage.setItem("wishlist", JSON.stringify(newWishlist))
                                 setData(newWishlist)
+                                setIsSending(false)
                             }
                         } else {
                             console.log(response.message);
@@ -174,6 +177,7 @@ function Wishlist() {
                             if (isExist) {
                                 localStorage.setItem("wishlist", JSON.stringify(newWishlist))
                                 setData(newWishlist)
+                                setIsSending(false)
                             }
                         }
                     } else if (response.status === 401 || response.status === 403) {
@@ -182,6 +186,7 @@ function Wishlist() {
                             alert("Remove successfully.")
                             localStorage.setItem("wishlist", JSON.stringify(newWishlist))
                             setData(newWishlist)
+                            setIsSending(false)
                         }
                     }
                 } catch(error) {
@@ -190,6 +195,7 @@ function Wishlist() {
                 }
             }
         }
+        setIsSending(true)
         removeItem()
     };
 
