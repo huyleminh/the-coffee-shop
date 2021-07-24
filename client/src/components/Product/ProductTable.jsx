@@ -53,7 +53,7 @@ function ProductTable(props) {
                     return (
                         <ul className="price_style">
                             <li style={{ textDecoration: "line-through" }}>{priceObj.price} VND</li>
-                            <li style={{ color: "#f00" }}>{newPrice} VND</li>
+                            <li style={{ color: "#f00" , fontWeight: "650" }}>{newPrice} VND</li>
                         </ul>
                     );
                 } else

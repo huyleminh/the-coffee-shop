@@ -25,7 +25,7 @@ function Wishlist() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
-    const [isAssigning, setIsAssigning] = useState(false);
+    const [isRemoving, setIsRemoving] = useState(false);
 
     useEffect(() => {
         const fetchWishlist = async () => {
@@ -81,10 +81,10 @@ function Wishlist() {
 
     useEffect(() => {
         removeSelectedItem();
-        setIsAssigning(false);
+        setIsRemoving(false);
         setSelectedItem([]);
         // eslint-disable-next-line
-    }, [isAssigning]);
+    }, [isRemoving]);
 
     const tempArray = data.map(function (item, index) {
         let row = {};
@@ -135,7 +135,7 @@ function Wishlist() {
     const handleRemoveItem = (key) => {
         setIsSending(true);
         setSelectedItem([key]);
-        setIsAssigning(true);
+        setIsRemoving(true);
     };
 
     const removeSelectedItem = async () => {
@@ -205,13 +205,12 @@ function Wishlist() {
     };
 
     const handleRemoveSelected = () => {
-        console.log(selectedItem)
         if (selectedItem.length === 0) {
             alert("No item is being selected.\nPlease select item(s) and try again.")
         }
         else {
             setIsSending(true);
-            setIsAssigning(true);
+            setIsRemoving(true);
         }
     };
 
@@ -226,9 +225,7 @@ function Wishlist() {
                 <div className="command_bar">
                     <div className="cmd_item">
                         {isSending ? (
-                            <span>
-                                Sending request, please wait.... <LoadingOutlined spin />
-                            </span>
+                            <LoadingOutlined spin />
                         ) : (
                             <span></span>
                         )}

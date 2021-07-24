@@ -60,7 +60,7 @@
 }
 
 .cmd_item {
-    margin: 10px;
+    margin: 10px 3px 10px 3px;
     align-items: center;
     text-align: center;
 }
