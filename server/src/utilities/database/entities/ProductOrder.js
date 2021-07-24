@@ -36,7 +36,7 @@ class ProductOrder {
                     Object.values(productOrder)
                 )
             })
-            console.log(sql)
+
             DatabaseConnection.query(sql, (error) => {
                 if (error) {
                     reject(error)

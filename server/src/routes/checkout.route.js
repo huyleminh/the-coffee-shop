@@ -16,7 +16,7 @@ checkoutRouter.post(
     "/confirm",
     AuthorizationMiddleware.verifyToken,
     AuthorizationMiddleware.verifyDataInToken,
-    CheckoutController.getUserInfo,
+    CheckoutController.confirmInfo,
     OrderController.createOrder
 );
 
