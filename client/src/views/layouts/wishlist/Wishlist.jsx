@@ -25,6 +25,7 @@ function Wishlist() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
+    const [isAssigning, setIsAssigning] = useState(false);
 
     useEffect(() => {
         const fetchWishlist = async () => {
@@ -78,6 +79,13 @@ function Wishlist() {
         fetchImages();
     }, [data]);
 
+    useEffect(() => {
+        removeSelectedItem();
+        setIsAssigning(false);
+        setSelectedItem([]);
+        // eslint-disable-next-line
+    }, [isAssigning]);
+
     const tempArray = data.map(function (item, index) {
         let row = {};
         row.key = item.product.id;
@@ -125,142 +133,86 @@ function Wishlist() {
     };
 
     const handleRemoveItem = (key) => {
-        const removeItem = async () => {
-            const user = JSON.parse(localStorage.getItem("user"));
-            const wishlist = JSON.parse(localStorage.getItem("wishlist"));
-            const newWishlist = [];
-            let isExist = false;
-            for (let item of wishlist) {
-                if (item["product"]["id"] !== key) {
-                    newWishlist.push(item);
-                } else {
+        setIsSending(true);
+        setSelectedItem([key]);
+        setIsAssigning(true);
+    };
+
+    const removeSelectedItem = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const wishlist = JSON.parse(localStorage.getItem("wishlist"));
+        const newWishlist = [];
+        const removeItem = [];
+        let isExist = false;
+        let deleted = false;
+        for (let item of wishlist) {
+            deleted = false;
+            for (let key of selectedItem) {
+                if (item["product"]["id"] === key) {
                     isExist = true;
+                    removeItem.push(item);
+                    deleted = true;
                 }
             }
-            if (!user || !user.token) {
-                localStorage.removeItem("user");
+            if (!deleted) {
+                newWishlist.push(item);
+            }
+        }
+
+        if (!user || !user.token) {
+            localStorage.removeItem("user");
+            if (isExist) {
+                alert("Remove successfully.");
+                localStorage.setItem("wishlist", JSON.stringify(newWishlist));
+                setData(newWishlist);
+                setIsSending(false);
+            }
+        } else {
+            try {
+                const removeItemPromise = removeItem.map((item) => {
+                    return WishlistAPI.deleteItem(user.token, item.product.id);
+                });
+                const response = await Promise.all(removeItemPromise);
+                let countNotExist = 0;
+                for (let item of response) {
+                    if (item.status === 200) {
+                        console.log("success");
+                    } else if (item.status === 404) {
+                        if (item.message === "This user does not exist") {
+                            localStorage.removeItem("user");
+                        } else {
+                            console.log(item.message);
+                            countNotExist += 1;
+                        }
+                    } else if (item.status === 401 || item.status === 403) {
+                        localStorage.removeItem("user");
+                    }
+                }
                 if (isExist) {
                     alert("Remove successfully.");
+                    if (countNotExist !== 0) {
+                        alert(`${countNotExist} item(s) does not exist in your wishlist.`);
+                    }
                     localStorage.setItem("wishlist", JSON.stringify(newWishlist));
                     setData(newWishlist);
                     setIsSending(false);
                 }
-            } else {
-                try {
-                    const response = await WishlistAPI.deleteItem(user.token, key);
-                    if (response.status === 200) {
-                        console.log("success");
-                        alert("Remove successfully.");
-                        localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                        setData(newWishlist);
-                        setIsSending(false);
-                    } else if (response.status === 404) {
-                        if (response.message === "This user does not exist") {
-                            localStorage.removeItem("user");
-                            if (isExist) {
-                                alert("Remove successfully.");
-                                localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                                setData(newWishlist);
-                                setIsSending(false);
-                            }
-                        } else {
-                            console.log(response.message);
-                            alert("This product does not exist in your wishlist.");
-                            if (isExist) {
-                                localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                                setData(newWishlist);
-                                setIsSending(false);
-                            }
-                        }
-                    } else if (response.status === 401 || response.status === 403) {
-                        localStorage.removeItem("user");
-                        if (isExist) {
-                            alert("Remove successfully.");
-                            localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                            setData(newWishlist);
-                            setIsSending(false);
-                        }
-                    }
-                } catch (error) {
-                    console.log(error);
-                    alert("Something went wrong.");
-                }
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong.");
             }
-        };
-        setIsSending(true);
-        removeItem();
-        setSelectedItem([]);
+        }
     };
 
     const handleRemoveSelected = () => {
-        const removeSelectedItem = async () => {
-            const user = JSON.parse(localStorage.getItem("user"));
-            const wishlist = JSON.parse(localStorage.getItem("wishlist"));
-            const newWishlist = [];
-            const removeItem = [];
-            let isExist = false;
-            let deleted = false;
-            for (let item of wishlist) {
-                deleted = false;
-                for (let key of selectedItem) {
-                    if (item["product"]["id"] === key) {
-                        isExist = true;
-                        removeItem.push(item);
-                        deleted = true;
-                    }
-                }
-                if (!deleted) {
-                    newWishlist.push(item);
-                }
-            }
-
-            if (!user || !user.token) {
-                localStorage.removeItem("user");
-                if (isExist) {
-                    alert("Remove successfully.");
-                    localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                    setData(newWishlist);
-                    setIsSending(false);
-                }
-            } else {
-                try {
-                    const removeItemPromise = removeItem.map((item) => {
-                        return WishlistAPI.deleteItem(user.token, item.product.id);
-                    });
-                    const response = await Promise.all(removeItemPromise);
-                    let countNotExist = 0;
-                    for (let item of response) {
-                        if (item.status === 200) {
-                            console.log("success");
-                        } else if (item.status === 404) {
-                            if (item.message === "This user does not exist") {
-                                localStorage.removeItem("user");
-                            } else {
-                                console.log(item.message);
-                                countNotExist += 1;
-                            }
-                        } else if (item.status === 401 || item.status === 403) {
-                            localStorage.removeItem("user");
-                        }
-                    }
-                    if (isExist) {
-                        alert("Remove successfully.");
-                        if (countNotExist !== 0) {
-                            alert(`${countNotExist} item(s) does not exist in your wishlist.`);
-                        }
-                        localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-                        setData(newWishlist);
-                        setIsSending(false);
-                    }
-                } catch (error) {
-                    console.log(error);
-                    alert("Something went wrong.");
-                }
-            }
-        };
-        setIsSending(true);
-        removeSelectedItem();
-        setSelectedItem([]);
+        console.log(selectedItem)
+        if (selectedItem.length === 0) {
+            alert("No item is being selected.\nPlease select item(s) and try again.")
+        }
+        else {
+            setIsSending(true);
+            setIsAssigning(true);
+        }
     };
 
     const handleCartSelected = () => {
@@ -273,7 +225,13 @@ function Wishlist() {
             <div className="wrapper wishlist">
                 <div className="command_bar">
                     <div className="cmd_item">
-                        {isSending ? <span>Sending request, please wait.... <LoadingOutlined spin /></span> : <span></span>}
+                        {isSending ? (
+                            <span>
+                                Sending request, please wait.... <LoadingOutlined spin />
+                            </span>
+                        ) : (
+                            <span></span>
+                        )}
                     </div>
                     <div className="cmd_item">
                         <span>{selectedItem.length} item(s) selected</span>
