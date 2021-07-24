@@ -80,9 +80,11 @@ function Wishlist() {
     }, [data]);
 
     useEffect(() => {
-        removeSelectedItem();
-        setIsRemoving(false);
-        setSelectedItem([]);
+        if (isRemoving) {
+            removeSelectedItem();
+            setIsRemoving(false);
+            setSelectedItem([]);
+        }
         // eslint-disable-next-line
     }, [isRemoving]);
 
