@@ -19,6 +19,7 @@
     font-size: 1.1em;
     padding: 5px 20px 5px 20px;
     margin: 0px;
+    transition: color 0.2s, background-color 0.2s;
 }
 
 .btn_go_menu:hover {
@@ -66,7 +67,7 @@
 
 .cmd_item span {
     display: flex;
-    margin: 10px 0px 10px 10px;
+    margin: 10px 10px 10px 10px;
 }
 
 .btn_cart_selected {
@@ -78,6 +79,7 @@
     color: #61462c;
     border-radius: 5px;
     background-color: #fff;
+    transition: color 0.2s, background-color 0.2s;
 }
 
 .btn_cart_selected:hover {
