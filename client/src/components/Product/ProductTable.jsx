@@ -12,6 +12,7 @@ function ProductTable(props) {
         records,
         pagination,
         readonly,
+        hiddens,
         handleSelected,
         handleDeleted,
         handleAction,
@@ -85,42 +86,27 @@ function ProductTable(props) {
             title: "Action",
             dataIndex: "action",
             render: (action, record) => {
-                if (!action) return <></>;
                 const icon =
                     action === "cart" ? (
-                        <div>
-                            <span className="table-cart" onClick={() => handleAction(record.key)}>
-                                <FontAwesomeIcon icon={faShoppingCart} />
-                            </span>
-                            <button
-                                className="table-deleted"
-                                onClick={() => handleDeleted(record.key)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        <span className="table-cart" onClick={() => handleAction(record.key)}>
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                        </span>
                     ) : action === "wishlist" ? (
-                        <div>
-                            <span
-                                className="table-wishlist"
-                                onClick={() => handleAction(record.key)}
-                            >
-                                <FontAwesomeIcon icon={faHeart} />
-                            </span>
-                            <button
-                                className="table-deleted"
-                                onClick={() => handleDeleted(record.key)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                        <span className="table-cart" onClick={() => handleAction(record.key)}>
+                            <FontAwesomeIcon icon={faHeart} />
+                        </span>
                     ) : (
+                        <></>
+                    );
+
+                return (
+                    <div>
+                        {icon}
                         <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
                             Delete
                         </button>
-                    );
-
-                return icon;
+                    </div>
+                );
             },
         },
     ];
@@ -132,17 +118,21 @@ function ProductTable(props) {
         },
     };
 
+    const columnsFiltered = Array.isArray(hiddens)
+        ? columns.filter((column) => hiddens.indexOf(column.dataIndex) === -1)
+        : columns;
+
     return (
         <div style={{ width: "100%" }}>
             {readonly ? (
-                <Table columns={columns} dataSource={records} pagination={pagination} />
+                <Table columns={columnsFiltered} dataSource={records} pagination={pagination} />
             ) : (
                 <Table
                     rowSelection={{
                         type: "checkbox",
                         ...rowSelection,
                     }}
-                    columns={columns}
+                    columns={columnsFiltered}
                     dataSource={records}
                     pagination={pagination}
                 />

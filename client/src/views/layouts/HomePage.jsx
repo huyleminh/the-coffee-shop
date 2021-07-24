@@ -13,6 +13,7 @@ import CheckoutPage from "./Checkout/CheckoutPage";
 import LandingPage from "./LandingPage/LandingPage";
 import MenuPage from "./MenuPage/MenuPage";
 import UserProfile from "./UserProfile/UserProfile";
+import CartLayout from "./CartLayout/CartLayout";
 
 function HomePage() {
     const history = useHistory();
@@ -92,7 +93,7 @@ function HomePage() {
                     <Switch>
                         <PrivateRoute exact path="/profile" component={UserProfile} />
                         <Route exact path="/menu" component={MenuPage} />
-                        <Route exact path="/cart" />
+                        <Route exact path="/cart" component={CartLayout} />
                         <Route exact path="/wishlist" />
                         <PrivateRoute exact path="/checkout" component={CheckoutPage} />
                         <Route exact path="/" component={LandingPage} />

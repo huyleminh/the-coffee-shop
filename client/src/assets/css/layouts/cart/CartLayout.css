@@ -1,0 +1,11 @@
+.cart__top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart__topRight {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
