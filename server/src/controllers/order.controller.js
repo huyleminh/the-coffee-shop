@@ -16,7 +16,9 @@ class OrderController {
             0,
             payload.isPaid,
             payload.payMethod,
-            payload.deliveryAddress
+            payload.receiverInfo.fullname,
+            payload.receiverInfo.deliveryAddress,
+            payload.receiverInfo.phoneNumber
         )
 
         // creat an array of ProductOrder object
@@ -28,7 +30,7 @@ class OrderController {
                 productInfo.price
             )
         })
-        console.log(order.id)
+
         // insert an Order object and an array of ProductOrder object into the database
         const insertOrder = await order.insert()
         const insertProductOrderList = await ProductOrder.insertList(productOrderList)

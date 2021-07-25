@@ -2,14 +2,16 @@ import DatabaseConnection from "../DatabaseConnection.js"
 import DatabaseConfig from "../../../configs/DatabaseConfig.js"
 
 class Order {
-    constructor(id, userId, createdAt, status, isPaid, payMethod, deliveryAddress) {
+    constructor(id, userId, createdAt, status, isPaid, payMethod, fullname, deliveryAddress, phoneNumber) {
         this.id = id
         this.userId = userId
         this.createdAt = createdAt
         this.status = status
         this.isPaid = isPaid
         this.payMethod = payMethod
+        this.fullname = fullname
         this.deliveryAddress = deliveryAddress
+        this.phoneNumber = phoneNumber
     }
 
     // rows: [RowDataPacket{}].
@@ -20,11 +22,16 @@ class Order {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new ProductOrder(
-                row.productId,
-                row.orderId,
-                row.quantity,
-                row.price,
+            return new Order(
+                row.id,
+                row.userId,
+                row.createdAt,
+                row.status,
+                row.isPaid,
+                row.payMethod,
+                row.fullname,
+                row.deliveryAddress,
+                row.phoneNumber
             );
         });
     };
@@ -33,9 +40,9 @@ class Order {
         const values = Object.values(this);
 
         return new Promise((resolve, reject) => {
-            // (id, userId, createdAt, status, isPaid, payMethod, deliveryAddress)
+            // (id, userId, createdAt, status, isPaid, payMethod, fullname, deliveryAddress, phoneNumber)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.order
-            VALUES (?, ?, ?, ?, ?, ?, ?);`;
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {
