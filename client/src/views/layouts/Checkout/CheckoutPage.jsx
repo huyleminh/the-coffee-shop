@@ -101,6 +101,11 @@ function CheckoutPage() {
         } else if (res.status === 403) {
             alert(res.statusText);
             history.push("/login");
+        } else if (res.status === 404) {
+            alert(
+                res.statusText + " Please comeback to your cart and start creating an order again."
+            );
+            history.push("/cart");
         }
     };
 
@@ -215,6 +220,7 @@ function CheckoutPage() {
                                 value={voucher}
                                 placeholder="Enter your voucher"
                                 onChange={handleChangeVoucher}
+                                disabled
                             />
                             <button>Apply</button>
                         </div>

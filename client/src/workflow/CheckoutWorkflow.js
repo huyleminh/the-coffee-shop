@@ -2,14 +2,14 @@ import UserValidation from "../utilities/Validate/UserValidation";
 import CheckoutAPI from "../services/Checkout/CheckoutAPI";
 
 class CheckoutWorkflow {
-    #name;
+    #fullname;
     #phoneNumber;
     #deliveryAddress;
     #products;
     #isPaid = 0;
     #payMethod;
     constructor(props) {
-        this.#name = props.name ? props.name : "";
+        this.#fullname = props.name ? props.name : "";
         this.#phoneNumber = props.phoneNumber ? props.phoneNumber : "";
         this.#deliveryAddress = props.address
             ? props.address
@@ -19,7 +19,7 @@ class CheckoutWorkflow {
     }
 
     #validateInformation = () => {
-        let validateStatus = UserValidation.validateFullname(this.#name);
+        let validateStatus = UserValidation.validateFullname(this.#fullname);
         if (!validateStatus.status) return validateStatus;
 
         validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber);
@@ -38,9 +38,11 @@ class CheckoutWorkflow {
                 products: this.#products,
                 isPaid: this.#isPaid,
                 payMethod: this.#payMethod,
-                deliveryAddress: this.#deliveryAddress,
-                name: this.#name,
-                phoneNumber: this.#phoneNumber,
+                receiverInfo: {
+                    fullname: this.#fullname.trim(),
+                    deliveryAddress: this.#deliveryAddress.trim(),
+                    phoneNumber: this.#phoneNumber,
+                },
             });
 
             if (response.status === 200) {
