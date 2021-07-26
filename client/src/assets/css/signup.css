@@ -145,7 +145,7 @@ button[type="submit"]:hover {
     }
 
     button[type="submit"] {
-        height: 30px;
+        height: 40px;
         font-size: 1rem;
         font-weight: 600;
     }
@@ -183,7 +183,7 @@ button[type="submit"]:hover {
     }
 
     button[type="submit"] {
-        height: 35px;
+        height: 45px;
         font-size: 1rem;
         font-weight: 600;
     }

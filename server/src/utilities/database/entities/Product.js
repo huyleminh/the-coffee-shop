@@ -39,7 +39,7 @@ class Product {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
-                c.name AS categoryName,
+                c.name AS 'categoryName',
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
@@ -65,12 +65,44 @@ class Product {
         })
     }
 
+    static getSpecificProduct = (productId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            SELECT
+                p.id, p.name, p.image, p.price, p.description,
+                c.name AS 'categoryName',
+                pr.totalStar, pr.totalRating,
+                p.discountId, d.percent, d.startDate, d.endDate
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_category pc ON p.id = pc.productId
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.category c ON c.id = pc.categoryId
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_rating pr ON p.id = pr.productId
+            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId
+            WHERE p.id = ?;`
+
+            DatabaseConnection.query(sql, productId, (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const jsonString = JSON.stringify(rows)
+                    const jsonData = JSON.parse(jsonString)
+                    resolve(jsonData)
+                }
+            })
+        })
+    }
+
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
-                c.name AS categoryName,
+                c.name AS 'categoryName',
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
@@ -102,7 +134,7 @@ class Product {
             const sql = `
             SELECT
                 p.id, p.name, p.image, p.price, p.description,
-                c.name AS categoryName,
+                c.name AS 'categoryName',
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
             FROM ${DatabaseConfig.CONFIG.DATABASE}.product p

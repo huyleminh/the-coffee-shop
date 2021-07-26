@@ -63,7 +63,7 @@ function LandingPage() {
                 <div className="contact__left container-left">
                     <h1>Contact us</h1>
                     <div className="contact__form">
-                        <input type="text" name="name" id="name" placeholder="Entet your name" />
+                        <input type="text" name="name" id="name" placeholder="Enter your name" />
                         <input
                             type="email"
                             name="email"

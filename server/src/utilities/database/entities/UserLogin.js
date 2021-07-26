@@ -73,9 +73,9 @@ class UserLogin {
         return clone;
     }
 
-    static getAllByAttribute = (name, value) => {
+    static getAllByAttribute = (key, value) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login WHERE ${name} = ?;`;
+            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login WHERE ${key} = ?;`;
 
             DatabaseConnection.query(sql, value, (error, rows) => {
                 if (error) {
@@ -94,9 +94,9 @@ class UserLogin {
         })
     }
 
-    static getAllByAttributes = (names, values) => {
+    static getAllByAttributes = (keys, values) => {
         return new Promise((resolve, reject) => {
-            let whereStatement = names.join("=?,");
+            let whereStatement = keys.join("=?,");
             whereStatement += "=?";
 
             const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.user_login WHERE ${whereStatement};`;
