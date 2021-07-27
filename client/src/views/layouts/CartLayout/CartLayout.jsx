@@ -8,6 +8,7 @@ import Loading from "../../../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingOutlined } from "@ant-design/icons";
 import CartImage from "../../../assets/images/landing-hero.jpg";
+import ProductItem from "../MenuPage/Product/ProductItem";
 const { Content } = Layout;
 
 // Handle items which are selected
@@ -117,6 +118,10 @@ function CartLayout() {
         history.push("/menu");
     };
 
+    const handleCheckout = () => {
+        history.push("/checkout");
+    };
+
     const handleRemoveItem = (key) => {
         setIsSending(true);
         setSelectedItem([key]);
@@ -211,7 +216,8 @@ function CartLayout() {
     };
 
     const handleAction = (key) => {
-        history.push("/wishlist");
+        //ProductItem.handleAddToWishlist();
+        alert("ADDED TO WISHLIST (FAKE)");
     };
 
     const handleRemoveSelected = () => {
@@ -249,7 +255,7 @@ function CartLayout() {
                     <div className="cmd_item_cart">
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>
-                    <div className="cmd_item_cart" title="Remove selected item(s) from wishlist">
+                    <div className="cmd_item_cart" title="Remove selected item(s) from cart">
                         <button className="table-deleted" onClick={handleRemoveSelected}>
                             Remove
                         </button>
@@ -284,8 +290,10 @@ function CartLayout() {
                 </div>
                 <div className="bottomRight__totalCheckout__cart ">
                     <div className="totalMoney">TOTAL MONEY: {totalMoney} </div>
-                    <div className="cmd_item_checkout" title="Add selected item(s) to cart">
-                        <button className="btn_checkout_cart">Checkout</button>
+                    <div className="cmd_item_checkout" title="Go to checkout">
+                        <button className="btn_checkout_cart" onClick={handleCheckout}>
+                            Checkout
+                        </button>
                     </div>
                 </div>
             </div>
