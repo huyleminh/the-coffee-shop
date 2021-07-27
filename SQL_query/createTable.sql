@@ -179,16 +179,13 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`order` (
   `status` TINYINT(1) NOT NULL,
   `isPaid` TINYINT(1) NOT NULL,
   `payMethod` TINYINT(1) NOT NULL,
+  `deliveryFee` INT NOT NULL,
   CONSTRAINT PK_ORDER PRIMARY KEY (`id`)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
 
-ALTER TABLE `heroku_a51da3167c7e5af`.`order` 
-ADD COLUMN `fullname` VARCHAR(50) NOT NULL AFTER `payMethod`,
-ADD COLUMN `deliveryAddress` VARCHAR(150) NOT NULL AFTER 'fullname',
-ADD COLUMN `phoneNumber` CHAR(10) NOT NULL AFTER `deliveryAddress`;
 -- ------------------------------------------------------
 -- Table `heroku_a51da3167c7e5af`.`product_order`
 -- ------------------------------------------------------
@@ -202,6 +199,19 @@ CREATE TABLE `heroku_a51da3167c7e5af`.`product_order` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
+
+
+CREATE TABLE heroku_a51da3167c7e5af.receiver_info (
+	orderId VARCHAR(36) NOT NULL,
+    fullname VARCHAR(50)  NOT NULL,
+    address VARCHAR(150)  NOT NULL,
+    phoneNumber CHAR(10) NOT NULL,
+
+    CONSTRAINT PK_RECEIVER_INFO PRIMARY KEY (orderId)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_bin;
 
 
 -- ------------------------------------------------------
@@ -287,3 +297,11 @@ ALTER TABLE `heroku_a51da3167c7e5af`.`product_order`
 ADD CONSTRAINT FK_PRODUCT_ORDER_ORDER
 FOREIGN KEY (orderId)
 REFERENCES `heroku_a51da3167c7e5af`.`order`(id);
+
+-- ------------------------------------------------------
+-- FK_FK_RECEIVER_INFO
+-- ------------------------------------------------------
+ALTER TABLE heroku_a51da3167c7e5af.receiver_info
+ADD CONSTRAINT FK_RECEIVER_INFO_ORDER
+FOREIGN KEY (orderId)
+REFERENCES heroku_a51da3167c7e5af.order(id);
