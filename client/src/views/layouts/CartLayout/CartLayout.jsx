@@ -130,24 +130,24 @@ function CartLayout() {
     };
 
     const handleSelected = (keys) => {
-        console.log("keys: ", keys);
+        //console.log("keys: ", keys);
         setSelectedItem([keys]);
 
-        let totalTemp = 0;
+        //let totalTemp = 0;
         for (let key of keys) {
-            console.log("SELECTED: ", key);
+            //console.log("SELECTED: ", key);
             for (let item of cart) {
                 //console.log(referralItem);
-                console.log(item["key"]);
+                //console.log(item["key"]);
                 if (key === item["key"]) {
-                    console.log("REFERRAL: ", item);
-                    totalTemp += item["total"];
+                    //console.log("REFERRAL: ", item);
+                    //totalTemp += item["total"];
                 }
             }
         }
 
-        setTotalMoney(totalTemp);
-        console.log("TOTAL: ", totalTemp);
+        //setTotalMoney(totalTemp);
+        //console.log("TOTAL: ", totalTemp);
     };
 
     const handleToBuyItem = () => {
@@ -196,7 +196,7 @@ function CartLayout() {
         console.log("SELECTED: ", selectedItem);
         for (let item of cart) {
             isDeleted = false;
-            for (let key of selectedItem) {
+            for (let key of selectedItem[0]) {
                 console.log(item);
                 if (item["key"] === key) {
                     isModified = true;
