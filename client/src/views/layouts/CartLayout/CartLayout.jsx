@@ -242,17 +242,14 @@ function CartLayout() {
         <Content>
             <Hero title="MY CART" image={CartImage} />
             <div className="wrapper wishlist">
-                <div className="command_bar">
-                    <div className="cmd_item">
+                <div className="command_bar_cart">
+                    <div className="cmd_item_cart">
                         {isSending ? <LoadingOutlined spin /> : <span></span>}
                     </div>
-                    <div className="cmd_item">
+                    <div className="cmd_item_cart">
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>
-                    <div className="cmd_item" title="Add selected item(s) to cart">
-                        <button className="btn_cart_selected">Checkout</button>
-                    </div>
-                    <div className="cmd_item" title="Remove selected item(s) from wishlist">
+                    <div className="cmd_item_cart" title="Remove selected item(s) from wishlist">
                         <button className="table-deleted" onClick={handleRemoveSelected}>
                             Remove
                         </button>
@@ -280,59 +277,20 @@ function CartLayout() {
                         />
                     </>
                 )}
-                <div className="totalMoney">TOTAL MONEY: {totalMoney}</div>
                 <div>
                     <button className="btn_go_menu" onClick={handleGoMenu}>
                         VISIT MENU
                     </button>
                 </div>
+                <div className="bottomRight__totalCheckout__cart ">
+                    <div className="totalMoney">TOTAL MONEY: {totalMoney} </div>
+                    <div className="cmd_item_checkout" title="Add selected item(s) to cart">
+                        <button className="btn_checkout_cart">Checkout</button>
+                    </div>
+                </div>
             </div>
         </Content>
     );
-    // return (
-    //     <Content>
-    //         <Hero title="MY CART" image={backgroundImage} />
-    //         <div className="wrapper cart">
-    //             <div className="cart__top">
-    //                 <div className="cart__topRight">
-    //                     <span className="numberOfItems"> {numberOfSelected} Item(s)</span>
-    //                     <button className="CartRemoveButton" onClick={handleRemoveSelected}>
-    //                         Remove
-    //                     </button>
-    //                 </div>
-    //                 {isLoading ? (
-    //                     <Loading
-    //                         style={{
-    //                             wkeyth: "100%",
-    //                             height: "100%",
-    //                             display: "flex",
-    //                             justifyContent: "center",
-    //                             alignItems: "center",
-    //                         }}
-    //                     />
-    //                 ) : (
-    //                     <>
-    //                         <ProductTable
-    //                             records={cart}
-    //                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-    //                             handleSelected={handleSelected}
-    //                             handleDeleted={handleRemoveItem}
-    //                             handleQuantity={handleQuantity}
-    //                         />
-    //                     </>
-    //                 )}
-    //             </div>
-    //         </div>
-    //         <div className="cart__bottom">
-    //             <span className="cart__bottom__returnAndTotal">
-    //                 <button className="CartBuyMoreButton" onClick={handleGoMenu}>
-    //                     Buy More
-    //                 </button>
-    //                 <text className="TotalPrice">TOTAL PRICE: {totalMoney} đ</text>
-    //             </span>
-    //         </div>
-    //     </Content>
-    // );
 }
 
 export default CartLayout;
