@@ -1,6 +1,6 @@
 import { Layout, Radio, Space } from "antd";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/checkout/CheckoutPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
@@ -17,6 +17,8 @@ const VOUCHER = {
     member: 15000,
 };
 
+const SHIPPING_FEE = [5000, 10000, 15000];
+
 function CheckoutPage() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
@@ -27,32 +29,36 @@ function CheckoutPage() {
 
     let totalPrice = 0;
     const checkoutList = JSON.parse(localStorage.getItem("checkout"));
-    const records = checkoutList.map((item) => {
-        const record = {
-            key: item.product.id,
-            product: item.product.name,
-            quantity: item.quantity,
-            price: {
-                discount: null,
-                price: item.product.price,
-            },
-            total: 0,
-        };
 
-        // if the discount is valid
-        if (item.discount) {
-            const endDate = new Date(item.discount.endDate).toISOString();
-            const now = new Date().toISOString();
+    const records = !checkoutList
+        ? []
+        : checkoutList.map((item) => {
+              const record = {
+                  key: item.product.id,
+                  product: item.product.name,
+                  quantity: item.quantity,
+                  price: {
+                      discount: null,
+                      price: item.product.price,
+                  },
+                  total: 0,
+              };
 
-            if (endDate > now) {
-                record.price.discount = item.discount.percent;
-                record.total = (1 - record.price.discount) * record.price.price * record.quantity;
-            } else record.total = record.price.price * record.quantity;
-        } else record.total = record.price.price * record.quantity;
+              // if the discount is valid
+              if (item.discount) {
+                  const endDate = new Date(item.discount.endDate).toISOString();
+                  const now = new Date().toISOString();
 
-        totalPrice += record.total;
-        return record;
-    });
+                  if (endDate > now) {
+                      record.price.discount = item.discount.percent;
+                      record.total =
+                          (1 - record.price.discount) * record.price.price * record.quantity;
+                  } else record.total = record.price.price * record.quantity;
+              } else record.total = record.price.price * record.quantity;
+
+              totalPrice += record.total;
+              return record;
+          });
 
     // Discount from vouchers
     const discountFee =
@@ -135,6 +141,8 @@ function CheckoutPage() {
 
         fetchUsertInformation();
     }, [history]);
+
+    if (!checkoutList) return <Redirect to="/cart" />;
 
     return (
         <Content>
@@ -232,7 +240,7 @@ function CheckoutPage() {
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Shipping fee:</span>
-                                <span>10000 VND</span>
+                                <span>{SHIPPING_FEE[records.length % 3]} VND</span>
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Voucher:</span>
