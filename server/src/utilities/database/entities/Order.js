@@ -2,7 +2,7 @@ import DatabaseConnection from "../DatabaseConnection.js"
 import DatabaseConfig from "../../../configs/DatabaseConfig.js"
 
 class Order {
-    constructor(id, aliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee, fullname, deliveryAddress, phoneNumber) {
+    constructor(id, aliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee) {
         this.id = id
         this.aliasId = aliasId
         this.userId = userId
@@ -11,9 +11,6 @@ class Order {
         this.isPaid = isPaid
         this.payMethod = payMethod
         this.deliveryFee = deliveryFee
-        this.fullname = fullname
-        this.deliveryAddress = deliveryAddress
-        this.phoneNumber = phoneNumber
     }
 
     // rows: [RowDataPacket{}].
@@ -32,10 +29,7 @@ class Order {
                 row.status,
                 row.isPaid,
                 row.payMethod,
-                row.deliveryFee,
-                row.fullname,
-                row.deliveryAddress,
-                row.phoneNumber
+                row.deliveryFee
             );
         });
     };
@@ -50,7 +44,7 @@ class Order {
                 }
 
                 if (rows === undefined)
-                    reject(new Error(error))
+                    reject(new Error("Error: 'rows' is undefined"))
                 else {
                     const jsonString = JSON.stringify(rows)
                     const aliasIdList = JSON.parse(jsonString)
@@ -61,13 +55,38 @@ class Order {
         })
     }
 
+    static getAllByUserId = (userId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT *
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.order o
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.receiver_info ri ON o.id = ri.orderId
+            WHERE userId = ?;`
+
+            DatabaseConnection.query(sql, userId, (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const jsonString = JSON.stringify(rows)
+                    const orderList = JSON.parse(jsonString)
+
+                    resolve(orderList)
+                }
+            })
+        })
+    }
+
     insert() {
         const values = Object.values(this);
 
         return new Promise((resolve, reject) => {
-            // (id, asliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee, fullname, deliveryAddress, phoneNumber)
+            // (id, asliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.order
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {

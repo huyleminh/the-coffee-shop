@@ -27,6 +27,33 @@ class ProductOrder {
         });
     };
 
+    static getAllProductByOrderId = (orderId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT
+                p.id AS 'id', p.name AS 'name', p.image AS 'image',
+                po.quantity AS 'quantity', po.price AS 'price'
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.product_order po
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.product p ON p.id = po.productId
+            WHERE orderId = ?;`
+
+            DatabaseConnection.query(sql, orderId, (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const jsonString = JSON.stringify(rows)
+                    const products = JSON.parse(jsonString)
+
+                    resolve(products)
+                }
+            })
+        })
+    }
+
     static insertList = (productOrderList) => {
         return new Promise((resolve, reject) => {
             let sql = ""
