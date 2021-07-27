@@ -4,4 +4,5 @@
 .env
 
 testapi.http
+test.js
 *.DS_Store

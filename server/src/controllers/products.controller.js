@@ -2,15 +2,6 @@ import Product from "../utilities/database/entities/Product.js";
 
 const MAX_PRODUCTS_PER_PAGE = 9;
 
-// const calculatePageInfo = (totalProducts, totalPages, currentPage) => {
-//     const limit =
-//         currentPage < totalPages
-//             ? MAX_PRODUCTS_PER_PAGE
-//             : totalProducts - (totalPages - 1) * MAX_PRODUCTS_PER_PAGE;
-
-//     return { page: currentPage, limit, total: totalProducts };
-// };
-
 class ProductsController {
     static getProducts = async (req, res) => {
         const params = res.locals.params;
@@ -61,7 +52,6 @@ class ProductsController {
         });
 
         const start = (params.page - 1) * MAX_PRODUCTS_PER_PAGE;
-        // const pagination = calculatePageInfo(totalProducts, totalPages, params.page);
         const pagination = {
             page: params.page,
             limit: MAX_PRODUCTS_PER_PAGE,
