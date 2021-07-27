@@ -6,7 +6,7 @@ import MenuLeft from "../../components/navigation/MenuLeft";
 import PageNotFound from "../errors/PageNotFound";
 import OrderManagement from "./orders/OrderManagement";
 
-const { Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 function LayoutEmployee() {
     const match = useRouteMatch();

@@ -79,14 +79,17 @@ function Wishlist() {
         fetchImages();
     }, [data]);
 
-    useEffect(() => {
-        if (isRemoving) {
-            removeSelectedItem();
-            setIsRemoving(false);
-            setSelectedItem([]);
-        }
-        // eslint-disable-next-line
-    }, [isRemoving]);
+    // useEffect(() => {
+    //     const removeItems = () => {
+    //         if (isRemoving) {
+    //             console.log("remove item");
+    //             removeSelectedItem();
+    //             setIsRemoving(false);
+    //             setSelectedItem([]);
+    //         }
+    //     };
+    //     removeItems();
+    // });
 
     const tempArray = data.map(function (item, index) {
         let row = {};
@@ -107,24 +110,11 @@ function Wishlist() {
         if (item.product.image)
             row.image = {
                 src: images[index],
-                width: "150px",
-                height: "150px",
+                width: "100px",
+                height: "100px",
             };
         return row;
     });
-
-    /*const handleQuantity = (record, value) => {
-        let clone = [...data];
-
-        for (let item in data) {
-            if (record["key"] === data[item]["key"]) {
-                clone[item]["quantity"] = value;
-                clone[item]["total"] =
-                    value * clone[item]["price"]["price"] * (1 - clone[item]["price"]["discount"]);
-            }
-        }
-        setData(clone);
-    };*/
 
     const handleGoToMenu = () => {
         history.push("/menu");
@@ -136,11 +126,12 @@ function Wishlist() {
 
     const handleRemoveItem = (key) => {
         setIsSending(true);
-        setSelectedItem([key]);
-        setIsRemoving(true);
+        // setSelectedItem([key]);
+        // setIsRemoving(true);
+        removeSelectedItem([key])
     };
 
-    const removeSelectedItem = async () => {
+    const removeSelectedItem = async (params) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
         const newWishlist = [];
@@ -149,7 +140,7 @@ function Wishlist() {
         let deleted = false;
         for (let item of wishlist) {
             deleted = false;
-            for (let key of selectedItem) {
+            for (let key of params) {
                 if (item["product"]["id"] === key) {
                     isExist = true;
                     removeItem.push(item);
@@ -208,11 +199,12 @@ function Wishlist() {
 
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
-            alert("No item is being selected.\nPlease select item(s) and try again.")
-        }
-        else {
+            alert("No item is being selected.\nPlease select item(s) and try again.");
+        } else {
             setIsSending(true);
-            setIsRemoving(true);
+            // setIsRemoving(true);
+            removeSelectedItem(selectedItem);
+            setSelectedItem([]);
         }
     };
 
@@ -226,11 +218,7 @@ function Wishlist() {
             <div className="wrapper wishlist">
                 <div className="command_bar">
                     <div className="cmd_item">
-                        {isSending ? (
-                            <LoadingOutlined spin />
-                        ) : (
-                            <span></span>
-                        )}
+                        {isSending ? <LoadingOutlined spin /> : <span></span>}
                     </div>
                     <div className="cmd_item">
                         <span>{selectedItem.length} item(s) selected</span>
