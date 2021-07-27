@@ -18,7 +18,6 @@ function CartLayout() {
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
-    const [numberOfSelected, setNumberOfSelected] = useState(0);
     const [totalMoney, setTotalMoney] = useState(0);
     //const [images, setImages] = useState([]);
 
@@ -126,7 +125,23 @@ function CartLayout() {
 
     const handleSelected = (keys) => {
         console.log("keys: ", keys);
-        setSelectedItem(keys);
+        setSelectedItem([keys]);
+
+        let totalTemp = 0;
+        for (let key of keys) {
+            console.log("SELECTED: ", key);
+            for (let item of cart) {
+                //console.log(referralItem);
+                console.log(item["key"]);
+                if (key === item["key"]) {
+                    console.log("REFERRAL: ", item);
+                    totalTemp += item["total"];
+                }
+            }
+        }
+
+        setTotalMoney(totalTemp);
+        console.log("TOTAL: ", totalTemp);
     };
 
     const handleQuantity = (item, value) => {
@@ -138,8 +153,17 @@ function CartLayout() {
                 console.log(clone["key"]);
                 const base =
                     clone["price"]["price"] - clone["price"]["price"] * clone["price"]["discount"];
+                setTotalMoney(totalMoney - clone["total"]);
                 clone["quantity"] = value;
                 clone["total"] = base * value;
+                setTotalMoney(totalMoney + clone["total"]);
+                if (value > 0) {
+                    let tempSelected = selectedItem[0];
+
+                    tempSelected.push(clone["key"]);
+                    console.log("TEMP SELECTED: ", tempSelected);
+                    setSelectedItem(tempSelected);
+                }
                 break;
             }
         }
@@ -198,6 +222,8 @@ function CartLayout() {
         }
     }, [isRemoving]);
 
+    useEffect(() => {}, [selectedItem]);
+
     return (
         <Content>
             <Hero title="MY CART" image={CartImage} />
@@ -240,7 +266,7 @@ function CartLayout() {
                         />
                     </>
                 )}
-
+                <div className="totalMoney">TOTAL MONEY: {totalMoney}</div>
                 <div>
                     <button className="btn_go_menu" onClick={handleGoMenu}>
                         VISIT MENU
