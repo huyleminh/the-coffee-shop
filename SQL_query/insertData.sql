@@ -361,5 +361,41 @@ UPDATE heroku_a51da3167c7e5af.order O set O.fullname='Phan Minh Hiếu',O.phoneN
 UPDATE heroku_a51da3167c7e5af.order O set O.fullname='Phan Ngọc Thạch',O.phoneNumber='0162069760'WHERE O.id='f0d8668f-f4c3-423e-85ea-9c5e86387b58';
 UPDATE heroku_a51da3167c7e5af.order O set O.fullname='Phạm Thu Hà',O.phoneNumber='0167980872'WHERE O.id='f6b10272-0d91-480a-a2c8-7a2aa80d00fc';
 
-
+INSERT INTO heroku_a51da3167c7e5af.receiver_info (orderId, fullname, address, phoneNumber)
+VALUES
+    ('09463f13-c02b-4dc0-90ae-31cf4d0ebb8a','Phạm Lệ Băng','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0167430611'),
+    ('0b825e16-5a00-424a-9791-51f7f6d1efbd','Ngô Thủy Hằng','144 Nguyen Si Sach Street&&Ward 15&&Tan Binh District&&Ho Chi Minh City','0167660895'),
+    ('15df17fc-18f3-48da-ad99-e5d8e16ac192','Phạm Thanh Tâm','268 Lý Thường Kiệt&&Phường 14&&Quận 10&&TP.HCM','0165231273'),
+    ('1d415eb6-3476-4abc-85d6-f71afb6c9c93','Lê Minh Huy','478 Minh Phung&&Ward 9&&Dist.11&&Ho Chi Minh City','0165286947'),
+    ('1f201713-1c0f-4bc6-86a8-6b2631bfbddc','Phan Minh Hiếu','478 Minh Phung&&Ward 9&&Dist.11&&Ho Chi Minh City','0163298404'),
+    ('2af246f2-ec2d-40a4-b748-51caaee8e7dd','Trần Quốc Hưng','144 Nguyen Si Sach Street&&Ward 15&&Tan Binh District&&Ho Chi Minh City','0164309638'),
+    ('2b755131-c9eb-447e-85d8-a162f979eb75','Lê Minh Huy','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0163198855'),
+    ('3600383b-e6ea-4afe-a411-45fa5fee2d60','Trần Hữu Ðạt','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0167799936'),
+    ('365c88d2-579f-4f9d-af1a-ebf614c45c4a','Trần Khánh Minh','79 Truong Dinh&&undefined&&Dist.1&&Ho Chi Minh City','0168158322'),
+    ('3747d57b-516d-4b96-acf6-27d11af8369d','Trần Văn Minh','79 Truong Dinh&&undefined&&Dist.1&&Ho Chi Minh City','0167332864'),
+    ('39fe82a0-26fe-4a97-9cc4-2fd932ffb7fb','Phan Anh Khải','79 Truong Dinh&&undefined&&Dist.1&&Ho Chi Minh City','0166339456'),
+    ('4370a1db-dd2e-40a1-8f4d-d626850db324','Trần Trọng Nghĩa','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0167226245'),
+    ('4386f4aa-f47d-41d0-b3df-28b8a88324e6','Nguyễn Nguyên Ðan','268 Lý Thường Kiệt&&Phường 14&&Quận 10&&TP.HCM','0168498900'),
+    ('50af560e-125c-4518-bba2-4035886b2387','Ngô Thái Hồng','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0163185983'),
+    ('519396e6-0fb1-4dd7-ad7b-5da3d46af69f','Nguyễn Tuấn Tài','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0163671665'),
+    ('6c4b3868-a1c2-47a9-a4ba-9cdb3d136c49','Phan Minh Hiếu','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0168763026'),
+    ('703b2238-c8b7-4983-830e-0add1073c9ea','Ngô Cát Tiên','79 Truong Dinh&&undefined&&Dist.1&&Ho Chi Minh City','0164425978'),
+    ('86e48208-9bfa-49b8-aa0b-001a3e455971','Phạm Thu Liên','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0165229063'),
+    ('8cd544f2-11bf-4248-a5c8-9d3aec7ac64c','Phan Minh Hiếu','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0168067639'),
+    ('8e423397-6702-461c-87d5-59a2e08fa05f','Lê Hoàng Anh','227 Nguyễn Văn Cừ&&Phường 4&&Quận 5&&TP.HCM','0909370956'),
+    ('90b30c82-1895-4f5a-8bb0-b71a64ffd362','Nguyễn Văn Thành','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0166246845'),
+    ('9c3faeed-1dc6-4c0a-bb2c-f0dbd8fdfc12','Phan Minh Hiếu','144 Nguyen Si Sach Street&&Ward 15&&Tan Binh District&&Ho Chi Minh City','0167161947'),
+    ('a0564d3f-b788-4699-9c24-e59e9ac244c7','Trần Xuân Hòa','478 Minh Phung&&Ward 9&&Dist.11&&Ho Chi Minh City','0163046038'),
+    ('bd9cdda3-8ec5-4d3b-898a-8453ac98b3c3','Lê Hoàng Anh','79 Truong Dinh&&undefined&&Dist.1&&Ho Chi Minh City','0167283512'),
+    ('c407bf69-8c60-4adc-912b-6b8201b6e712','Phan Bảo Khánh','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0163653797'),
+    ('c5257217-4cf4-4f2d-9b23-affb2f83d306','Nguyễn Hồng Đăng Phúc','478 Minh Phung&&Ward 9&&Dist.11&&Ho Chi Minh City','0162565693'),
+    ('c9f48bc4-9245-4d38-a62c-9f15f8f1db72','Phan Minh Hiếu','10-12 Đinh Tiên Hoàng&&Bến Nghé&&Quận 1&&TP.HCM','0162611578'),
+    ('cf29cf0c-5107-4a41-a395-c66c44ff74b3','Phan Minh Hiếu','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0165573656'),
+    ('d3e00b5f-d023-446f-aff0-500b6d534d4e','Phan Hoàng Nam','280 An Dương Vương&&Phường 4&&Quận 5&&TP.HCM','0166461474'),
+    ('e7d8cefc-85a9-4103-8602-bb1f7465b8e6','Ngô Quế Phương','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0166170078'),
+    ('ef1593c9-d17a-4bc1-bf8f-bf1c2c46c11e','Trần Thụy Du','31D Village Str.5, Block 1&&An Lac Townlet&&Binh Chanh District&&Ho Chi Minh City','0167919115'),
+    ('f0d8668f-f4c3-423e-85ea-9c5e86387b58','Phan Ngọc Thạch','144 Nguyen Si Sach Street&&Ward 15&&Tan Binh District&&Ho Chi Minh City','0162069760'),
+    ('f18a7d96-8d16-43ba-8d9b-b7a4057de7d1','Phan Minh Hiếu','478 Minh Phung&&Ward 9&&Dist.11&&Ho Chi Minh City','0166716972'),
+    ('f6b10272-0d91-480a-a2c8-7a2aa80d00fc','Phạm Thu Hà','144 Nguyen Si Sach Street&&Ward 15&&Tan Binh District&&Ho Chi Minh City','0167980872'),
+    ('f6ed4051-caf4-4ab0-b574-2a3bd731faea','Phạm Thanh Bình','227 Nguyễn Văn Cừ&&Phường 4&&Quận 5&&TP.HCM','0164277226');
 
