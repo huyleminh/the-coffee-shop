@@ -53,7 +53,7 @@ function ProductTable(props) {
                     return (
                         <ul className="price_style">
                             <li style={{ textDecoration: "line-through" }}>{priceObj.price} VND</li>
-                            <li style={{ color: "#f00" , fontWeight: "650" }}>{newPrice} VND</li>
+                            <li style={{ color: "#f00", fontWeight: "650" }}>{newPrice} VND</li>
                         </ul>
                     );
                 } else
@@ -91,11 +91,19 @@ function ProductTable(props) {
             render: (action, record) => {
                 const icon =
                     action === "cart" ? (
-                        <span title="Add to cart" className="table-cart" onClick={() => handleAction(record.key)}>
+                        <span
+                            title="Add to cart"
+                            className="table-cart"
+                            onClick={() => handleAction(record.key)}
+                        >
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </span>
                     ) : action === "wishlist" ? (
-                        <span title="Add to wishlist" className="table-wishlist" onClick={() => handleAction(record.key)}>
+                        <span
+                            title="Add to wishlist"
+                            className="table-wishlist"
+                            onClick={() => handleAction(record.key)}
+                        >
                             <FontAwesomeIcon icon={faHeart} />
                         </span>
                     ) : (
