@@ -18,6 +18,7 @@ function CartLayout() {
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
+    const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     //const [images, setImages] = useState([]);
 
@@ -144,10 +145,23 @@ function CartLayout() {
         console.log("TOTAL: ", totalTemp);
     };
 
-    const handleQuantity = (item, value) => {
-        console.log(item);
+    const handleToBuyItem = () => {
+        let tempTotalMoney = 0;
+        let tempItemToBuy = [];
+        for (let item of cart) {
+            if (Number(item["quantity"]) > 0) {
+                tempTotalMoney += item["total"];
+                tempItemToBuy.push(item);
+            }
+        }
+        setTotalMoney(tempTotalMoney);
+        setItemToBuy(tempItemToBuy);
+    };
 
+    const handleQuantity = (item, value) => {
+        //console.log(item);
         const cloneData = [...cart];
+        handleToBuyItem();
         for (let clone of cloneData) {
             if (clone["key"] === item["key"]) {
                 console.log(clone["key"]);
@@ -158,13 +172,11 @@ function CartLayout() {
                 clone["total"] = base * value;
                 setTotalMoney(totalMoney + clone["total"]);
                 if (value > 0) {
-                    let tempSelected = selectedItem[0];
-
-                    tempSelected.push(clone["key"]);
-                    console.log("TEMP SELECTED: ", tempSelected);
-                    setSelectedItem(tempSelected);
+                    let tempToBuy = itemToBuy;
+                    console.log("CLONE KEY: ", clone["key"]);
+                    console.log("TO BUY: ", itemToBuy);
+                    console.log("TEMP SELECTED: ", tempToBuy);
                 }
-                break;
             }
         }
         setCart(cloneData);
@@ -222,7 +234,9 @@ function CartLayout() {
         }
     }, [isRemoving]);
 
-    useEffect(() => {}, [selectedItem]);
+    useEffect(() => {
+        handleToBuyItem();
+    }, [cart]);
 
     return (
         <Content>
