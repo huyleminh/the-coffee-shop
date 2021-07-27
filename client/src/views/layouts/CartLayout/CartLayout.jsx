@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingOutlined } from "@ant-design/icons";
 import CartImage from "../../../assets/images/landing-hero.jpg";
 import ProductItem from "../MenuPage/Product/ProductItem";
+import CartAPI from "../../../services/Cart/CartAPI.js"
+import { Storage } from "../../../utilities/firebase/FirebaseConfig.js"
 const { Content } = Layout;
 
 // Handle items which are selected
@@ -21,98 +23,12 @@ function CartLayout() {
     const [isRemoving, setIsRemoving] = useState(false);
     const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
-    //const [images, setImages] = useState([]);
+    const [images, setImages] = useState([]);
 
-    const [cart, setCart] = useState([
-        {
-            key: "1",
-            product: "Latte",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "2",
-            product: "John Brown 1",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "3",
-            product: "John Brown 2",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "4",
-            product: "John Brown 3",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "5",
-            product: "John Brown 4",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "6",
-            product: "John Brown 5",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "7",
-            product: "John Brown",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-        {
-            key: "8",
-            product: "John Brown",
-            price: {
-                discount: 0.25,
-                price: 100000,
-            },
-            quantity: "1",
-            total: 75000,
-            action: "wishlist",
-        },
-    ]);
+    const [cart, setCart] = useState(() => {
+        const cartLocal = JSON.parse(localStorage.getItem("cart"))
+        return cartLocal ? cartLocal : []
+    });
 
     const handleGoMenu = () => {
         history.push("/menu");
@@ -165,26 +81,26 @@ function CartLayout() {
 
     const handleQuantity = (item, value) => {
         //console.log(item);
-        const cloneData = [...cart];
-        handleToBuyItem();
-        for (let clone of cloneData) {
-            if (clone["key"] === item["key"]) {
-                console.log(clone["key"]);
-                const base =
-                    clone["price"]["price"] - clone["price"]["price"] * clone["price"]["discount"];
-                setTotalMoney(totalMoney - clone["total"]);
-                clone["quantity"] = value;
-                clone["total"] = base * value;
-                setTotalMoney(totalMoney + clone["total"]);
-                if (value > 0) {
-                    let tempToBuy = itemToBuy;
-                    console.log("CLONE KEY: ", clone["key"]);
-                    console.log("TO BUY: ", itemToBuy);
-                    console.log("TEMP SELECTED: ", tempToBuy);
-                }
-            }
-        }
-        setCart(cloneData);
+        // const cloneData = [...cart];
+        // handleToBuyItem();
+        // for (let clone of cloneData) {
+        //     if (clone["key"] === item["key"]) {
+        //         console.log(clone["key"]);
+        //         const base =
+        //             clone["price"]["price"] - clone["price"]["price"] * clone["price"]["discount"];
+        //         setTotalMoney(totalMoney - clone["total"]);
+        //         clone["quantity"] = value;
+        //         clone["total"] = base * value;
+        //         setTotalMoney(totalMoney + clone["total"]);
+        //         if (value > 0) {
+        //             let tempToBuy = itemToBuy;
+        //             console.log("CLONE KEY: ", clone["key"]);
+        //             console.log("TO BUY: ", itemToBuy);
+        //             console.log("TEMP SELECTED: ", tempToBuy);
+        //         }
+        //     }
+        // }
+        // setCart(cloneData);
     };
 
     const removeSelectedItem = () => {
@@ -231,6 +147,49 @@ function CartLayout() {
     };
 
     useEffect(() => {
+        const fetchCart = async () => {
+            const user = localStorage.getItem("user")
+
+            if (!user || !user.token) {
+                localStorage.removeItem("user")
+                setIsLoading(false)
+            } else {
+                try {
+                    const response = await CartAPI.getCart(user.token)
+                    if (response.status === 200) {
+                        const resCart = response.data
+                        setCart(resCart)
+                        localStorage.setItem("cart", resCart)
+                    } else {
+                        localStorage.removeItem("user")
+                        const cartLocal = localStorage.getItem("cart")
+                        setCart(cartLocal ? cartLocal : [])
+                    }
+                } catch (error) {
+                    alert("Something went wrong.")
+                }
+            }
+        }
+
+        fetchCart()
+    }, [])
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            const imagePromises = cart.map(item => {
+                const image = item.product.image ? item.product.image : "latte.jpg"
+                return Storage.ref(`products/${image}`).getDownloadURL()
+            })
+
+            const images = await Promise.all(imagePromises)
+            setImages(images)
+            setIsLoading(false)
+        }
+
+        fetchImages()
+    }, [cart])
+
+    useEffect(() => {
         if (isRemoving) {
             setIsLoading(true);
             removeSelectedItem();
@@ -243,6 +202,28 @@ function CartLayout() {
     useEffect(() => {
         handleToBuyItem();
     }, [cart]);
+
+    const cartTable = cart.map((item, index) => {
+        const price = {
+            discount: item.discount ? item.discount.percent : 0,
+            price: item.product.price
+        }
+        const total = item.quantity * (price.price * (1 - price.discount))
+
+        return {
+            key: item.product.id,
+            product: item.product.name,
+            image: {
+                src: images[index],
+                width: "100px",
+                height: "100px"
+            },
+            price,
+            quantity: item.quantity,
+            total,
+            action: "wishlist",
+        }
+    })
 
     return (
         <Content>
@@ -274,7 +255,7 @@ function CartLayout() {
                 ) : (
                     <>
                         <ProductTable
-                            records={cart}
+                            records={cartTable}
                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
