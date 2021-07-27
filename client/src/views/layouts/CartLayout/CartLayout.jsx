@@ -18,15 +18,13 @@ function CartLayout() {
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
-
     const [numberOfSelected, setNumberOfSelected] = useState(0);
-
-    let totalMoney = 0;
+    const [totalMoney, setTotalMoney] = useState(0);
     //const [images, setImages] = useState([]);
 
     const [cart, setCart] = useState([
         {
-            id: "1",
+            key: "1",
             product: "Latte",
             price: {
                 discount: 0.25,
@@ -137,7 +135,11 @@ function CartLayout() {
         const cloneData = [...cart];
         for (let clone of cloneData) {
             if (clone["key"] === item["key"]) {
+                console.log(clone["key"]);
+                const base =
+                    clone["price"]["price"] - clone["price"]["price"] * clone["price"]["discount"];
                 clone["quantity"] = value;
+                clone["total"] = base * value;
                 break;
             }
         }
@@ -172,8 +174,8 @@ function CartLayout() {
         }
     };
 
-    const handleRemoveAction = (key) => {
-        console.log("action: ", key);
+    const handleAction = (key) => {
+        history.push("/wishlist");
     };
 
     const handleRemoveSelected = () => {
@@ -234,7 +236,7 @@ function CartLayout() {
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
                             handleQuantity={handleQuantity}
-                            handleAction={handleRemoveAction}
+                            handleAction={handleAction}
                         />
                     </>
                 )}
