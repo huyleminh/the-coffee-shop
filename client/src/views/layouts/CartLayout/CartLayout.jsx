@@ -148,7 +148,7 @@ function CartLayout() {
 
     useEffect(() => {
         const fetchCart = async () => {
-            const user = localStorage.getItem("user")
+            const user = JSON.parse(localStorage.getItem("user"))
 
             if (!user || !user.token) {
                 localStorage.removeItem("user")
@@ -159,7 +159,7 @@ function CartLayout() {
                     if (response.status === 200) {
                         const resCart = response.data
                         setCart(resCart)
-                        localStorage.setItem("cart", resCart)
+                        localStorage.setItem("cart", JSON.stringify(resCart))
                     } else {
                         localStorage.removeItem("user")
                         const cartLocal = localStorage.getItem("cart")

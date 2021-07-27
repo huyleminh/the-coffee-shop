@@ -12,21 +12,21 @@ class CartAPI {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         }
-        return ClientAPI.get("/cart/add", payload, config)
+        return ClientAPI.post("/cart/add", payload, config)
     }
 
     static deleteProduct = (token, productId) => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         }
-        return ClientAPI.get(`/cart/delte=${productId}`, config)
+        return ClientAPI.delete(`/cart/delte=${productId}`, config)
     }
 
     static editCart = (token, payload) => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         }
-        return ClientAPI.get("/cart/edit", payload, config)
+        return ClientAPI.patch("/cart/edit", payload, config)
     }
 }
 
