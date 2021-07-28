@@ -94,6 +94,11 @@
     padding: 30px 50px;
 }
 
+.profile__manipulation > .ant-layout-content {
+    width: 100%;
+    height: 100%;
+}
+
 .profile__bar {
     width: 100%;
     height: 50px;
