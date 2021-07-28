@@ -30,6 +30,7 @@ function CartLayout() {
     const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
+    const [isDisable, setIsDisable] = useState(false)
 
     const tappingQuantity = useRef(null)
 
@@ -98,30 +99,32 @@ function CartLayout() {
             localStorage.removeItem("user")
             // notification: change successfully
         } else {
-            try {
-                // notification: wait 3s
-                const handleEditCart = async () => {
+            tappingQuantity.current = setTimeout(async () => {
+                try {
+                    // notification: wait 3s
+                    setIsDisable(true)
+                    openNotification("bottomRight")
+
                     const response = await CartAPI.editCart(
                         user.token,
                         { productId: item.key, quantity: value }
                     )
 
+                    setIsDisable(false)
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart))
                         // notification: change successfully
-                    }
-                    else {
+                        openNotification("bottomRight")
+                    } else {
                         if (response.message !== "There is at least one product that does not exist in your cart")
                             localStorage.removeItem("user")
 
                         alert("Change quantity failed")
                     }
+                } catch (error) {
+                    alert("Something went wrong")
                 }
-
-                tappingQuantity.current = setTimeout(handleEditCart, 2000)
-            } catch (error) {
-                alert("Something went wrong")
-            }
+            }, 2000)
         }
     };
 
@@ -226,10 +229,15 @@ function CartLayout() {
     }, [cart]);
 
     const cartTable = cart.map((item, index) => {
-        const price = {
-            discount: item.discount ? item.discount.percent : 0,
-            price: item.product.price
+        let discount = 0
+        if (item.discount) {
+            discount = item.discount.percent
+            const endDate = new Date(item.discount.endDate)
+            if (Date.now() > endDate.valueOf())
+                discount = 0
         }
+
+        const price = { discount, price: item.product.price }
         const total = item.quantity * (price.price * (1 - price.discount))
 
         return {
@@ -278,7 +286,8 @@ function CartLayout() {
                     <>
                         <ProductTable
                             records={cartTable}
-                            pagination={{ position: ["bottomCenter"], pageSize: 5 }}
+                                pagination={{ position: ["bottomCenter"], pageSize: 5 }}
+                                disabled={isDisable}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
                             handleQuantity={handleQuantity}
@@ -292,7 +301,7 @@ function CartLayout() {
                     </button>
                 </div>
                 <div className="bottomRight__totalCheckout__cart ">
-                    <div className="totalMoney">TOTAL MONEY: {totalMoney} </div>
+                    <div className="totalMoney">TOTAL MONEY: {totalMoney} VND </div>
                     <div className="cmd_item_checkout" title="Go to checkout">
                         <button className="btn_checkout_cart" onClick={handleCheckout}>
                             Checkout
