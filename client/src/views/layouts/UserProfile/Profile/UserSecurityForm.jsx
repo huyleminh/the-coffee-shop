@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChangeSecurityWorkflow } from "../../../workflow/ManageProfileWorkflow";
+import { ChangeSecurityWorkflow } from "../../../../workflow/ManageProfileWorkflow";
 import { useHistory } from "react-router-dom";
 
 function UserSecurityForm(props) {
