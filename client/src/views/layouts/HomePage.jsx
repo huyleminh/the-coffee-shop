@@ -27,7 +27,7 @@ function HomePage() {
     };
 
     const handleLogout = () => {
-        const check = window.confirm("Are you sure to logout?");
+        const check = window.confirm("Are you sure to log out?");
         if (!check) return;
         clearLocal();
         setUserStatus({ isLogin: false, role: 3 });
