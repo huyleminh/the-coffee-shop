@@ -80,7 +80,7 @@
 .footer__copyright {
     padding: 5px 0px;
     text-align: center;
-    color: #aaa;
+    color: rgb(141, 141, 141);
 }
 
 @media only screen and (max-width: 1024px) {

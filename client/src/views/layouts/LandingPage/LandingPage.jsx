@@ -26,7 +26,7 @@ function LandingPage() {
                 <div className="hero__shopping">
                     <a href="/menu">
                         <FontAwesomeIcon icon={faShoppingCart} />
-                        <FontAwesomeIcon icon={faArrowRight} />
+                        <FontAwesomeIcon icon={faArrowRight} id="arrow_icon"/>
                     </a>
                 </div>
             </div>
