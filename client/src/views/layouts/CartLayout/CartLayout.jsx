@@ -1,18 +1,24 @@
-import { Layout } from "antd";
-import React, { useEffect, useState } from "react";
-import Hero from "../../../components/layouts/Hero";
-import ProductTable from "../../../components/Product/ProductTable";
-import "../../../assets/css/layouts/cart/CartLayout.css";
-import { useHistory } from "react-router-dom";
-import Loading from "../../../components/Loading";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingOutlined } from "@ant-design/icons";
+import { Layout, notification } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
+import "../../../assets/css/layouts/cart/CartLayout.css";
 import CartImage from "../../../assets/images/landing-hero.jpg";
-import ProductItem from "../MenuPage/Product/ProductItem";
-import CartAPI from "../../../services/Cart/CartAPI.js"
-import { Storage } from "../../../utilities/firebase/FirebaseConfig.js"
+import Hero from "../../../components/layouts/Hero";
+import Loading from "../../../components/Loading";
+import ProductTable from "../../../components/Product/ProductTable";
+import CartAPI from "../../../services/Cart/CartAPI.js";
+import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 const { Content } = Layout;
 
+const openNotification = placement => {
+    notification.info({
+      message: `Notification ${placement}`,
+      description:
+        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+      placement,
+    });
+  };
 // Handle items which are selected
 
 function CartLayout() {
@@ -24,6 +30,8 @@ function CartLayout() {
     const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
+
+    const tappingQuantity = useRef(null)
 
     const [cart, setCart] = useState(() => {
         const cartLocal = JSON.parse(localStorage.getItem("cart"))
@@ -46,61 +54,75 @@ function CartLayout() {
     };
 
     const handleSelected = (keys) => {
-        //console.log("keys: ", keys);
-        setSelectedItem([keys]);
-
-        //let totalTemp = 0;
-        for (let key of keys) {
-            //console.log("SELECTED: ", key);
-            for (let item of cart) {
-                //console.log(referralItem);
-                //console.log(item["key"]);
-                if (key === item["key"]) {
-                    //console.log("REFERRAL: ", item);
-                    //totalTemp += item["total"];
-                }
-            }
-        }
-
-        //setTotalMoney(totalTemp);
-        //console.log("TOTAL: ", totalTemp);
+        openNotification("bottomRight")
+        setSelectedItem(keys)
+        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total
+        }, 0)
+        setTotalMoney(totalMoney)
     };
 
     const handleToBuyItem = () => {
-        let tempTotalMoney = 0;
-        let tempItemToBuy = [];
-        for (let item of cart) {
-            if (Number(item["quantity"]) > 0) {
-                tempTotalMoney += item["total"];
-                tempItemToBuy.push(item);
+        const itemsToBuy = []
+        let totalMoney = 0
+
+        cartTable.forEach(item => {
+            if (item.quantity > 0) {
+                itemsToBuy.push(item)
+                totalMoney += item.total
             }
-        }
-        setTotalMoney(tempTotalMoney);
-        setItemToBuy(tempItemToBuy);
+        })
+
+        setTotalMoney(totalMoney);
+        setItemToBuy(itemsToBuy);
     };
 
     const handleQuantity = (item, value) => {
-        //console.log(item);
-        // const cloneData = [...cart];
-        // handleToBuyItem();
-        // for (let clone of cloneData) {
-        //     if (clone["key"] === item["key"]) {
-        //         console.log(clone["key"]);
-        //         const base =
-        //             clone["price"]["price"] - clone["price"]["price"] * clone["price"]["discount"];
-        //         setTotalMoney(totalMoney - clone["total"]);
-        //         clone["quantity"] = value;
-        //         clone["total"] = base * value;
-        //         setTotalMoney(totalMoney + clone["total"]);
-        //         if (value > 0) {
-        //             let tempToBuy = itemToBuy;
-        //             console.log("CLONE KEY: ", clone["key"]);
-        //             console.log("TO BUY: ", itemToBuy);
-        //             console.log("TEMP SELECTED: ", tempToBuy);
-        //         }
-        //     }
-        // }
-        // setCart(cloneData);
+        if (tappingQuantity.current)
+            clearTimeout(tappingQuantity.current)
+
+        const index = cartTable.findIndex(element => element.key === item.key)
+        cart[index].quantity = value
+        cartTable[index].quantity = value
+        cartTable[index].total = value * (cartTable[index].price.price * (1 - cartTable[index].price.discount))
+        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total
+        }, 0)
+
+        setTotalMoney(totalMoney)
+        setCart(cart)
+
+        const user = JSON.parse(localStorage.getItem("user"))
+        if (!user || !user.token) {
+            localStorage.setItem("cart", JSON.stringify(cart))
+            localStorage.removeItem("user")
+            // notification: change successfully
+        } else {
+            try {
+                // notification: wait 3s
+                const handleEditCart = async () => {
+                    const response = await CartAPI.editCart(
+                        user.token,
+                        { productId: item.key, quantity: value }
+                    )
+
+                    if (response.status === 200) {
+                        localStorage.setItem("cart", JSON.stringify(cart))
+                        // notification: change successfully
+                    }
+                    else {
+                        if (response.message !== "There is at least one product that does not exist in your cart")
+                            localStorage.removeItem("user")
+
+                        alert("Change quantity failed")
+                    }
+                }
+
+                tappingQuantity.current = setTimeout(handleEditCart, 2000)
+            } catch (error) {
+                alert("Something went wrong")
+            }
+        }
     };
 
     const removeSelectedItem = () => {
