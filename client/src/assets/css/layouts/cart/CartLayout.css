@@ -88,7 +88,7 @@
 
 .btn_checkout_cart {
     outline: none;
-    background-color: #04bd76;
+    background-color: #9c7044;
     color: #fff;
     font-weight: 600;
     border: none;
@@ -103,7 +103,7 @@
 }
 
 .btn_checkout_cart:hover {
-    background-color: #03df8a;
+    background-color: #87613b;
 }
 
 .totalMoney {
