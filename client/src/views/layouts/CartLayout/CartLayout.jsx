@@ -11,14 +11,14 @@ import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 const { Content } = Layout;
 
-const openNotification = (placement) => {
+const notificationPopup = (placement, info) => {
     notification.info({
-        message: `Notification ${placement}`,
-        description:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+        message: `${placement}`,
+        description: info,
         placement,
     });
 };
+
 // Handle items which are selected
 
 function CartLayout() {
@@ -55,7 +55,7 @@ function CartLayout() {
     // };
 
     const handleSelected = (keys) => {
-        openNotification("bottomRight");
+        notificationPopup("SAVING CHANGES", "We are saving your changes, please be patient.");
         setSelectedItem(keys);
         const totalMoney = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
@@ -63,20 +63,20 @@ function CartLayout() {
         setTotalMoney(totalMoney);
     };
 
-    const handleToBuyItem = () => {
-        const itemsToBuy = [];
-        let totalMoney = 0;
+    // const handleToBuyItem = () => {
+    //     const itemsToBuy = [];
+    //     let totalMoney = 0;
 
-        cartTable.forEach((item) => {
-            if (item.quantity > 0) {
-                itemsToBuy.push(item);
-                totalMoney += item.total;
-            }
-        });
+    //     cartTable.forEach((item) => {
+    //         if (item.quantity > 0) {
+    //             itemsToBuy.push(item);
+    //             totalMoney += item.total;
+    //         }
+    //     });
 
-        setTotalMoney(totalMoney);
-        setItemToBuy(itemsToBuy);
-    };
+    //     setTotalMoney(totalMoney);
+    //     setItemToBuy(itemsToBuy);
+    // };
 
     const handleQuantity = (item, value) => {
         if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
@@ -103,7 +103,10 @@ function CartLayout() {
                 try {
                     // notification: wait 3s
                     setIsDisable(true);
-                    openNotification("bottomRight");
+                    notificationPopup(
+                        "SAVING CHANGES",
+                        "We are saving your changes, please be patient."
+                    );
 
                     const response = await CartAPI.editCart(user.token, {
                         productId: item.key,
@@ -114,7 +117,7 @@ function CartLayout() {
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart));
                         // notification: change successfully
-                        openNotification("bottomRight");
+                        notificationPopup("SAVED CHANGES", "Your changes have been saved.");
                     } else {
                         if (
                             response.message !==
