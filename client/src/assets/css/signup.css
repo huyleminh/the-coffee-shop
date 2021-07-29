@@ -50,7 +50,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 30px;
+    margin: 10px 0px;
 }
 
 .form__title h1 {
@@ -70,7 +70,7 @@ a:hover {
 }
 
 .form__controll form > :nth-child(n) {
-    margin-top: 10px;
+    margin-top: 20px;
     width: 100%;
 }
 
@@ -84,10 +84,7 @@ a:hover {
 .form__controll form input,
 .form__controll form select {
     outline: none;
-    border: 1px solid #4c3d23;
-    border-radius: 5px;
     height: 45px;
-
     padding: 15px 10px;
     font-size: 14px;
 }
@@ -98,14 +95,9 @@ a:hover {
 
 button[type="submit"] {
     width: 100%;
-    height: 45px;
-    background: #4c3d23;
-
     border: none;
-    border-radius: 8px;
     outline: none;
     color: #fff;
-
     font-size: 1.25rem;
     font-weight: 600;
     cursor: pointer;
@@ -121,77 +113,13 @@ button[type="submit"]:hover {
 
 @media only screen and (max-width: 992px) {
     .form {
-        width: 300px;
-    }
-
-    .form__title {
-        margin-bottom: 5px;
-    }
-
-    .form__title h1 {
-        font-size: 1.75rem;
-    }
-
-    .form__title span {
-        font-size: 0.95rem;
-    }
-
-    .form__controll form input {
-        height: 30px;
-    }
-
-    .form__controll form select {
-        height: 30px;
-    }
-
-    button[type="submit"] {
-        height: 40px;
-        font-size: 1rem;
-        font-weight: 600;
-    }
-
-    .policy > span,
-    .policy > span > a {
-        font-size: 0.75rem;
-        margin-top: 5px;
+        width: 450px;
     }
 }
 
 @media only screen and (min-width: 993px) and (max-width: 1420px) {
     .form {
-        width: 350px;
-    }
-
-    .form__title {
-        margin-bottom: 10px;
-    }
-
-    .form__title h1 {
-        font-size: 2rem;
-    }
-
-    .form__title span {
-        font-size: 0.95rem;
-    }
-
-    .form__controll form input {
-        height: 35px;
-    }
-
-    .form__controll form select {
-        height: 35px;
-    }
-
-    button[type="submit"] {
-        height: 45px;
-        font-size: 1rem;
-        font-weight: 600;
-    }
-
-    .policy > span,
-    .policy > span > a {
-        font-size: 0.75rem;
-        margin-top: 5px;
+        width: 450px;
     }
 }
 

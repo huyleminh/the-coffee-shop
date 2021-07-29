@@ -35,8 +35,7 @@ function ProductItem(props) {
     const handleAddToCart = async () => {
         const user = JSON.parse(localStorage.getItem("user"))
         const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
-        console.log(user)
-        console.log(cart);
+
         const item = {
             product: {
                 id: card.id,
