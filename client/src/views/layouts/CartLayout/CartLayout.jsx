@@ -258,7 +258,7 @@ function CartLayout() {
     return (
         <Content>
             <Hero title="MY CART" image={CartImage} />
-            <div className="wrapper wishlist">
+            <div className="wrapper cart">
                 <div className="command_bar_cart">
                     <div className="cmd_item_cart">
                         {isSending ? <LoadingOutlined spin /> : <span></span>}
@@ -300,13 +300,14 @@ function CartLayout() {
                         VISIT MENU
                     </button>
                 </div>
-                <div className="bottomRight__totalCheckout__cart ">
-                    <div className="totalMoney">TOTAL MONEY: {totalMoney} VND </div>
-                    <div className="cmd_item_checkout" title="Go to checkout">
-                        <button className="btn_checkout_cart" onClick={handleCheckout}>
-                            Checkout
-                        </button>
-                    </div>
+                <div className="totalMoney">
+                    <span className="total_text">TOTAL MONEY:</span>
+                    <span>{totalMoney} VND</span>
+                </div>
+                <div className="bottomRight__totalCheckout__cart ">     
+                    <button className="btn_checkout_cart" onClick={handleCheckout} title="Go to checkout">
+                        Checkout
+                    </button>
                 </div>
             </div>
         </Content>
