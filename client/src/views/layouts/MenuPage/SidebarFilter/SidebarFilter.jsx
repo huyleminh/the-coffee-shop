@@ -1,10 +1,11 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Radio, Space } from "antd";
 import PropTypes from "prop-types";
 import React, { useRef, useState } from "react";
 import Loading from "../../../../components/Loading";
 import { MenuPageEventsHandler } from "../../../../Events";
+import { LoadingOutlined } from "@ant-design/icons";
 
 SidebarFilter.propTypes = {
     isLoading: PropTypes.bool,
@@ -67,7 +68,6 @@ function SidebarFilter(props) {
                     }}
                 />
                 <div className="menu__group search">
-                    <label htmlFor="search"></label>
                     <input
                         type="text"
                         name="search"
@@ -76,6 +76,9 @@ function SidebarFilter(props) {
                         value={searchTerm}
                         onChange={handleSubmitSearchTerm}
                     />
+                    <div>
+                        {isLoading ? <LoadingOutlined spin /> : <FontAwesomeIcon icon={faSearch} style={{ fontSize: "20px" }} />}
+                    </div>
                 </div>
 
                 <div className="menu__group filter">

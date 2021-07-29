@@ -53,7 +53,7 @@ function Login() {
         >
             <div className="signin__form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} />
+                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
                 </div>
 
                 <div className="signin__form__title">
@@ -70,6 +70,7 @@ function Login() {
                             value={userDetails.username}
                             onChange={handleOnChange}
                             required
+                            autoFocus={true}
                         />
                         <input
                             type="password"
