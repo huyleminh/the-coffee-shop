@@ -80,11 +80,6 @@ function CheckoutPage() {
         setUserInfo(prev);
     };
 
-    // Handle items which are selected
-    const handleDeleted = (key) => {
-        console.log(key);
-    };
-
     const handleBackToMenu = () => {
         history.push("/menu");
     };
@@ -156,7 +151,6 @@ function CheckoutPage() {
                         readonly
                         disabled
                         hiddens={["image", "action"]}
-                        handleDeleted={handleDeleted}
                     />
                     <div className="checkout__right">
                         <h1>Shipping Information</h1>
