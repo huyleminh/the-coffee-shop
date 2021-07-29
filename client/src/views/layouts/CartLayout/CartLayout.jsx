@@ -9,6 +9,8 @@ import Loading from "../../../components/Loading";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
+import NotificationBox from "../../../components/NotificationBox";
+
 const { Content } = Layout;
 
 const openNotification = (placement) => {
@@ -55,7 +57,7 @@ function CartLayout() {
     };
 
     const handleSelected = (keys) => {
-        openNotification("bottomRight");
+        NotificationBox.triggerWarning("Test", "Demo");
         setSelectedItem(keys);
         const totalMoney = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
