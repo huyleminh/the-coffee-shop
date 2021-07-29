@@ -25,7 +25,7 @@ function Wishlist() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
-    const [isRemoving, setIsRemoving] = useState(false);
+    // const [isRemoving, setIsRemoving] = useState(false);
 
     useEffect(() => {
         const fetchWishlist = async () => {

@@ -11,14 +11,14 @@ import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 const { Content } = Layout;
 
-const openNotification = placement => {
+const openNotification = (placement) => {
     notification.info({
-      message: `Notification ${placement}`,
-      description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-      placement,
+        message: `Notification ${placement}`,
+        description:
+            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+        placement,
     });
-  };
+};
 // Handle items which are selected
 
 function CartLayout() {
@@ -30,13 +30,13 @@ function CartLayout() {
     const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
-    const [isDisable, setIsDisable] = useState(false)
+    const [isDisable, setIsDisable] = useState(false);
 
-    const tappingQuantity = useRef(null)
+    const tappingQuantity = useRef(null);
 
     const [cart, setCart] = useState(() => {
-        const cartLocal = JSON.parse(localStorage.getItem("cart"))
-        return cartLocal ? cartLocal : []
+        const cartLocal = JSON.parse(localStorage.getItem("cart"));
+        return cartLocal ? cartLocal : [];
     });
 
     const handleGoMenu = () => {
@@ -55,76 +55,79 @@ function CartLayout() {
     };
 
     const handleSelected = (keys) => {
-        openNotification("bottomRight")
-        setSelectedItem(keys)
+        openNotification("bottomRight");
+        setSelectedItem(keys);
         const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total
-        }, 0)
-        setTotalMoney(totalMoney)
+            return accumulator + currentItem.total;
+        }, 0);
+        setTotalMoney(totalMoney);
     };
 
     const handleToBuyItem = () => {
-        const itemsToBuy = []
-        let totalMoney = 0
+        const itemsToBuy = [];
+        let totalMoney = 0;
 
-        cartTable.forEach(item => {
+        cartTable.forEach((item) => {
             if (item.quantity > 0) {
-                itemsToBuy.push(item)
-                totalMoney += item.total
+                itemsToBuy.push(item);
+                totalMoney += item.total;
             }
-        })
+        });
 
         setTotalMoney(totalMoney);
         setItemToBuy(itemsToBuy);
     };
 
     const handleQuantity = (item, value) => {
-        if (tappingQuantity.current)
-            clearTimeout(tappingQuantity.current)
+        if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
 
-        const index = cartTable.findIndex(element => element.key === item.key)
-        cart[index].quantity = value
-        cartTable[index].quantity = value
-        cartTable[index].total = value * (cartTable[index].price.price * (1 - cartTable[index].price.discount))
+        const index = cartTable.findIndex((element) => element.key === item.key);
+        cart[index].quantity = value;
+        cartTable[index].quantity = value;
+        cartTable[index].total =
+            value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
         const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total
-        }, 0)
+            return accumulator + currentItem.total;
+        }, 0);
 
-        setTotalMoney(totalMoney)
-        setCart(cart)
+        setTotalMoney(totalMoney);
+        setCart(cart);
 
-        const user = JSON.parse(localStorage.getItem("user"))
+        const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            localStorage.setItem("cart", JSON.stringify(cart))
-            localStorage.removeItem("user")
+            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.removeItem("user");
             // notification: change successfully
         } else {
             tappingQuantity.current = setTimeout(async () => {
                 try {
                     // notification: wait 3s
-                    setIsDisable(true)
-                    openNotification("bottomRight")
+                    setIsDisable(true);
+                    openNotification("bottomRight");
 
-                    const response = await CartAPI.editCart(
-                        user.token,
-                        { productId: item.key, quantity: value }
-                    )
+                    const response = await CartAPI.editCart(user.token, {
+                        productId: item.key,
+                        quantity: value,
+                    });
 
-                    setIsDisable(false)
+                    setIsDisable(false);
                     if (response.status === 200) {
-                        localStorage.setItem("cart", JSON.stringify(cart))
+                        localStorage.setItem("cart", JSON.stringify(cart));
                         // notification: change successfully
-                        openNotification("bottomRight")
+                        openNotification("bottomRight");
                     } else {
-                        if (response.message !== "There is at least one product that does not exist in your cart")
-                            localStorage.removeItem("user")
+                        if (
+                            response.message !==
+                            "There is at least one product that does not exist in your cart"
+                        )
+                            localStorage.removeItem("user");
 
-                        alert("Change quantity failed")
+                        alert("Change quantity failed");
                     }
                 } catch (error) {
-                    alert("Something went wrong")
+                    alert("Something went wrong");
                 }
-            }, 2000)
+            }, 2000);
         }
     };
 
@@ -173,46 +176,46 @@ function CartLayout() {
 
     useEffect(() => {
         const fetchCart = async () => {
-            const user = JSON.parse(localStorage.getItem("user"))
+            const user = JSON.parse(localStorage.getItem("user"));
 
             if (!user || !user.token) {
-                localStorage.removeItem("user")
-                setIsLoading(false)
+                localStorage.removeItem("user");
+                setIsLoading(false);
             } else {
                 try {
-                    const response = await CartAPI.getCart(user.token)
+                    const response = await CartAPI.getCart(user.token);
                     if (response.status === 200) {
-                        const resCart = response.data
-                        setCart(resCart)
-                        localStorage.setItem("cart", JSON.stringify(resCart))
+                        const resCart = response.data;
+                        setCart(resCart);
+                        localStorage.setItem("cart", JSON.stringify(resCart));
                     } else {
-                        localStorage.removeItem("user")
-                        const cartLocal = localStorage.getItem("cart")
-                        setCart(cartLocal ? cartLocal : [])
+                        localStorage.removeItem("user");
+                        const cartLocal = localStorage.getItem("cart");
+                        setCart(cartLocal ? cartLocal : []);
                     }
                 } catch (error) {
-                    alert("Something went wrong.")
+                    alert("Something went wrong.");
                 }
             }
-        }
+        };
 
-        fetchCart()
-    }, [])
+        fetchCart();
+    }, []);
 
     useEffect(() => {
         const fetchImages = async () => {
-            const imagePromises = cart.map(item => {
-                const image = item.product.image ? item.product.image : "latte.jpg"
-                return Storage.ref(`products/${image}`).getDownloadURL()
-            })
+            const imagePromises = cart.map((item) => {
+                const image = item.product.image ? item.product.image : "latte.jpg";
+                return Storage.ref(`products/${image}`).getDownloadURL();
+            });
 
-            const images = await Promise.all(imagePromises)
-            setImages(images)
-            setIsLoading(false)
-        }
+            const images = await Promise.all(imagePromises);
+            setImages(images);
+            setIsLoading(false);
+        };
 
-        fetchImages()
-    }, [cart])
+        fetchImages();
+    }, [cart]);
 
     useEffect(() => {
         if (isRemoving) {
@@ -229,16 +232,15 @@ function CartLayout() {
     }, [cart]);
 
     const cartTable = cart.map((item, index) => {
-        let discount = 0
+        let discount = 0;
         if (item.discount) {
-            discount = item.discount.percent
-            const endDate = new Date(item.discount.endDate)
-            if (Date.now() > endDate.valueOf())
-                discount = 0
+            discount = item.discount.percent;
+            const endDate = new Date(item.discount.endDate);
+            if (Date.now() > endDate.valueOf()) discount = 0;
         }
 
-        const price = { discount, price: item.product.price }
-        const total = item.quantity * (price.price * (1 - price.discount))
+        const price = { discount, price: item.product.price };
+        const total = item.quantity * (price.price * (1 - price.discount));
 
         return {
             key: item.product.id,
@@ -246,14 +248,14 @@ function CartLayout() {
             image: {
                 src: images[index],
                 width: "100px",
-                height: "100px"
+                height: "100px",
             },
             price,
             quantity: item.quantity,
             total,
             action: "wishlist",
-        }
-    })
+        };
+    });
 
     return (
         <Content>
@@ -286,8 +288,8 @@ function CartLayout() {
                     <>
                         <ProductTable
                             records={cartTable}
-                                pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-                                disabled={isDisable}
+                            pagination={{ position: ["bottomCenter"], pageSize: 5 }}
+                            disabled={isDisable}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
                             handleQuantity={handleQuantity}
