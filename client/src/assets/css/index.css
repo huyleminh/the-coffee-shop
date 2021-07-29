@@ -15,6 +15,8 @@ html {
 }
 
 body {
+	width: 100% !important;
+	overflow: auto !important;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

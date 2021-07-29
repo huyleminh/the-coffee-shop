@@ -105,3 +105,16 @@
     border: 1px solid #503a24;
     box-shadow: none;
 }
+
+/* Modal */
+.ant-modal-content {
+    border-radius: 8px;
+}
+
+.ant-modal-header {
+    border-radius: 8px 8px 0 0;
+}
+
+.ant-modal-close:hover {
+    background-color: #fff;
+}
