@@ -49,10 +49,10 @@ function CartLayout() {
 
     const handleSelected = (keys) => {
         //notificationPopup("SAVING CHANGES", "We are saving your changes, please be patient.");
-        NotificationBox.triggerWarning(
-            "SAVING CHANGES",
-            "We are saving your changes, please be patient."
-        );
+        // NotificationBox.triggerWarning(
+        //     "SAVING CHANGES",
+        //     "We are saving your changes, please be patient."
+        // );
         setSelectedItem(keys);
         handleTotalMoney();
     };
@@ -75,11 +75,12 @@ function CartLayout() {
         cartTable[index].quantity = value;
         cartTable[index].total =
             value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
-        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
+        // const totalMoney = cartTable.reduce((accumulator, currentItem) => {
+        //     return accumulator + currentItem.total;
+        // }, 0);
 
-        setTotalMoney(totalMoney);
+        // setTotalMoney(totalMoney);
+        handleTotalMoney();
         setCart(cart);
 
         const user = JSON.parse(localStorage.getItem("user"));
@@ -156,7 +157,7 @@ function CartLayout() {
             localStorage.removeItem("user");
             if (isDeleted) {
                 //alert("Remove successfully.");
-                NotificationBox.triggerSuccess("SUCCESS", "Remove successfully");
+                NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
                 setIsSending(false);
