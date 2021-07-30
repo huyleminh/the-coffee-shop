@@ -53,7 +53,7 @@ function Login() {
         >
             <div className="signin__form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} />
+                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
                 </div>
 
                 <div className="signin__form__title">
@@ -70,6 +70,7 @@ function Login() {
                             value={userDetails.username}
                             onChange={handleOnChange}
                             required
+                            autoFocus={true}
                         />
                         <input
                             type="password"
@@ -96,7 +97,7 @@ function Login() {
                 </div>
                 <div className="signin__form__bottom">
                     <div className="signin__IconFbGg">
-                        <div className = "icon_item">  
+                        <div className = "icon_item">
                             <h3>Or</h3>
                         </div>
                     </div>
@@ -110,7 +111,7 @@ function Login() {
                         <a href="/">
                                 <FontAwesomeIcon icon={faGoogle} size="2x" />
                             </a>
-                        </div>      
+                        </div>
                     </div>
                 </div>
             </div>

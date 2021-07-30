@@ -80,6 +80,7 @@ function ProductModal(props) {
                             <FontAwesomeIcon
                                 icon={faHeart}
                                 id="favourite"
+                                title="Add to wishlist"
                                 onClick={addToWishlistModal}
                             />
                             {details.discount ? (
@@ -106,7 +107,7 @@ function ProductModal(props) {
                             {details.discount ? (
                                 <>
                                     <span id="discount">{details.discount}%</span>
-                                    <span style={{ color: "#f72f2f" }}>
+                                    <span style={{ color: "#f72f2f"}}>
                                         {details.newPrice}&nbsp;VND
                                     </span>
                                 </>
@@ -119,7 +120,7 @@ function ProductModal(props) {
                     </span>
 
                     <div className="product__control top">
-                        <span>Category:&nbsp;</span>
+                        <span style={{fontWeight: "bold"}}>Category:&nbsp;</span>
                         <ul>
                             <li>{details.categoryName}&nbsp;</li>
                         </ul>
@@ -147,7 +148,7 @@ function ProductModal(props) {
                         >
                             Related product
                         </button>
-                        <button onClick={addToCartModal}>Add to cart</button>
+                        <button onClick={addToCartModal}>ADD TO CART</button>
                     </div>
                 </div>
             </div>
