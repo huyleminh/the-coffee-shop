@@ -3,9 +3,6 @@ import React from "react";
 import "../../../../assets/css/layouts/profile/OrderHistoryModal.css";
 import ProductTable from "../../../../components/Product/ProductTable";
 import { UserProfileEventsHandler } from "../../../../Events";
-// import PropTypes from 'prop-types';
-
-OrderHistoryModal.propTypes = {};
 
 function OrderHistoryModal(props) {
     const { isVisible, data } = props;
