@@ -28,8 +28,6 @@ function CartLayout() {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
-    const [isRemoving, setIsRemoving] = useState(false);
-    const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
     const [isDisable, setIsDisable] = useState(false);
@@ -49,13 +47,6 @@ function CartLayout() {
         history.push("/checkout");
     };
 
-    // const handleRemoveItem = (key) => {
-    //     setIsSending(true);
-    //     setSelectedItem([key]);
-    //     setIsRemoving(true);
-    //     setIsSending(false);
-    // };
-
     const handleSelected = (keys) => {
         //notificationPopup("SAVING CHANGES", "We are saving your changes, please be patient.");
         NotificationBox.triggerWarning(
@@ -63,26 +54,18 @@ function CartLayout() {
             "We are saving your changes, please be patient."
         );
         setSelectedItem(keys);
+        handleTotalMoney();
+    };
+
+    const handleTotalMoney = () => {
+        console.log("CART: ", cart);
+        console.log("CART TABLE: ", cartTable);
+
         const totalMoney = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
         }, 0);
         setTotalMoney(totalMoney);
     };
-
-    // const handleToBuyItem = () => {
-    //     const itemsToBuy = [];
-    //     let totalMoney = 0;
-
-    //     cartTable.forEach((item) => {
-    //         if (item.quantity > 0) {
-    //             itemsToBuy.push(item);
-    //             totalMoney += item.total;
-    //         }
-    //     });
-
-    //     setTotalMoney(totalMoney);
-    //     setItemToBuy(itemsToBuy);
-    // };
 
     const handleQuantity = (item, value) => {
         if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
@@ -131,49 +114,20 @@ function CartLayout() {
                         )
                             localStorage.removeItem("user");
 
-                        alert("Change quantity failed");
+                        NotificationBox.triggerError(
+                            "Change quantity error",
+                            "Change quantity failed"
+                        );
                     }
                 } catch (error) {
-                    alert("Something went wrong");
+                    NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
             }, 2000);
         }
     };
 
-    // const removeSelectedItem = () => {
-    //     console.log("CART: ", cart);
-    //     //console.log("CART TABLE: ", cartTable);
-
-    //     const newCart = [];
-    //     const removeItem = [];
-    //     let isModified = false;
-    //     let isDeleted = false;
-
-    //     console.log("SELECTED: ", selectedItem);
-    //     for (let item of cart) {
-    //         isDeleted = false;
-    //         for (let key of selectedItem[0]) {
-    //             console.log(item);
-    //             if (item["key"] === key) {
-    //                 isModified = true;
-    //                 removeItem.push(item);
-    //                 isDeleted = true;
-    //             }
-    //         }
-    //         if (!isDeleted) {
-    //             newCart.push(item);
-    //         }
-    //     }
-    //     console.log("NEW CART: ", newCart);
-
-    //     if (isModified) {
-    //         setCart(newCart);
-    //     }
-    // };
     const handleRemoveItem = (key) => {
         setIsSending(true);
-        // setSelectedItem([key]);
-        // setIsRemoving(true);
         removeSelectedItem([key]);
     };
 
@@ -201,10 +155,12 @@ function CartLayout() {
         if (!user || !user.token) {
             localStorage.removeItem("user");
             if (isDeleted) {
-                alert("Remove successfully.");
+                //alert("Remove successfully.");
+                NotificationBox.triggerSuccess("SUCCESS", "Remove successfully");
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
                 setIsSending(false);
+                handleTotalMoney();
             }
         } else {
             try {
@@ -228,27 +184,36 @@ function CartLayout() {
                     }
                 }
                 if (isDeleted) {
-                    alert("Remove successfully.");
+                    //alert("Remove successfully.");
+                    NotificationBox.triggerSuccess("SUCCESS", "Remove successfully");
                     if (countNotExist !== 0) {
-                        alert(`${countNotExist} item(s) does not exist in your cart.`);
+                        const errorString =
+                            countNotExist.toString() + "item(s) does not exist in your cart";
+                        //alert(`${countNotExist} item(s) does not exist in your cart.`);
+                        NotificationBox.triggerError("ITEM DOES NOT EXIST", errorString);
                     }
                     localStorage.setItem("cart", JSON.stringify(newCart));
                     setCart(newCart);
                     setIsSending(false);
+                    handleTotalMoney();
                 }
             } catch (error) {
                 console.log(error);
-                alert("Something went wrong.");
+                //alert("Something went wrong.");
+                NotificationBox.triggerError("ERROR", "Something went wrong");
             }
         }
     };
 
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
-            alert("No item is being selected.\nPlease select item(s) and try again.");
+            //alert("No item is being selected.\nPlease select item(s) and try again.");
+            NotificationBox.triggerError(
+                "NO SELECTED ITEM",
+                "No item is being selected.\nPlease select item(s) and try again."
+            );
         } else {
             setIsSending(true);
-            // setIsRemoving(true);
             removeSelectedItem(selectedItem);
             setSelectedItem([]);
         }
@@ -256,18 +221,9 @@ function CartLayout() {
 
     const handleAction = (key) => {
         //ProductItem.handleAddToWishlist();
-        alert("ADDED TO WISHLIST (FAKE)");
+        //alert("ADDED TO WISHLIST (FAKE)");
+        NotificationBox.triggerSuccess("ADDED SUCCESSFULLY", "Item added to wishlist successfully");
     };
-
-    // const handleRemoveSelected = () => {
-    //     if (selectedItem.length === 0) {
-    //         alert("No item is being selected.\nPlease select item(s) and try again.");
-    //     } else {
-    //         setIsSending(true);
-    //         setIsRemoving(true);
-    //         setIsSending(false);
-    //     }
-    // };
 
     useEffect(() => {
         const fetchCart = async () => {
@@ -289,13 +245,14 @@ function CartLayout() {
                         setCart(cartLocal ? cartLocal : []);
                     }
                 } catch (error) {
-                    alert("Something went wrong.");
+                    //alert("Something went wrong.");
+                    NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
             }
         };
-
+        handleTotalMoney();
         fetchCart();
-    }, []);
+    });
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -311,20 +268,6 @@ function CartLayout() {
 
         fetchImages();
     }, [cart]);
-
-    useEffect(() => {
-        if (isRemoving) {
-            setIsLoading(true);
-            removeSelectedItem();
-            setIsRemoving(false);
-            setSelectedItem([]);
-            setIsLoading(false);
-        }
-    }, [isRemoving]);
-
-    // useEffect(() => {
-    //     handleToBuyItem();
-    // }, [cart]);
 
     const cartTable = cart.map((item, index) => {
         let discount = 0;
