@@ -9,7 +9,7 @@
 }
 
 .custom-cover {
-    border-radius: 7px;
+    border-radius: 8px;
     width: 100%;
     height: 200px;
     background: #eee;
@@ -26,14 +26,14 @@
     height: 100%;
     z-index: 2;
     visibility: hidden;
-    transition: visibility 0.2s ease-in;
+    border-radius: 8px;
 }
 
 .custom-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 7px;
+    border-radius: 8px;
     position: absolute;
 }
 
@@ -47,7 +47,10 @@
     color: #fff;
 
     padding: 0 5px;
-    left: -10px;
+    left: -20px;
+    top: -2px;
+    text-align: center;
+    border-radius: 3px;
 }
 
 .custom-cover .favourite {
@@ -68,7 +71,6 @@
 
     width: 100%;
     height: 0px;
-    border-radius: 7px;
     background-color: #503a24;
     color: transparent;
 
@@ -91,14 +93,8 @@
 .custom-cover > button {
     bottom: 0;
     height: 45px;
-    background-color: #503a24;
     visibility: visible;
     color: #fff;
-}
-
-.ant-card.ant-card-bordered.custom-card:hover
-.custom-cover > button:hover {
-    background-color: #63482e;
 }
 
 .ant-card.ant-card-bordered.custom-card:hover
@@ -147,7 +143,7 @@
 .ant-card-body .custom-body ul {
     width: 100%;
     height: auto;
-    margin: 0;
+    margin: 4px 0px 0px 0px;
 
     display: flex;
     align-items: center;

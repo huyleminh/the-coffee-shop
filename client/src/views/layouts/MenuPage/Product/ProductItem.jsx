@@ -202,7 +202,7 @@ function ProductItem(props) {
                             className="favourite"
                             onClick={handleAddToWishlist}
                         />
-                        <button onClick={handleAddToCart}>Add to cart</button>
+                        <button onClick={handleAddToCart}>ADD TO CART</button>
                     </div>
                 }
                 className="custom-card"
@@ -219,7 +219,7 @@ function ProductItem(props) {
                                 <li style={{ textDecoration: "line-through" }}>
                                     {card.oldPrice}&nbsp;VND
                                 </li>
-                                <li style={{ color: "#f72f2f" }}>{card.newPrice}&nbsp;VND</li>
+                                <li style={{ color: "#f72f2f", fontWeight: "650" }}>{card.newPrice}&nbsp;VND</li>
                             </>
                         ) : (
                             <li>{card.oldPrice}&nbsp;VND</li>
