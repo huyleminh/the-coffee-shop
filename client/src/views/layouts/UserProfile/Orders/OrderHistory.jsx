@@ -2,7 +2,9 @@ import { Divider, Select, Space, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../../../assets/css/layouts/profile/OrderHistory.css";
+import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
+import OrderHistoryModal from "./OrderHistoryModal";
 
 const { Option } = Select;
 
@@ -10,13 +12,56 @@ function OrderHistory() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
-    const [sortBy, setSortBy] = useState("all");
+    const [sortBy, setSortBy] = useState(-1);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
+
+    const handleChangeSortBy = (value) => setSortBy(value);
+    const toggleOrderHistoryModal = () =>
+        setCurrentModal({ ...currentModal, visible: !currentModal.visible });
+
+    useEffect(() => {
+        const fetchOrdersHistory = async () => {
+            try {
+                const token = JSON.parse(localStorage.getItem("user")).token;
+                const response = await UserAPI.getOrdersHistory(token);
+                if (response.status === 200) {
+                    setOrders(response.data);
+                    setIsLoading(false);
+                } else if (response.status === 404) {
+                    localStorage.removeItem("user");
+                    alert(response.message);
+                    history.push("/404");
+                } else if (response.status === 403 || response.status === 401) {
+                    localStorage.removeItem("user");
+                    alert("You are not allowed to access this page.");
+                    history.push("/403");
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong.");
+                history.push("/403");
+            }
+        };
+
+        fetchOrdersHistory();
+    }, [history]);
+
+    useEffect(() => {
+        UserProfileEventsHandler.subcribe("toggleOrderHistoryModal", toggleOrderHistoryModal);
+        return () =>
+            UserProfileEventsHandler.unSubcribe("toggleOrderHistoryModal", toggleOrderHistoryModal);
+    });
 
     const columns = [
         { title: "Order ID", dataIndex: "aliasId" },
-        { title: "Price", dataIndex: "totalPrice", render: (price) => {
-            return <span>{price} VND</span>
-        } },
+        {
+            title: "Price",
+            dataIndex: "totalPrice",
+            render: (price) => {
+                return <span>{price} VND</span>;
+            },
+        },
         { title: "Order date", dataIndex: "createdAt" },
         {
             title: "Status",
@@ -56,55 +101,31 @@ function OrderHistory() {
         {
             title: "Action",
             dataIndex: "action",
-            render: () => {
-                return <button className="table-view-action">View</button>;
+            render: (dataIndex) => {
+                return (
+                    <button
+                        className="table-view-action"
+                        onClick={() => setCurrentModal({ visible: true, dataIndex: dataIndex })}
+                    >
+                        View
+                    </button>
+                );
             },
         },
     ];
 
-    const handleChangeSortBy = (value) => {
-        setSortBy(value);
-    };
-
-    useEffect(() => {
-        const fetchOrdersHistory = async () => {
-            try {
-                const token = JSON.parse(localStorage.getItem("user")).token;
-                const response = await UserAPI.getOrdersHistory(token);
-                if (response.status === 200) {
-                    setOrders(response.data);
-                    setIsLoading(false);
-                } else if (response.status === 404) {
-                    localStorage.removeItem("user");
-                    alert(response.message);
-                    history.push("/404");
-                } else if (response.status === 403 || response.status === 401) {
-                    localStorage.removeItem("user");
-                    alert("You are not allowed to access this page.");
-                    history.push("/403");
-                }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong.");
-                history.push("/403");
-            }
-        };
-
-        fetchOrdersHistory();
-    }, [history]);
-
-    const records = orders.map(item => {
+    const records = orders.map((item, index) => {
         const record = {
             key: item.order.aliasId,
             aliasId: item.order.aliasId,
             totalPrice: 0,
             createdAt: new Date(item.order.createdAt).toLocaleString(),
             status: item.order.status,
-            action: "view"
+            action: index,
         };
         record.totalPrice = item.products.reduce((accumulator, currentValue) => {
             return accumulator + currentValue.price;
-        }, 0)
+        }, 0);
 
         return record;
     });
@@ -113,25 +134,29 @@ function OrderHistory() {
         <div className="profile__order">
             <h1>Order history</h1>
             <Space direction="horizontal">
-                <span>Sort by</span>
+                <span style={{fontWeight: "600"}}>Sort by:</span>
                 <Select value={sortBy} onChange={handleChangeSortBy} style={{ width: 120 }}>
-                    <Option value="all">Default</Option>
-                    <Option value="pending">Pending</Option>
-                    <Option value="accepted">Accepted</Option>
-                    <Option value="denied">Denied</Option>
-                    <Option value="done">Done</Option>
-                    <Option value="delivery">Delivery</Option>
-                    <Option value="cancelled">Cancelled</Option>
+                    <Option value={-1}>Default</Option>
+                    <Option value={0}>Pending</Option>
+                    <Option value={1}>Accepted</Option>
+                    <Option value={2}>Denied</Option>
+                    <Option value={3}>Done</Option>
+                    <Option value={4}>Cancelled</Option>
+                    <Option value={5}>Delivery</Option>
                 </Select>
             </Space>
 
             <Divider />
-
             <Table
                 columns={columns}
                 dataSource={records}
                 pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                 loading={isLoading}
+            />
+
+            <OrderHistoryModal
+                isVisible={currentModal.visible}
+                data={orders[currentModal.dataIndex]}
             />
         </div>
     );
