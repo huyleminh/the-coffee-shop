@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
+import backgroundImg from "../../assets/images/loginBackground.jpg";
 import SignupWorkflow from "../../workflow/SignupWorkflow";
 
 function Signup() {
@@ -59,10 +60,13 @@ function Signup() {
     };
 
     return (
-        <div className="signup">
+        <div className="signup" style={{
+            backgroundImage: `url(${backgroundImg})`,
+            backgroundSize: "cover"
+            }}>
             <div className="form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} />
+                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
                 </div>
 
                 <div className="form__title">
@@ -119,7 +123,7 @@ function Signup() {
                             onChange={handleChange}
                         />
 
-                        <span style={{ textAlign: "center", margin: "20px 0px 10px 0px" }}>
+                        <span style={{ textAlign: "center"}}>
                             Already have an account? <a href="/login">Login</a>
                         </span>
                         <button type="submit" onClick={handleSubmit}>

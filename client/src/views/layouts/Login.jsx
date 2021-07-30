@@ -53,7 +53,7 @@ function Login() {
         >
             <div className="signin__form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} />
+                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
                 </div>
 
                 <div className="signin__form__title">
@@ -70,6 +70,7 @@ function Login() {
                             value={userDetails.username}
                             onChange={handleOnChange}
                             required
+                            autoFocus={true}
                         />
                         <input
                             type="password"
@@ -95,19 +96,23 @@ function Login() {
                     </form>
                 </div>
                 <div className="signin__form__bottom">
-                    <span>
-                        <h3 style={{ textIndent: "1.4em", fontWeight: "750" }}> Or </h3>
-                        <div className="signin__IconFbGg">
-                            <pre>
-                                <a href="/" style={{ color: "blue" }}>
-                                    <FontAwesomeIcon icon={faFacebook} size="2x" />
-                                </a>
-                                <a href="/" style={{ color: "orange" }}>
-                                    <FontAwesomeIcon icon={faGoogle} size="2x" />
-                                </a>
-                            </pre>
+                    <div className="signin__IconFbGg">
+                        <div className = "icon_item">
+                            <h3>Or</h3>
                         </div>
-                    </span>
+                    </div>
+                    <div className="signin__IconFbGg">
+                        <div className = "icon_item">
+                        <a href="/">
+                                <FontAwesomeIcon icon={faFacebook} size="2x" />
+                            </a>
+                        </div>
+                        <div className = "icon_item">
+                        <a href="/">
+                                <FontAwesomeIcon icon={faGoogle} size="2x" />
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

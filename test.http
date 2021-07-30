@@ -60,3 +60,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiL
 GET http://localhost:5000/api/checkout/get
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjY4NjA0NjAsImV4cCI6MTYyNjg2MjI2MH0.qELnGCa9x37wOdTOszFlTgxhs1wp5xd-a7p3CND0vF0
+
+###
+GET http://localhost:5000/api/order/view-history HTTP/1.1
+content-type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2Mjc1NzE4NTYsImV4cCI6MTYyNzU3MzY1Nn0.bBC3QVmtn5_VXGvbLe99O_-Euwcsxk8r9fYA5IzYHX8

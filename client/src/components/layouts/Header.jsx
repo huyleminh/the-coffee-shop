@@ -38,12 +38,13 @@ function Header(props) {
     }, []);
 
     const headerClassname = isScroll ? "header-scroll" : "header-static";
+    const logoClassname = isScroll ? "logo-scroll" : "logo-static";
     const visibleClassname = isBar ? "visible" : "";
 
     return (
         <div className={`header wrapper ${headerClassname}`}>
             <a href="/">
-                <div className="header__logo"></div>
+                <div className={`${logoClassname}`}></div>
             </a>
 
             <div className={`header__navbar ${visibleClassname}`}>

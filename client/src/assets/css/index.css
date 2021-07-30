@@ -15,18 +15,68 @@ html {
 }
 
 body {
+	width: 100% !important;
+	overflow: auto !important;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
 button {
 	cursor: pointer;
+	background-color:#503a24;
+	color: #fff;
 	outline: none;
 	border: none;
+	transition: all 0.3s;
+	border-radius: 8px;
 }
 
-li,
+button:hover {
+	background-color: #9c7044;
+	transition: all 0.3s;
+}
+
+button:active {
+	background-color: #6b4d2f;
+	transition: all 0.2s;
+}
+
+button[type="submit"] {
+	border-radius: 8px;
+	background-color: #503a24;
+	height: 50px;
+}
+
+button[type="submit"]:hover {
+	background-color: #9c7044;
+	transition: background-color 0.3s;
+}
+
+button[type="submit"]:active {
+	background-color: #6b4d2f;
+	transition: background-color 0.2s;
+}
+
+li {
+	list-style: none;
+}
+
 a {
 	text-decoration: none;
-	list-style: none;
+	color: #503a24;
+}
+
+a:hover {
+	color: #9c7044;
+}
+
+input, textarea, select {
+	border: 1.9px solid #503a24;
+	border-radius: 8px;
+	margin: 0px;
+}
+
+input:focus, textarea:focus, select:focus {
+	border: 1.9px solid #9c7044;
+	box-shadow: 1px 1px 4px #503a24;
 }

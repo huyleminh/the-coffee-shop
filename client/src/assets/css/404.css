@@ -27,7 +27,7 @@
 
 .returnButton {
     width: 140px;
-    background: #4c3d23;
+    
 
     border: none;
     border-radius: 8px;
@@ -40,30 +40,17 @@
     margin-right: 10px;
 }
 
-.returnButton:hover {
-    background-color: #b88031;
-}
-
 .goLoginButton {
     width: 140px;
-    background: #4c3d23;
+    
 
     border: none;
     border-radius: 8px;
     outline: none;
-    color: #fff;
 
     font-size: 1.25rem;
     font-weight: 600;
     cursor: pointer;
-}
-
-.goLoginButton:hover {
-    background-color: #b88031;
-}
-
-.returnButtonDiv button:hover {
-    background-color: #b88031;
 }
 
 .btn-block {
@@ -78,29 +65,18 @@
         width: 140px;
     }
 
-    .returnButton:hover {
-        background-color: #b88031;
-    }
-    .returnButtonDiv button:hover {
-        background-color: #b88031;
-    }
-
     .goLoginButton {
         width: 140px;
-        background: #4c3d23;
+        
 
         border: none;
         border-radius: 8px;
         outline: none;
-        color: #fff;
+
 
         font-size: 1.25rem;
         font-weight: 600;
         cursor: pointer;
-    }
-
-    .goLoginButton:hover {
-        background-color: #b88031;
     }
 }
 
@@ -110,29 +86,18 @@
         width: 140px;
     }
 
-    .returnButton:hover {
-        background-color: #614e2d;
-    }
-    .returnButtonDiv button:hover {
-        background-color: #614e2d;
-    }
-
     .goLoginButton {
         width: 140px;
-        background: #4c3d23;
+        
 
         border: none;
         border-radius: 8px;
         outline: none;
-        color: #fff;
+
 
         font-size: 1.25rem;
         font-weight: 600;
         cursor: pointer;
-    }
-
-    .goLoginButton:hover {
-        background-color: #b88031;
     }
 }
 
@@ -142,28 +107,17 @@
         width: 140px;
     }
 
-    .returnButton:hover {
-        background-color: #614e2d;
-    }
-    .returnButtonDiv button:hover {
-        background-color: #614e2d;
-    }
-
     .goLoginButton {
         width: 140px;
-        background: #4c3d23;
+        
 
         border: none;
         border-radius: 8px;
         outline: none;
-        color: #fff;
+
 
         font-size: 1.25rem;
         font-weight: 600;
         cursor: pointer;
-    }
-
-    .goLoginButton:hover {
-        background-color: #b88031;
     }
 }

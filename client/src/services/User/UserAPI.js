@@ -14,6 +14,13 @@ class UserAPI {
         };
         return ClientAPI.patch("/user/profile/edit", { ...props }, config);
     };
+
+    static getOrdersHistory = (token) => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        return ClientAPI.get("/order/view-history", config);
+    };
 }
 
 export default UserAPI;

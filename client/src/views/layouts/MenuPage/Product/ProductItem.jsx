@@ -7,6 +7,7 @@ import "../../../../assets/css/layouts/menu/ProductItem.css";
 import WishlistAPI from "../../../../services/Wishlist/WishlistAPI.js";
 import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
+import CartAPI from "../../../../services/Cart/CartAPI.js";
 
 ProductItem.propTypes = {
     details: PropTypes.shape({
@@ -31,8 +32,71 @@ function ProductItem(props) {
     //Initialize card before rendering
     const [card, setCard] = useState(details);
 
-    const handleAddToCart = () => {
-        alert(`${card.name} added.`);
+    const handleAddToCart = async () => {
+        const user = JSON.parse(localStorage.getItem("user"))
+        const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
+
+        const item = {
+            product: {
+                id: card.id,
+                name: card.name,
+                image: card.image.match(/img_.+((\.jpg)|(\.png)|(\.jpeg)|(\.jfif))/g)[0],
+                price: card.discount ? card.newPrice : card.oldPrice,
+            },
+            discount: card.discount
+                ? {
+                      percent: card.discount / 100,
+                      startDate: card.startDate,
+                      endDate: card.endDate,
+                  }
+                : null,
+            quantity: 1
+        }
+
+        let flag = false
+        if (user && user.token) {
+            try {
+                const response = await CartAPI.addToCart(
+                    user.token,
+                    {
+                        productId: item.product.id,
+                        quantity: item.quantity
+                    }
+                )
+
+                if (response.status === 200) {
+                    localStorage.setItem("cart", JSON.stringify([...cart, item]))
+                    alert(`${card.name} added.`);
+                } else if (response.status === 409) {
+                    alert(`${card.name} already existed in your cart.`);
+                } else {
+                    if (
+                        response.status === 401 ||
+                        response.status === 403 ||
+                        response.message === "This user does not exist"
+                    )
+                        flag = true
+                    else
+                        alert(`${card.name} added.`);
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong")
+            }
+        } else
+            flag = true
+
+        if (flag) {
+            for (let element of cart) {
+                if (element.product.id === item.product.id) {
+                    alert(`${card.name} already existed in your cart.`);
+                    return
+                }
+            }
+            localStorage.removeItem("user")
+            localStorage.setItem("cart", JSON.stringify([...cart, item]))
+            alert(`${card.name} added.`);
+        }
     };
 
     const handleAddToWishlist = async () => {
@@ -138,7 +202,7 @@ function ProductItem(props) {
                             className="favourite"
                             onClick={handleAddToWishlist}
                         />
-                        <button onClick={handleAddToCart}>Add to cart</button>
+                        <button onClick={handleAddToCart}>ADD TO CART</button>
                     </div>
                 }
                 className="custom-card"
@@ -155,7 +219,7 @@ function ProductItem(props) {
                                 <li style={{ textDecoration: "line-through" }}>
                                     {card.oldPrice}&nbsp;VND
                                 </li>
-                                <li style={{ color: "#f72f2f" }}>{card.newPrice}&nbsp;VND</li>
+                                <li style={{ color: "#f72f2f", fontWeight: "650" }}>{card.newPrice}&nbsp;VND</li>
                             </>
                         ) : (
                             <li>{card.oldPrice}&nbsp;VND</li>
