@@ -32,15 +32,14 @@ class Sort {
     static sortOrderssByStatus = (records, status = -1) => {
         if (records.length === 0 || records.length === 1 || status === -1) return records;
 
-        const clone = JSON.parse(JSON.stringify(records));
         let result = [];
 
-        for (let i = 0; i < clone.length; ++i) {
-            if (clone[i].status === status) result.push(clone[i]);
+        for (let i = 0; i < records.length; ++i) {
+            if (records[i].status === status) result.push(records[i]);
         }
 
-        for (let i = 0; i < clone.length; ++i) {
-            if (clone[i].status !== status) result.push(clone[i]);
+        for (let i = 0; i < records.length; ++i) {
+            if (records[i].status !== status) result.push(records[i]);
         }
 
         return result;
