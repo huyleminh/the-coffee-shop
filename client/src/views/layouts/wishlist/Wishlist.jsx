@@ -303,7 +303,6 @@ function Wishlist() {
     };
 
     const handleAddToCart = (record) => {
-        console.log(record);
         setIsSending(true);
         addSelectedToCart([record]);
     };
