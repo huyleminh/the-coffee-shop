@@ -1,27 +1,17 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { Layout, notification } from "antd";
+import { Layout } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/cart/CartLayout.css";
 import CartImage from "../../../assets/images/landing-hero.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
+import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
-import NotificationBox from "../../../components/NotificationBox";
 
 const { Content } = Layout;
-
-const notificationPopup = (placement, info) => {
-    notification.info({
-        message: `${placement}`,
-        description: info,
-        placement,
-    });
-};
-
-// Handle items which are selected
 
 function CartLayout() {
     const history = useHistory();
@@ -39,32 +29,21 @@ function CartLayout() {
         return cartLocal ? cartLocal : [];
     });
 
-    const handleGoMenu = () => {
-        history.push("/menu");
-    };
+    const handleGoMenu = () => history.push("/menu");
 
     const handleCheckout = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.removeItem("user");
+        }
+        localStorage.setItem("checkout", JSON.stringify(cart));
+
         history.push("/checkout");
     };
 
     const handleSelected = (keys) => {
-        //notificationPopup("SAVING CHANGES", "We are saving your changes, please be patient.");
-        // NotificationBox.triggerWarning(
-        //     "SAVING CHANGES",
-        //     "We are saving your changes, please be patient."
-        // );
         setSelectedItem(keys);
-        handleTotalMoney();
-    };
-
-    const handleTotalMoney = () => {
-        console.log("CART: ", cart);
-        console.log("CART TABLE: ", cartTable);
-
-        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
-        setTotalMoney(totalMoney);
     };
 
     const handleQuantity = (item, value) => {
@@ -75,28 +54,22 @@ function CartLayout() {
         cartTable[index].quantity = value;
         cartTable[index].total =
             value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
-        // const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-        //     return accumulator + currentItem.total;
-        // }, 0);
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
 
-        // setTotalMoney(totalMoney);
-        handleTotalMoney();
+        setTotalMoney(totalMoneyTemp);
         setCart(cart);
 
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             localStorage.setItem("cart", JSON.stringify(cart));
             localStorage.removeItem("user");
-            // notification: change successfully
         } else {
             tappingQuantity.current = setTimeout(async () => {
                 try {
                     // notification: wait 3s
                     setIsDisable(true);
-                    notificationPopup(
-                        "SAVING CHANGES",
-                        "We are saving your changes, please be patient."
-                    );
 
                     const response = await CartAPI.editCart(user.token, {
                         productId: item.key,
@@ -106,8 +79,7 @@ function CartLayout() {
                     setIsDisable(false);
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart));
-                        // notification: change successfully
-                        notificationPopup("SAVED CHANGES", "Your changes have been saved.");
+                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully");
                     } else {
                         if (
                             response.message !==
@@ -116,20 +88,22 @@ function CartLayout() {
                             localStorage.removeItem("user");
 
                         NotificationBox.triggerError(
-                            "Change quantity error",
+                            "CHANGE QUANTITY ERROR",
                             "Change quantity failed"
                         );
                     }
                 } catch (error) {
                     NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
-            }, 2000);
+            }, 1000);
         }
     };
 
-    const handleRemoveItem = (key) => {
-        setIsSending(true);
-        removeSelectedItem([key]);
+    const handleAction = (key) => {
+        NotificationBox.triggerSuccess(
+            "ADDED SUCCESSFULLY",
+            "Item added to wishlist successfully (FAKE)"
+        );
     };
 
     const removeSelectedItem = async (params) => {
@@ -156,12 +130,10 @@ function CartLayout() {
         if (!user || !user.token) {
             localStorage.removeItem("user");
             if (isDeleted) {
-                //alert("Remove successfully.");
                 NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
                 setIsSending(false);
-                handleTotalMoney();
             }
         } else {
             try {
@@ -185,30 +157,32 @@ function CartLayout() {
                     }
                 }
                 if (isDeleted) {
-                    //alert("Remove successfully.");
-                    NotificationBox.triggerSuccess("SUCCESS", "Remove successfully");
+                    NotificationBox.triggerSuccess(
+                        "SUCCESS",
+                        "Remove selected item(s) successfully"
+                    );
                     if (countNotExist !== 0) {
                         const errorString =
                             countNotExist.toString() + "item(s) does not exist in your cart";
-                        //alert(`${countNotExist} item(s) does not exist in your cart.`);
                         NotificationBox.triggerError("ITEM DOES NOT EXIST", errorString);
                     }
                     localStorage.setItem("cart", JSON.stringify(newCart));
                     setCart(newCart);
                     setIsSending(false);
-                    handleTotalMoney();
                 }
             } catch (error) {
                 console.log(error);
-                //alert("Something went wrong.");
                 NotificationBox.triggerError("ERROR", "Something went wrong");
             }
         }
     };
 
+    const handleRemoveItem = (key) => {
+        setIsSending(true);
+        removeSelectedItem([key]);
+    };
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
-            //alert("No item is being selected.\nPlease select item(s) and try again.");
             NotificationBox.triggerError(
                 "NO SELECTED ITEM",
                 "No item is being selected.\nPlease select item(s) and try again."
@@ -216,14 +190,8 @@ function CartLayout() {
         } else {
             setIsSending(true);
             removeSelectedItem(selectedItem);
-            setSelectedItem([]);
+            setIsSending(false);
         }
-    };
-
-    const handleAction = (key) => {
-        //ProductItem.handleAddToWishlist();
-        //alert("ADDED TO WISHLIST (FAKE)");
-        NotificationBox.triggerSuccess("ADDED SUCCESSFULLY", "Item added to wishlist successfully");
     };
 
     useEffect(() => {
@@ -246,14 +214,18 @@ function CartLayout() {
                         setCart(cartLocal ? cartLocal : []);
                     }
                 } catch (error) {
-                    //alert("Something went wrong.");
                     NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
             }
         };
-        handleTotalMoney();
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
+
+        setTotalMoney(totalMoneyTemp);
+
         fetchCart();
-    });
+    }, []);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -266,7 +238,11 @@ function CartLayout() {
             setImages(images);
             setIsLoading(false);
         };
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
 
+        setTotalMoney(totalMoneyTemp);
         fetchImages();
     }, [cart]);
 

@@ -8,6 +8,7 @@ import WishlistAPI from "../../../../services/Wishlist/WishlistAPI.js";
 import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
 import CartAPI from "../../../../services/Cart/CartAPI.js";
+import NotificationBox from "../../../../components/NotificationBox";
 
 ProductItem.propTypes = {
     details: PropTypes.shape({
@@ -33,8 +34,8 @@ function ProductItem(props) {
     const [card, setCard] = useState(details);
 
     const handleAddToCart = async () => {
-        const user = JSON.parse(localStorage.getItem("user"))
-        const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
+        const user = JSON.parse(localStorage.getItem("user"));
+        const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
 
         const item = {
             product: {
@@ -50,51 +51,57 @@ function ProductItem(props) {
                       endDate: card.endDate,
                   }
                 : null,
-            quantity: 1
-        }
+            quantity: 1,
+        };
 
-        let flag = false
+        let flag = false;
         if (user && user.token) {
             try {
-                const response = await CartAPI.addToCart(
-                    user.token,
-                    {
-                        productId: item.product.id,
-                        quantity: item.quantity
-                    }
-                )
+                const response = await CartAPI.addToCart(user.token, {
+                    productId: item.product.id,
+                    quantity: item.quantity,
+                });
 
                 if (response.status === 200) {
-                    localStorage.setItem("cart", JSON.stringify([...cart, item]))
-                    alert(`${card.name} added.`);
+                    localStorage.setItem("cart", JSON.stringify([...cart, item]));
+                    //alert(`${card.name} added.`);
+                    NotificationBox.triggerSuccess("SUCCESS", `${card.name} added to your cart.`);
                 } else if (response.status === 409) {
-                    alert(`${card.name} already existed in your cart.`);
+                    //alert(`${card.name} already existed in your cart.`);
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${card.name} already existed in your cart.`
+                    );
                 } else {
                     if (
                         response.status === 401 ||
                         response.status === 403 ||
                         response.message === "This user does not exist"
                     )
-                        flag = true
+                        flag = true;
+                    //alert(`${card.name} added.`);
                     else
-                        alert(`${card.name} added.`);
+                        NotificationBox.triggerSuccess(
+                            "SUCCESS",
+                            `${card.name} added to your cart.`
+                        );
                 }
             } catch (error) {
                 console.log(error);
-                alert("Something went wrong")
+                //alert("Something went wrong");
+                NotificationBox.triggerError("ERROR", "Something went wrong");
             }
-        } else
-            flag = true
+        } else flag = true;
 
         if (flag) {
             for (let element of cart) {
                 if (element.product.id === item.product.id) {
                     alert(`${card.name} already existed in your cart.`);
-                    return
+                    return;
                 }
             }
-            localStorage.removeItem("user")
-            localStorage.setItem("cart", JSON.stringify([...cart, item]))
+            localStorage.removeItem("user");
+            localStorage.setItem("cart", JSON.stringify([...cart, item]));
             alert(`${card.name} added.`);
         }
     };
@@ -124,44 +131,76 @@ function ProductItem(props) {
         if (!user || !user.token) {
             for (let i of wishlist) {
                 if (i["product"]["id"] === item["product"]["id"]) {
-                    alert(`${card.name} already existed in your wishlist.`);
+                    //alert(`${card.name} already existed in your wishlist.`);
+                    NotificationBox.triggerError(
+                        "ERROR",
+                        `${card.name} already existed in your wishlist.`
+                    );
                     return;
                 }
             }
             localStorage.removeItem("user");
             localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-            alert(`${card.name} added.`);
+            //alert(`${card.name} added.`);
+            NotificationBox.triggerSuccess(
+                "ADDED ITEM TO WISHLIST",
+                `${card.name} added to your wishlist.`
+            );
+            return;
         } else {
             try {
                 const response = await WishlistAPI.addToWishlist(user.token, card.id);
-                if (response.status === 200) alert(`${card.name} added.`);
+                if (response.status === 200)
+                    //alert(`${card.name} added.`);
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${card.name} already existed in your wishlist.`
+                    );
                 else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
                         for (let i of wishlist) {
                             if (i["product"]["id"] === item["product"]["id"]) {
-                                alert(`${card.name} already existed in your wishlist.`);
+                                //alert(`${card.name} already existed in your wishlist.`);
+                                NotificationBox.triggerError(
+                                    "ITEM EXISTED",
+                                    `${card.name} already existed in your wishlist.`
+                                );
                                 return;
                             }
                         }
                         localStorage.removeItem("user");
                         localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-                        alert(`${card.name} added.`);
-                    } else alert(response.message);
+                        //alert(`${card.name} added.`);
+                    } //alert(response.message);
+                    else NotificationBox.triggerError("ERROR", response.message);
                 } else if (response.status === 401 || response.status === 403) {
                     for (let i of wishlist) {
                         if (i["product"]["id"] === item["product"]["id"]) {
-                            alert(`${card.name} already existed in your wishlist.`);
+                            //alert(`${card.name} already existed in your wishlist.`);
+                            NotificationBox.triggerError(
+                                "ITEM EXISTED",
+                                `${card.name} already existed in your wishlist.`
+                            );
                             return;
                         }
                     }
                     localStorage.removeItem("user");
                     localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-                    alert(`${card.name} added.`);
+                    //alert(`${card.name} added.`);
+                    NotificationBox.triggerSuccess(
+                        "ADDED ITEM TO WISHLIST",
+                        `${card.name} added to your wishlist.`
+                    );
                 } else if (response.status === 409)
-                    alert(`${card.name} already existed in your wishlist.`);
+                    //alert(`${card.name} already existed in your wishlist.`);
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${card.name} already existed in your wishlist.`
+                    );
             } catch (error) {
                 console.log(error);
-                alert("Something went wrong.");
+                //alert("Something went wrong.");
+                NotificationBox.triggerError("ERROR", `${card.name} something went wrong.`);
             }
         }
     };
@@ -219,7 +258,9 @@ function ProductItem(props) {
                                 <li style={{ textDecoration: "line-through" }}>
                                     {card.oldPrice}&nbsp;VND
                                 </li>
-                                <li style={{ color: "#f72f2f", fontWeight: "650" }}>{card.newPrice}&nbsp;VND</li>
+                                <li style={{ color: "#f72f2f", fontWeight: "650" }}>
+                                    {card.newPrice}&nbsp;VND
+                                </li>
                             </>
                         ) : (
                             <li>{card.oldPrice}&nbsp;VND</li>
