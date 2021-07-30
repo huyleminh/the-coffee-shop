@@ -94,7 +94,7 @@ function ProductTable(props) {
                         <span
                             title="Add to cart"
                             className="table-cart"
-                            onClick={() => handleAction(record.key)}
+                            onClick={() => handleAction(record)}
                         >
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </span>
@@ -102,7 +102,7 @@ function ProductTable(props) {
                         <span
                             title="Add to wishlist"
                             className="table-wishlist"
-                            onClick={() => handleAction(record.key)}
+                            onClick={() => handleAction(record)}
                         >
                             <FontAwesomeIcon icon={faHeart} />
                         </span>
