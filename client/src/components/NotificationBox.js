@@ -1,7 +1,7 @@
 import { notification } from "antd";
 
 const config = {
-    duration: 3.5,
+    duration: 4,
     bottom: 55,
     placement: "bottomRight",
     style: {},

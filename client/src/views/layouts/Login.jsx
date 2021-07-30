@@ -97,7 +97,7 @@ function Login() {
                 </div>
                 <div className="signin__form__bottom">
                     <div className="signin__IconFbGg">
-                        <div className = "icon_item">  
+                        <div className = "icon_item">
                             <h3>Or</h3>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ function Login() {
                         <a href="/">
                                 <FontAwesomeIcon icon={faGoogle} size="2x" />
                             </a>
-                        </div>      
+                        </div>
                     </div>
                 </div>
             </div>

@@ -13,7 +13,6 @@ function OrderHistory() {
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
     const [sortBy, setSortBy] = useState(-1);
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
 
     const handleChangeSortBy = (value) => setSortBy(value);
@@ -134,7 +133,7 @@ function OrderHistory() {
         <div className="profile__order">
             <h1>Order history</h1>
             <Space direction="horizontal">
-                <span style={{fontWeight: "600"}}>Sort by:</span>
+                <span style={{ fontWeight: "600" }}>Sort by:</span>
                 <Select value={sortBy} onChange={handleChangeSortBy} style={{ width: 120 }}>
                     <Option value={-1}>Default</Option>
                     <Option value={0}>Pending</Option>
