@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", `${process.env.AUTH_CLIENT_URL}`, `${process.env.AUTH_CLIENT_URL_DEV}`);
+    res.header("Access-Control-Allow-Origin", `${process.env.AUTH_CLIENT_URL}`);
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
