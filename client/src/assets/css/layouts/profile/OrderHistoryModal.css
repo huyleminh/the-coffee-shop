@@ -9,7 +9,7 @@
 .order-modal .order-modal-title {
     width: 100%;
     font-size: 1.5rem;
-    color: var(--main-color);
+    color: #503a24;
     margin-bottom: 5px;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .order-modal .order-modal-section .order-modal-section__item > span:first-of-type {
-    color: var(--main-color);
+    color: #503a24;
     font-weight: 600;
     margin-right: 5px;
 }

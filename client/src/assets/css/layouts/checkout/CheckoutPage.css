@@ -31,7 +31,7 @@
 
 .checkout__right > h1 {
     font-size: 1.5rem;
-    color: var(--main-color);
+    color: #503a24;
     text-transform: uppercase;
     margin: 0;
 }

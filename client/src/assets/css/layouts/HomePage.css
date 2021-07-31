@@ -2,14 +2,14 @@
     box-sizing: border-box;
 }
 
-:root {
+/* :root {
     --wrapper-padding: 20%;
-}
+} */
 
 .wrapper {
     width: 100%;
     height: 100%;
-    padding: 0 var(--wrapper-padding);
+    padding: 0 20%;
     margin: 0;
     top: 0;
 }
@@ -95,7 +95,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 50px var(--wrapper-padding);
+    padding: 50px 20%;
 }
 
 .container-left,
