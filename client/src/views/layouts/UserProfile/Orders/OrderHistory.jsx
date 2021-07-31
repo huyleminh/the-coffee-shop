@@ -151,6 +151,7 @@ function OrderHistory() {
                 dataSource={records}
                 pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                 loading={isLoading}
+                bordered
             />
 
             <OrderHistoryModal
