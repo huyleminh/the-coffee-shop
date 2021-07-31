@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import shortid from "shortid";
+import UserInfo from "../utilities/database/entities/UserInfo.js";
+import UserLogin from "../utilities/database/entities/UserLogin.js";
 
 dotenv.config();
 

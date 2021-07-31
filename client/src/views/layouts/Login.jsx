@@ -1,4 +1,12 @@
-import React from "react";
+import { LoadingOutlined } from "@ant-design/icons";
+import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import "../../assets/css/login.css";
+import backgroundImg from "../../assets/images/loginBackground.jpg";
+import LoginWorkflow from "../../workflow/LoginWorkflow";
 
 function Login() {
     (() => {
@@ -45,7 +53,7 @@ function Login() {
         >
             <div className="signin__form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
+                    <FontAwesomeIcon icon={faHome} title="Go Home" />
                 </div>
 
                 <div className="signin__form__title">
@@ -89,18 +97,18 @@ function Login() {
                 </div>
                 <div className="signin__form__bottom">
                     <div className="signin__IconFbGg">
-                        <div className = "icon_item">
+                        <div className="icon_item">
                             <h3>Or</h3>
                         </div>
                     </div>
                     <div className="signin__IconFbGg">
-                        <div className = "icon_item">
-                        <a href="/">
+                        <div className="icon_item">
+                            <a href="/">
                                 <FontAwesomeIcon icon={faFacebook} size="2x" />
                             </a>
                         </div>
-                        <div className = "icon_item">
-                        <a href="/">
+                        <div className="icon_item">
+                            <a href="/">
                                 <FontAwesomeIcon icon={faGoogle} size="2x" />
                             </a>
                         </div>

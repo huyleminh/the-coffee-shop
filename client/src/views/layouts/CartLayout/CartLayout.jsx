@@ -29,6 +29,7 @@ function CartLayout() {
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
+    // eslint-disable-next-line
     const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
@@ -227,10 +228,12 @@ function CartLayout() {
             setSelectedItem([]);
             setIsLoading(false);
         }
+        // eslint-disable-next-line
     }, [isRemoving]);
 
     useEffect(() => {
         handleToBuyItem();
+        // eslint-disable-next-line
     }, [cart]);
 
     const cartTable = cart.map((item, index) => {
