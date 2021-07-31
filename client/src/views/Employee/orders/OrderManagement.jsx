@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-import PropTypes from "prop-types";
-
-OrderManagement.propTypes = {};
-
-function OrderManagement(props) {
-    return <div>Order management</div>;
-=======
 import { Button, DatePicker, Divider, Select, Space, Table } from "antd";
 import React, { useState } from "react";
 import OrderModal from "./OrderModal";
@@ -123,7 +114,6 @@ function OrderManagement() {
             <OrderModal visible={currentModal.visible} toggleModal={toggleModal} />
         </div>
     );
->>>>>>> develop
 }
 
 export default OrderManagement;
