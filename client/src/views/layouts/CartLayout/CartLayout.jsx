@@ -10,6 +10,7 @@ import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
+import ProductItem from "../MenuPage/Product/ProductItem";
 
 const { Content } = Layout;
 
@@ -99,7 +100,130 @@ function CartLayout() {
         }
     };
 
-    const handleAction = (key) => {
+    const handleAddToWishlist = (card) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const wishlist = localStorage.getItem("wishlist")
+            ? JSON.parse(localStorage.getItem("wishlist"))
+            : [];
+        console.log(card);
+
+        // const item = {
+        //     product: {
+        //         id: card.id,
+        //         name: card.name,
+        //         image: card.image.match(/img_.+((\.jpg)|(\.png)|(\.jpeg)|(\.jfif))/g)[0],
+        //         price: card.discount ? card.newPrice : card.oldPrice,
+        //     },
+        //     discount: card.discount
+        //         ? {
+        //               percent: card.discount / 100,
+        //               startDate: card.startDate,
+        //               endDate: card.endDate,
+        //           }
+        //         : null,
+        // };
+
+        // const price = card.price.discount
+        //     ? card.price.price * (1 - card.discount)
+        //     : card.price.price;
+        const item = {
+            product: {
+                id: card.key,
+                name: card.product,
+                image: card.image,
+                price: card.price.discount
+                    ? card.price.price * (1 - card.discount)
+                    : card.price.price,
+            },
+            discount: card.price.discount
+                ? {
+                      percent: card.discount / 100,
+                      startDate: card.startDate,
+                      endDate: card.endDate,
+                  }
+                : null,
+        };
+        console.log("ITEM: ", item);
+
+        // if (!user || !user.token) {
+        //     for (let i of wishlist) {
+        //         if (i["product"]["id"] === item["product"]["id"]) {
+        //             //alert(`${card.name} already existed in your wishlist.`);
+        //             NotificationBox.triggerError(
+        //                 "ERROR",
+        //                 `${card.name} already existed in your wishlist.`
+        //             );
+        //             return;
+        //         }
+        //     }
+        //     localStorage.removeItem("user");
+        //     localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
+        //     //alert(`${card.name} added.`);
+        //     NotificationBox.triggerSuccess(
+        //         "ADDED ITEM TO WISHLIST",
+        //         `${card.name} added to your wishlist.`
+        //     );
+        //     return;
+        // } else {
+        //     try {
+        //         const response = await WishlistAPI.addToWishlist(user.token, card.id);
+        //         if (response.status === 200)
+        //             //alert(`${card.name} added.`);
+        //             NotificationBox.triggerError(
+        //                 "ITEM EXISTED",
+        //                 `${card.name} already existed in your wishlist.`
+        //             );
+        //         else if (response.status === 404) {
+        //             if (response.message === "This user does not exist") {
+        //                 for (let i of wishlist) {
+        //                     if (i["product"]["id"] === item["product"]["id"]) {
+        //                         //alert(`${card.name} already existed in your wishlist.`);
+        //                         NotificationBox.triggerError(
+        //                             "ITEM EXISTED",
+        //                             `${card.name} already existed in your wishlist.`
+        //                         );
+        //                         return;
+        //                     }
+        //                 }
+        //                 localStorage.removeItem("user");
+        //                 localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
+        //                 //alert(`${card.name} added.`);
+        //             } //alert(response.message);
+        //             else NotificationBox.triggerError("ERROR", response.message);
+        //         } else if (response.status === 401 || response.status === 403) {
+        //             for (let i of wishlist) {
+        //                 if (i["product"]["id"] === item["product"]["id"]) {
+        //                     //alert(`${card.name} already existed in your wishlist.`);
+        //                     NotificationBox.triggerError(
+        //                         "ITEM EXISTED",
+        //                         `${card.name} already existed in your wishlist.`
+        //                     );
+        //                     return;
+        //                 }
+        //             }
+        //             localStorage.removeItem("user");
+        //             localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
+        //             //alert(`${card.name} added.`);
+        //             NotificationBox.triggerSuccess(
+        //                 "ADDED ITEM TO WISHLIST",
+        //                 `${card.name} added to your wishlist.`
+        //             );
+        //         } else if (response.status === 409)
+        //             //alert(`${card.name} already existed in your wishlist.`);
+        //             NotificationBox.triggerError(
+        //                 "ITEM EXISTED",
+        //                 `${card.name} already existed in your wishlist.`
+        //             );
+        //     } catch (error) {
+        //         console.log(error);
+        //         //alert("Something went wrong.");
+        //         NotificationBox.triggerError("ERROR", `${card.name} something went wrong.`);
+        //     }
+        // }
+    };
+
+    const handleAction = (record) => {
+        handleAddToWishlist(record);
         NotificationBox.triggerSuccess(
             "ADDED SUCCESSFULLY",
             "Item added to wishlist successfully (FAKE)"
@@ -190,6 +314,7 @@ function CartLayout() {
         } else {
             setIsSending(true);
             removeSelectedItem(selectedItem);
+            setSelectedItem([]);
             setIsSending(false);
         }
     };
