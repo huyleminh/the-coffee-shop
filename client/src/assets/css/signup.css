@@ -1,0 +1,130 @@
+a {
+    color: #674c24;
+    font-weight: 600;
+}
+
+a:hover {
+    color: #b88031;
+}
+
+.signup {
+    width: 100%;
+    height: 100vh;
+
+    background-image: repeating-linear-gradient(to top right, #503a24, #4a2e06);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: calc(100% / 4);
+    height: calc(100vh - 100px);
+
+    padding: 35px;
+    border-radius: 20px;
+
+    -webkit-box-shadow: 0px 0px 7px 7px #363d38;
+    -moz-box-shadow: 0px 0px 7px 7px #363d38;
+    box-shadow: 0px 0px 7px 7px #363d38;
+}
+
+.form > :first-child {
+    position: absolute;
+    width: inherit;
+    font-size: 1.75rem;
+    padding-left: 20px;
+    top: 60px;
+    color: #4c3d23;
+    cursor: pointer;
+}
+
+.form__title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.form__title h1 {
+    color: #4c3d23;
+    font-size: 2.75rem;
+}
+
+.form__title span {
+    color: #000;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.form__controll {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.form__controll form > :nth-child(n) {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.form__controll form {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.form__controll form input,
+.form__controll form select {
+    outline: none;
+    height: 45px;
+    padding: 15px 10px;
+    font-size: 14px;
+}
+
+.form__controll form select {
+    padding: 0 10px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #665230;
+}
+
+.policy {
+    text-align: center;
+}
+
+@media only screen and (max-width: 992px) {
+    .form {
+        width: 450px;
+    }
+}
+
+@media only screen and (min-width: 993px) and (max-width: 1420px) {
+    .form {
+        width: 450px;
+    }
+}
+
+@media only screen and (min-width: 1420px) {
+    .form {
+        width: 450px;
+    }
+}
