@@ -4,20 +4,20 @@ import {
     faHome,
     faIdBadge,
     faListUl,
-    faUserCircle,
+    faUserCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
-// import MenuLeft from "../../components/navigation/MenuLeft";
 import PageNotFound from "../errors/PageNotFound";
 import OrderManagement from "./orders/OrderManagement";
 
 const { Header, Sider, Content, Footer } = Layout;
 
 function LayoutEmployee() {
+    const history = useHistory();
     const match = useRouteMatch();
     const [collapsed, setCollapsed] = useState(false);
 
@@ -40,7 +40,7 @@ function LayoutEmployee() {
                         <a href={`${match.path}/manage/orders`}>Orders</a>
                     </Menu.Item>
                     <Menu.Item key="profile" icon={<FontAwesomeIcon icon={faIdBadge} />}>
-                        <a href={`/profile`}>Manage profile</a>
+                        <a href={`/profile`}>Profile</a>
                     </Menu.Item>
                     <Menu.Item key="back" icon={<FontAwesomeIcon icon={faArrowLeft} />}>
                         <a href="/menu">Back to shop</a>
@@ -58,7 +58,14 @@ function LayoutEmployee() {
                     <div className="custom-site-content__user">
                         <FontAwesomeIcon id="dashboard-user" icon={faUserCircle} />
                         <div className="custom-site-content__dropdown">
-                            <span>Logout</span>
+                            <span
+                                onClick={() => {
+                                    localStorage.removeItem("user");
+                                    history.push("/");
+                                }}
+                            >
+                                Logout
+                            </span>
                         </div>
                     </div>
                 </Header>
