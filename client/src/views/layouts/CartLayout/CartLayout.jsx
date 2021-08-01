@@ -105,7 +105,8 @@ function CartLayout() {
         const wishlist = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
             : [];
-        console.log(card);
+        console.log("CARD: ", card);
+        console.log("WISHLIST: ", wishlist);
 
         // const item = {
         //     product: {
