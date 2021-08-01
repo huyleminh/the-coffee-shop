@@ -155,7 +155,7 @@
 
 @media only screen and (min-width: 1201px) and (max-width: 1439px) {
     .menu__filter {
-        width: 300px - 50px;
+        width: calc(300px - 50px);
     }
 
     .menu__products {
@@ -165,7 +165,7 @@
 
 @media only screen and (min-width: 1440px) and (max-width: 1599px) {
     .menu__filter {
-        width: 300px - 50px;
+        width: calc(300px - 50px);
     }
 
     .menu__products {

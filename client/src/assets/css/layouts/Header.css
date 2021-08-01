@@ -63,7 +63,7 @@
 
 .header__navigation > ul > li,
 .header__right > ul > li {
-    width: 80px;
+    width: 100px;
     height: 100%;
     text-align: center;
 }
