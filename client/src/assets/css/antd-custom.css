@@ -229,7 +229,7 @@
 .custom-site-content .trigger {
     cursor: pointer;
     transition: color 0.3s;
-    padding: 0 20px;
+    padding: 0 28px;
 }
 
 .custom-site-content .trigger svg {
@@ -314,7 +314,7 @@
     padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 
 .custom-site-orders .custom-site-orders__filter {

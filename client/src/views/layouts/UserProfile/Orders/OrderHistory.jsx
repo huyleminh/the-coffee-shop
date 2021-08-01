@@ -5,7 +5,7 @@ import "../../../../assets/css/layouts/profile/OrderHistory.css";
 import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
 import OrderHistoryModal from "./OrderHistoryModal";
-
+import Sort from "../../../../utilities/Sort/Sort";
 const { Option } = Select;
 
 function OrderHistory() {
@@ -129,6 +129,8 @@ function OrderHistory() {
         return record;
     });
 
+    const sortedRecords = Sort.sortOrderssByStatus(records, sortBy);
+
     return (
         <div className="profile__order">
             <h1>Order history</h1>
@@ -148,9 +150,10 @@ function OrderHistory() {
             <Divider />
             <Table
                 columns={columns}
-                dataSource={records}
+                dataSource={sortedRecords}
                 pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                 loading={isLoading}
+                bordered
             />
 
             <OrderHistoryModal

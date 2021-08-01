@@ -64,8 +64,7 @@ function HomePage() {
         };
 
         checkLogin();
-        // eslint-disable-next-line
-    }, []);
+    }, [history]);
 
     return (
         <div>

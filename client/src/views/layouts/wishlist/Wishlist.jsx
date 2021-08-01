@@ -9,6 +9,7 @@ import Hero from "../../../components/layouts/Hero";
 import ProductTable from "../../../components/Product/ProductTable";
 import Loading from "../../../components/Loading";
 import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
+import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -104,6 +105,8 @@ function Wishlist() {
             } else {
                 row.price = { price: item.product.price, discount: 0 };
             }
+            row.startDate = item.discount.startDate;
+            row.endDate = item.discount.endDate;
         }
 
         if (item.product.image)
@@ -119,15 +122,15 @@ function Wishlist() {
         history.push("/menu");
     };
 
-    const handleSelected = (keys) => {
-        setSelectedItem(keys);
+    const handleSelected = (keys, rows) => {
+        setSelectedItem(rows);
     };
 
     const handleRemoveItem = (key) => {
         setIsSending(true);
         // setSelectedItem([key]);
         // setIsRemoving(true);
-        removeSelectedItem([key])
+        removeSelectedItem([key]);
     };
 
     const removeSelectedItem = async (params) => {
@@ -140,7 +143,7 @@ function Wishlist() {
         for (let item of wishlist) {
             deleted = false;
             for (let key of params) {
-                if (item["product"]["id"] === key) {
+                if (item["product"]["id"] === key["key"]) {
                     isExist = true;
                     removeItem.push(item);
                     deleted = true;
@@ -196,19 +199,112 @@ function Wishlist() {
         }
     };
 
+    const addSelectedToCart = async (params) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
+
+        let listOfSelected = JSON.parse(JSON.stringify(params));
+
+        const items = JSON.parse(JSON.stringify(cart));
+        let isExisted = false;
+        let countExisted = 0;
+        for (let element of listOfSelected) {
+            isExisted = false;
+            for (let pro of cart) {
+                if (element.key === pro.product.id) {
+                    isExisted = true;
+                }
+            }
+            if (!isExisted) {
+                items.push({
+                    product: {
+                        id: element.key,
+                        image: element.image.src.match(
+                            /img_.+((\.jpg)|(\.png)|(\.jpeg)|(\.jfif))/g
+                        )[0],
+                        name: element.product,
+                        price: element.price.price,
+                    },
+                    discount:
+                        element.price.discount === 0
+                            ? null
+                            : {
+                                  percent: element.price.discount,
+                                  startDate: element.startDate,
+                                  endDate: element.endDate,
+                              },
+                    quantity: 1,
+                });
+            } else countExisted += 1;
+        }
+        let flag = false;
+        if (user && user.token) {
+            try {
+                const promiseList = listOfSelected.map((item) => {
+                    return CartAPI.addToCart(user.token, {
+                        productId: item.key,
+                        quantity: 1,
+                    });
+                });
+                const response = await Promise.all(promiseList);
+                for (let item of response) {
+                    if (item.status === 200) {
+                        console.log("success");
+                        localStorage.setItem("cart", JSON.stringify(items));
+                    } else if (item.status === 409) {
+                        console.log("existed");
+                    } else {
+                        if (
+                            item.status === 401 ||
+                            item.status === 403 ||
+                            item.message === "This user does not exist"
+                        )
+                            flag = true;
+                        else console.log("success");
+                    }
+                }
+                if (countExisted !== 0) {
+                    alert(`Added sucessfully. ${countExisted} item(s) existed in your cart.`);
+                } else alert(`Added sucessfully.`);
+                setIsSending(false);
+            } catch (error) {
+                console.log(error);
+                alert("Something went wrong");
+            }
+        } else flag = true;
+
+        if (flag) {
+            localStorage.removeItem("user");
+            localStorage.setItem("cart", JSON.stringify(items));
+            if (countExisted !== 0) {
+                alert(`Added sucessfully. ${countExisted} item(s) existed in your cart.`);
+            } else alert(`Added sucessfully.`);
+            setIsSending(false);
+        }
+    };
+
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
             alert("No item is being selected.\nPlease select item(s) and try again.");
         } else {
             setIsSending(true);
-            // setIsRemoving(true);
             removeSelectedItem(selectedItem);
             setSelectedItem([]);
         }
     };
 
     const handleCartSelected = () => {
-        console.log("Click");
+        if (selectedItem.length === 0) {
+            alert("No item is being selected.\nPlease select item(s) and try again.");
+        } else {
+            setIsSending(true);
+            addSelectedToCart(selectedItem);
+        }
+    };
+
+    const handleAddToCart = (record) => {
+        setIsSending(true);
+        addSelectedToCart([record]);
     };
 
     return (
@@ -252,6 +348,7 @@ function Wishlist() {
                             hiddens={["quantity", "total"]}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
+                            handleAction={handleAddToCart}
                         />
                     </>
                 )}
