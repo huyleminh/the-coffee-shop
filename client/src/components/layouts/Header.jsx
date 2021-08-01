@@ -3,14 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../assets/css/layouts/Header.css";
+import { HomePageEventsHandler } from "../../Events";
 
 Header.propsType = {
     userStatus: PropTypes.object,
-    handleLogout: PropTypes.func,
 };
 
 function Header(props) {
-    const { userStatus, handleLogout } = props;
+    const { userStatus } = props;
     const [isScroll, setIsScroll] = useState(false);
     const [isBar, setIsBar] = useState(false);
 
@@ -20,8 +20,7 @@ function Header(props) {
     };
 
     const handleLogoutClick = () => {
-        if (!handleLogout) return;
-        handleLogout();
+        HomePageEventsHandler.trigger("logout");
     };
 
     useEffect(() => {
@@ -39,12 +38,13 @@ function Header(props) {
     }, []);
 
     const headerClassname = isScroll ? "header-scroll" : "header-static";
+    const logoClassname = isScroll ? "logo-scroll" : "logo-static";
     const visibleClassname = isBar ? "visible" : "";
 
     return (
         <div className={`header wrapper ${headerClassname}`}>
             <a href="/">
-                <div className="header__logo"></div>
+                <div className={`${logoClassname}`}></div>
             </a>
 
             <div className={`header__navbar ${visibleClassname}`}>

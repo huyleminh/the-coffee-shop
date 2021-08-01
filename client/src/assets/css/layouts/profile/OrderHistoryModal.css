@@ -1,0 +1,64 @@
+.order-modal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.order-modal .order-modal-title {
+    width: 100%;
+    font-size: 1.5rem;
+    color: var(--main-color);
+    margin-bottom: 5px;
+}
+
+.order-modal .order-modal-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-modal .order-modal-section .order-modal-section__item {
+    width: 100%;
+}
+
+.order-modal .order-modal-section .order-modal-section__item:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.order-modal .order-modal-section .order-modal-section__item.tag,
+.order-modal .order-modal-section .order-modal-section__item:last-child {
+    display: flex;
+    align-items: flex-end;
+}
+
+.order-modal .order-modal-section .order-modal-section__item.tag > .status-tag {
+    width: 10%;
+    justify-content: flex-start;
+}
+
+.order-modal .order-modal-section .order-modal-section__item > span:first-of-type {
+    color: var(--main-color);
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.order-modal-btn {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 0;
+    height: 40px;
+}
+
+#order-modal-cancel {
+    color: #fff;
+    font-weight: 600;
+    margin-bottom: 0;
+    height: 40px;
+    background: #f00;
+}
+
+#order-modal-cancel:hover {
+    background: rgb(207, 2, 2);
+}

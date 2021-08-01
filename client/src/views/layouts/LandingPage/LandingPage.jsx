@@ -26,7 +26,7 @@ function LandingPage() {
                 <div className="hero__shopping">
                     <a href="/menu">
                         <FontAwesomeIcon icon={faShoppingCart} />
-                        <FontAwesomeIcon icon={faArrowRight} />
+                        <FontAwesomeIcon icon={faArrowRight} id="arrow_icon"/>
                     </a>
                 </div>
             </div>
@@ -63,7 +63,7 @@ function LandingPage() {
                 <div className="contact__left container-left">
                     <h1>Contact us</h1>
                     <div className="contact__form">
-                        <input type="text" name="name" id="name" placeholder="Entet your name" />
+                        <input type="text" name="name" id="name" placeholder="Enter your name" />
                         <input
                             type="email"
                             name="email"

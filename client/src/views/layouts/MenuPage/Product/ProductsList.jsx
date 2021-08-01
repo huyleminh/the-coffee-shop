@@ -21,9 +21,11 @@ function ProductsList(props) {
             description: product.description,
             categoryName: categoryName,
             rate: 0,
-            discount: discount ? discount.percent * 100 : null,
+            discount: discount ? ((new Date(discount.endDate).valueOf() > Date.now()) ? discount.percent * 100 : null) : null,
             oldPrice: product.price,
             newPrice: product.price,
+            startDate: discount ? discount.startDate: null,
+            endDate: discount ? discount.endDate : null
         };
 
         productCard.rate =
@@ -31,7 +33,7 @@ function ProductsList(props) {
                 ? parseInt((rating.totalStar / rating.totalRating).toFixed(1))
                 : 0;
         productCard.newPrice = discount
-            ? product.price * (1 - discount.percent / 100)
+            ? product.price * (1 - discount.percent)
             : product.price;
 
         return productCard;

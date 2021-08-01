@@ -94,6 +94,11 @@
     padding: 30px 50px;
 }
 
+.profile__manipulation > .ant-layout-content {
+    width: 100%;
+    height: 100%;
+}
+
 .profile__bar {
     width: 100%;
     height: 50px;
@@ -231,14 +236,9 @@
 .profileForm .profileForm_items > input {
     outline: none;
     border-radius: 5px;
-    border: 1px solid #503a247e;
     height: 40px;
     padding: 5px 15px;
     width: 100%;
-}
-
-.profileForm .profileForm_items > input:focus {
-    border: 2px solid #665230;
 }
 
 .profileForm .profileForm_items > #address_grid {
@@ -251,13 +251,8 @@
 .profileForm .profileForm_items > #address_grid > input {
     outline: none;
     border-radius: 5px;
-    border: 1px solid #503a247e;
     height: 40px;
     padding: 5px 15px;
-}
-
-.profileForm .profileForm_items > #address_grid > input:focus {
-    border: 2px solid #665230;
 }
 
 .profileForm .profileForm_items > #address_grid > input:first-child {

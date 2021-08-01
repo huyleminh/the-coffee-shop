@@ -48,25 +48,16 @@
     font-size: 1.5rem;
     color: #503a24;
 }
-.menu__group .ant-radio-wrapper > span {
-    color: #503a24;
-}
-
-.menu__group .ant-radio-checked .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-wrapper:hover .ant-radio,
-.ant-radio:hover .ant-radio-inner,
-.ant-radio-input:focus + .ant-radio-inner {
-    border-color: #503a24;
-}
-
-.menu__group .ant-radio-inner::after {
-    background-color: #503a24;
-}
 
 /* Search entry */
+.menu__group.search {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
 .menu__group.search > label {
     width: 100%;
     height: 20px;
@@ -74,24 +65,11 @@
 
 .menu__group.search > input {
     outline: none;
-    border: 1px solid #503a2469;
-    border-radius: 5px;
     margin-bottom: 5px;
     padding: 5px 25px 5px 15px;
 }
 
-.menu__group.search::after {
-    font-family: "Font Awesome 5 Free";
-    content: "\f002";
-    font-size: 1.5rem;
 
-    color: #503a24;
-    font-weight: 600;
-
-    position: absolute;
-    right: 5px;
-    bottom: 35px;
-}
 
 /* Menu products*/
 .menu__products {

@@ -21,8 +21,8 @@
     height: 100vh;
 
     z-index: 1;
-    background-color: #503a24ce;
-    opacity: 0.5;
+    background-color: #00000059;
+    opacity: 0.35;
     transition: all 0.3s;
 }
 
@@ -57,28 +57,34 @@
 }
 
 .container .hero h1 {
-    font-size: 5.25rem;
+    font-size: 5.5rem;
     text-transform: uppercase;
+    text-shadow: 1.5px 1.5px 5px #503a24;
+    margin-bottom: 0.3em;
 }
 
 .container .hero button {
     box-sizing: border-box;
     font-size: 2rem;
     background-color: #503a24;
-    padding: 5px 30px;
+    padding: 5px 23px;
     outline: none;
-    border-radius: 18px;
+    border-radius: 10px;
     font-weight: 500;
     text-transform: uppercase;
 }
 
 .container .hero .hero__shopping > a {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: #fff;
 }
 
+.container .hero .hero__shopping > a > #arrow_icon {
+    margin-left: 7px;
+}
+
 .container .hero .hero__shopping > a:hover {
-    color: #e6e6e6;
+    color: #2674EA;
 }
 
 /* Container section */
@@ -155,8 +161,6 @@
 textarea,
 button {
     outline: none;
-    border: 1px solid #503a24;
-    border-radius: 5px;
     margin-bottom: 5px;
     padding: 10px 20px;
 }
@@ -167,16 +171,11 @@ button {
 }
 
 .contact__left .contact__form > button {
-    background-color: #503a24;
     color: #fff;
     font-weight: 500;
     font-size: 1.25rem;
     box-sizing: border-box;
     cursor: pointer;
-}
-
-.contact__left .contact__form > button:hover {
-    background-color: #684b2f;
 }
 
 .contact__right {

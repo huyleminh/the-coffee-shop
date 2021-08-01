@@ -19,13 +19,13 @@ function PrivateRoute(props) {
         const fetchToken = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user) {
-                setIsAuth(false);
                 setIsAuthenticating(false);
+                setIsAuth(false);
                 return;
             }
             if (user && !user.token) {
-                setIsAuth(false);
                 setIsAuthenticating(false);
+                setIsAuth(false);
                 return;
             }
 
@@ -54,6 +54,7 @@ function PrivateRoute(props) {
     if (isAuthenticating)
         return (
             <Loading
+                tip="Verifying your information, please wait for a moment..."
                 style={{
                     width: "100%",
                     height: "100vh",
@@ -64,13 +65,14 @@ function PrivateRoute(props) {
             />
         );
 
-    const AuthenticatedLayout = component;
-    return (
-        <Route
-            {...rest}
-            render={() => (isAuth ? <AuthenticatedLayout /> : <Redirect to="/403" />)}
-        />
-    );
+    if (isAuth) {
+        const AuthenticatedLayout = component;
+        return <Route {...rest} component={AuthenticatedLayout} />;
+    } else {
+        alert("You are not allowed to access this page!");
+        localStorage.removeItem("user");
+        return <Redirect to="/403" />;
+    }
 }
 
 export default PrivateRoute;

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductModal.css";
+import { MenuPageEventsHandler } from "../../../../Events";
 
 ProductModal.propTypes = {
     handleVisible: PropTypes.func,
@@ -79,6 +80,7 @@ function ProductModal(props) {
                             <FontAwesomeIcon
                                 icon={faHeart}
                                 id="favourite"
+                                title="Add to wishlist"
                                 onClick={addToWishlistModal}
                             />
                             {details.discount ? (
@@ -99,12 +101,13 @@ function ProductModal(props) {
 
                         <div className="lower">
                             <span>
-                                <FontAwesomeIcon icon={faStar} id="star" /> &nbsp; {details.rate !== 0 ? details.rate : "N/A"}
+                                <FontAwesomeIcon icon={faStar} id="star" /> &nbsp;{" "}
+                                {details.rate !== 0 ? details.rate : "N/A"}
                             </span>
                             {details.discount ? (
                                 <>
                                     <span id="discount">{details.discount}%</span>
-                                    <span style={{ color: "#f72f2f" }}>
+                                    <span style={{ color: "#f72f2f"}}>
                                         {details.newPrice}&nbsp;VND
                                     </span>
                                 </>
@@ -117,7 +120,7 @@ function ProductModal(props) {
                     </span>
 
                     <div className="product__control top">
-                        <span>Category:&nbsp;</span>
+                        <span style={{fontWeight: "bold"}}>Category:&nbsp;</span>
                         <ul>
                             <li>{details.categoryName}&nbsp;</li>
                         </ul>
@@ -138,8 +141,14 @@ function ProductModal(props) {
                     </div>
 
                     <div className="product__control bottom">
-                        <button>Related product</button>
-                        <button onClick={addToCartModal}>Add to cart</button>
+                        <button
+                            onClick={() =>
+                                MenuPageEventsHandler.trigger("filter", details.categoryName)
+                            }
+                        >
+                            Related product
+                        </button>
+                        <button onClick={addToCartModal}>ADD TO CART</button>
                     </div>
                 </div>
             </div>

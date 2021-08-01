@@ -19,8 +19,8 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "username": "huytest01",
-    "password": "123456789hh"
+    "username": "customer01",
+    "password": "1234567c"
 }
 
 ###
@@ -36,3 +36,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiL
 GET http://localhost:5000/api/auth/verify
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InhTRjRSNVMiLCJ1c2VybmFtZSI6Imh1eXRlc3QwMSIsInJvbGUiOjMsImlhdCI6MTYyNjUwNzczNSwiZXhwIjoxNjI2NTA5NTM1fQ.BUFk_sl66Iv-xEDRret4y6UQ8L8vuIg3nliMx1kZC2Q
+
+###
+GET http://localhost:5000/api/wishlist/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjY5Nzc0NzIsImV4cCI6MTYyNjk3OTI3Mn0.Yyxc5p_vraQuW9qU-zqi9SBmhmDmagdvrUqhAGaS7v4
+
+###
+POST http://localhost:5000/api/wishlist/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjcwMjk3MTUsImV4cCI6MTYyNzAzMTUxNX0.JKXD2NHOrer-mOny9niYdQ-6QJPF2fEm-ToLRieOYJE
+
+{
+    "productId": "1d009b21-e1d0-4686-9e85-ac6a63e6f9a7"
+}
+
+###
+DELETE http://localhost:5000/api/wishlist/delete?productId=6dcadbfc-5300-484c-b58a-228974efb09e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2MjcwNTQ1NTIsImV4cCI6MTYyNzA1NjM1Mn0._vvHI-lAIBl5BxVVDiH3wKa42FU7unB5brINk_AFX_I
+
+###
+GET http://localhost:5000/api/checkout/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjY4NjA0NjAsImV4cCI6MTYyNjg2MjI2MH0.qELnGCa9x37wOdTOszFlTgxhs1wp5xd-a7p3CND0vF0
+
+###
+GET http://localhost:5000/api/order/view-history HTTP/1.1
+content-type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2Mjc1NzE4NTYsImV4cCI6MTYyNzU3MzY1Nn0.bBC3QVmtn5_VXGvbLe99O_-Euwcsxk8r9fYA5IzYHX8

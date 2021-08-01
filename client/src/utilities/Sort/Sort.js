@@ -15,7 +15,6 @@ class Sort {
     };
 
     static sortProductsByKeyDesc = (products, key) => {
-        console.log(key);
         if (products.length === 0 || products.length === 1) return products;
 
         const clone = JSON.parse(JSON.stringify(products));
@@ -28,6 +27,22 @@ class Sort {
         }
 
         return clone;
+    };
+
+    static sortOrderssByStatus = (records, status = -1) => {
+        if (records.length === 0 || records.length === 1 || status === -1) return records;
+
+        let result = [];
+
+        for (let i = 0; i < records.length; ++i) {
+            if (records[i].status === status) result.push(records[i]);
+        }
+
+        for (let i = 0; i < records.length; ++i) {
+            if (records[i].status !== status) result.push(records[i]);
+        }
+
+        return result;
     };
 }
 

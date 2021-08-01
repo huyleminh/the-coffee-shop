@@ -1,9 +1,11 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from "prop-types";
 import { Radio, Space } from "antd";
-import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
+import React, { useRef, useState } from "react";
 import Loading from "../../../../components/Loading";
+import { MenuPageEventsHandler } from "../../../../Events";
+import { LoadingOutlined } from "@ant-design/icons";
 
 SidebarFilter.propTypes = {
     isLoading: PropTypes.bool,
@@ -11,27 +13,13 @@ SidebarFilter.propTypes = {
     filter: PropTypes.string,
     sort: PropTypes.string,
     categoriesList: PropTypes.array,
-    handleSearchTerm: PropTypes.func,
-    handleChangeFilter: PropTypes.func,
-    handleSortBy: PropTypes.func,
-    setFilterVisible: PropTypes.func,
 };
 
 function SidebarFilter(props) {
-    const {
-        isLoading,
-        isFilterVisible,
-        filter,
-        sort,
-        categoriesList,
-        handleSearchTerm,
-        handleChangeFilter,
-        handleSortBy,
-    } = props;
+    const { isLoading, isFilterVisible, filter, sort, categoriesList } = props;
     const activeClassname = isFilterVisible ? "active" : null;
 
     const [searchTerm, setSearchTerm] = useState("");
-    // Search term
     const typingTimeoutRef = useRef(null);
 
     const handleSubmitSearchTerm = (e) => {
@@ -40,7 +28,7 @@ function SidebarFilter(props) {
             setSearchTerm("");
             return;
         }
-        if (!handleSearchTerm) return;
+
         if (typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);
         }
@@ -48,21 +36,19 @@ function SidebarFilter(props) {
         setSearchTerm(target.value);
 
         typingTimeoutRef.current = setTimeout(() => {
-            handleSearchTerm(target.value.trim());
+            MenuPageEventsHandler.trigger("search", target.value.trim());
         }, 1000);
     };
 
     const handleFilter = (e) => {
         const target = e.target;
-        if (!handleChangeFilter) return;
         if (searchTerm) setSearchTerm("");
-        handleChangeFilter(target.value);
+        MenuPageEventsHandler.trigger("filter", target.value);
     };
 
     const handleSort = (e) => {
         const target = e.target;
-        if (!handleSortBy) return;
-        handleSortBy(target.value);
+        MenuPageEventsHandler.trigger("changeSortBy", target.value);
     };
 
     const list = categoriesList.map((item) => (
@@ -78,11 +64,10 @@ function SidebarFilter(props) {
                     icon={faTimes}
                     id="hide"
                     onClick={() => {
-                        isFilterVisible && props.setFilterVisible(false);
+                        isFilterVisible && MenuPageEventsHandler.trigger("toggleSideBar", false);
                     }}
                 />
                 <div className="menu__group search">
-                    <label htmlFor="search"></label>
                     <input
                         type="text"
                         name="search"
@@ -91,6 +76,9 @@ function SidebarFilter(props) {
                         value={searchTerm}
                         onChange={handleSubmitSearchTerm}
                     />
+                    <div>
+                        {isLoading ? <LoadingOutlined spin /> : <FontAwesomeIcon icon={faSearch} style={{ fontSize: "20px" }} />}
+                    </div>
                 </div>
 
                 <div className="menu__group filter">
@@ -135,7 +123,7 @@ function SidebarFilter(props) {
                 <div
                     className="menu-overlay"
                     onClick={() => {
-                        isFilterVisible && props.setFilterVisible(false);
+                        isFilterVisible && MenuPageEventsHandler.trigger("toggleSideBar", false);
                     }}
                 ></div>
             ) : null}
