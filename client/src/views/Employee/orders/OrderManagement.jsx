@@ -5,11 +5,6 @@ import OrderModal from "./OrderModal";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-// Trạng thái: Primary, Success, Warning, Danger, Cancel
-// Normal: 007ff5, 00d349, ff933d, ff1f32, bdbec2
-// Hover: 0062cf, 6ec335, ff8631, f90525, aeb0b7 (shadow)
-// Active: 0062cf, 6ec335, ff8631, f90525, aeb0b7
-
 function OrderManagement() {
     const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
     const columns = [
