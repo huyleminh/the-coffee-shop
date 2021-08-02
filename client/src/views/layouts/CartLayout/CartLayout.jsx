@@ -10,7 +10,7 @@ import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
-import ProductItem from "../MenuPage/Product/ProductItem";
+import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
 
 const { Content } = Layout;
 
@@ -28,6 +28,32 @@ function CartLayout() {
     const [cart, setCart] = useState(() => {
         const cartLocal = JSON.parse(localStorage.getItem("cart"));
         return cartLocal ? cartLocal : [];
+    });
+
+    const cartTable = cart.map((item, index) => {
+        let discount = 0;
+        if (item.discount) {
+            discount = item.discount.percent;
+            const endDate = new Date(item.discount.endDate);
+            if (Date.now() > endDate.valueOf()) discount = 0;
+        }
+
+        const price = { discount, price: item.product.price };
+        const total = item.quantity * (price.price * (1 - price.discount));
+
+        return {
+            key: item.product.id,
+            product: item.product.name,
+            image: {
+                src: images[index],
+                width: "100px",
+                height: "100px",
+            },
+            price,
+            quantity: item.quantity,
+            total,
+            action: "wishlist",
+        };
     });
 
     const handleGoMenu = () => history.push("/menu");
@@ -100,135 +126,108 @@ function CartLayout() {
         }
     };
 
-    const handleAddToWishlist = (card) => {
+    const handleAddToWishlist = async (item) => {
+        const itemID = item.key;
         const user = JSON.parse(localStorage.getItem("user"));
-        const wishlist = localStorage.getItem("wishlist")
+        const tempWishlistLocal = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
             : [];
-        console.log("CARD: ", card);
-        console.log("WISHLIST: ", wishlist);
-
-        // const item = {
-        //     product: {
-        //         id: card.id,
-        //         name: card.name,
-        //         image: card.image.match(/img_.+((\.jpg)|(\.png)|(\.jpeg)|(\.jfif))/g)[0],
-        //         price: card.discount ? card.newPrice : card.oldPrice,
-        //     },
-        //     discount: card.discount
-        //         ? {
-        //               percent: card.discount / 100,
-        //               startDate: card.startDate,
-        //               endDate: card.endDate,
-        //           }
-        //         : null,
-        // };
-
-        // const price = card.price.discount
-        //     ? card.price.price * (1 - card.discount)
-        //     : card.price.price;
-        const item = {
-            product: {
-                id: card.key,
-                name: card.product,
-                image: card.image,
-                price: card.price.discount
-                    ? card.price.price * (1 - card.discount)
-                    : card.price.price,
-            },
-            discount: card.price.discount
-                ? {
-                      percent: card.discount / 100,
-                      startDate: card.startDate,
-                      endDate: card.endDate,
-                  }
-                : null,
-        };
         console.log("ITEM: ", item);
+        console.log("ITEM ID: ", itemID);
+        console.log("WISHLIST LOCAL: ", tempWishlistLocal);
+        console.log("USER: ", user);
 
-        // if (!user || !user.token) {
-        //     for (let i of wishlist) {
-        //         if (i["product"]["id"] === item["product"]["id"]) {
-        //             //alert(`${card.name} already existed in your wishlist.`);
-        //             NotificationBox.triggerError(
-        //                 "ERROR",
-        //                 `${card.name} already existed in your wishlist.`
-        //             );
-        //             return;
-        //         }
-        //     }
-        //     localStorage.removeItem("user");
-        //     localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-        //     //alert(`${card.name} added.`);
-        //     NotificationBox.triggerSuccess(
-        //         "ADDED ITEM TO WISHLIST",
-        //         `${card.name} added to your wishlist.`
-        //     );
-        //     return;
-        // } else {
-        //     try {
-        //         const response = await WishlistAPI.addToWishlist(user.token, card.id);
-        //         if (response.status === 200)
-        //             //alert(`${card.name} added.`);
-        //             NotificationBox.triggerError(
-        //                 "ITEM EXISTED",
-        //                 `${card.name} already existed in your wishlist.`
-        //             );
-        //         else if (response.status === 404) {
-        //             if (response.message === "This user does not exist") {
-        //                 for (let i of wishlist) {
-        //                     if (i["product"]["id"] === item["product"]["id"]) {
-        //                         //alert(`${card.name} already existed in your wishlist.`);
-        //                         NotificationBox.triggerError(
-        //                             "ITEM EXISTED",
-        //                             `${card.name} already existed in your wishlist.`
-        //                         );
-        //                         return;
-        //                     }
-        //                 }
-        //                 localStorage.removeItem("user");
-        //                 localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-        //                 //alert(`${card.name} added.`);
-        //             } //alert(response.message);
-        //             else NotificationBox.triggerError("ERROR", response.message);
-        //         } else if (response.status === 401 || response.status === 403) {
-        //             for (let i of wishlist) {
-        //                 if (i["product"]["id"] === item["product"]["id"]) {
-        //                     //alert(`${card.name} already existed in your wishlist.`);
-        //                     NotificationBox.triggerError(
-        //                         "ITEM EXISTED",
-        //                         `${card.name} already existed in your wishlist.`
-        //                     );
-        //                     return;
-        //                 }
-        //             }
-        //             localStorage.removeItem("user");
-        //             localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
-        //             //alert(`${card.name} added.`);
-        //             NotificationBox.triggerSuccess(
-        //                 "ADDED ITEM TO WISHLIST",
-        //                 `${card.name} added to your wishlist.`
-        //             );
-        //         } else if (response.status === 409)
-        //             //alert(`${card.name} already existed in your wishlist.`);
-        //             NotificationBox.triggerError(
-        //                 "ITEM EXISTED",
-        //                 `${card.name} already existed in your wishlist.`
-        //             );
-        //     } catch (error) {
-        //         console.log(error);
-        //         //alert("Something went wrong.");
-        //         NotificationBox.triggerError("ERROR", `${card.name} something went wrong.`);
-        //     }
-        // }
+        if (user && user.token) {
+            const tempCart = CartAPI.getCart(user.token);
+            console.log("CART: ", tempCart);
+        }
+
+        if (!user || !user.token) {
+            const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
+                ? JSON.parse(localStorage.getItem("cart"))
+                : [];
+            console.log("CART LOCAL: ", tempCartLocal);
+            for (let i of tempCartLocal) {
+                if (i.product.id === itemID) {
+                    for (let j of tempWishlistLocal) {
+                        if (j.product.id === itemID) {
+                            NotificationBox.triggerError(
+                                "ITEM EXISTED IN WISHLIST",
+                                `${i.product.name} added to your wishlist.`
+                            );
+                            return;
+                        }
+                    }
+                    tempWishlistLocal.push(i);
+                    localStorage.removeItem("user");
+                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal]));
+                    //alert(`${card.name} added.`);
+                    NotificationBox.triggerSuccess(
+                        "ADDED ITEM TO WISHLIST",
+                        `${i.product.name} added to your wishlist.`
+                    );
+                    return;
+                }
+            }
+        } else {
+            try {
+                const response = await WishlistAPI.addToWishlist(user.token, itemID);
+                if (response.status === 200)
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${item.name} already existed in your wishlist.`
+                    );
+                else if (response.status === 404) {
+                    if (response.message === "This user does not exist") {
+                        for (let i of tempWishlistLocal) {
+                            if (i["product"]["id"] === item["id"]) {
+                                NotificationBox.triggerError(
+                                    "ITEM EXISTED",
+                                    `${item.name} already existed in your wishlist.`
+                                );
+                                return;
+                            }
+                        }
+                        localStorage.removeItem("user");
+                        localStorage.setItem(
+                            "wishlist",
+                            JSON.stringify([...tempWishlistLocal, item])
+                        );
+                    } else NotificationBox.triggerError("ERROR", response.message);
+                } else if (response.status === 401 || response.status === 403) {
+                    for (let i of tempWishlistLocal) {
+                        if (i["product"]["id"] === item["product"]["id"]) {
+                            NotificationBox.triggerError(
+                                "ITEM EXISTED",
+                                `${item.name} already existed in your Wishlist.`
+                            );
+                            return;
+                        }
+                    }
+                    localStorage.removeItem("user");
+                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, item]));
+                    NotificationBox.triggerSuccess(
+                        "ADDED ITEM TO WISHLIST",
+                        `${item.name} added to your wishlist.`
+                    );
+                } else if (response.status === 409) {
+                    //alert(`${card.name} already existed in your wishlist.`);
+                    console.log("LOCAL ITEM: ", item);
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${item.product} already existed in your wishlist.`
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+                NotificationBox.triggerError("ERROR", `${item.name} something went wrong.`);
+            }
+        }
     };
 
     const handleAction = (record) => {
+        //addItemToWishlist(record);
         handleAddToWishlist(record);
-        NotificationBox.triggerSuccess(
-            "ADDED SUCCESSFULLY",
-            "Item added to wishlist successfully (FAKE)"
-        );
     };
 
     const removeSelectedItem = async (params) => {
@@ -351,7 +350,7 @@ function CartLayout() {
         setTotalMoney(totalMoneyTemp);
 
         fetchCart();
-    }, []);
+    }, [cartTable, cart]);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -370,33 +369,7 @@ function CartLayout() {
 
         setTotalMoney(totalMoneyTemp);
         fetchImages();
-    }, [cart]);
-
-    const cartTable = cart.map((item, index) => {
-        let discount = 0;
-        if (item.discount) {
-            discount = item.discount.percent;
-            const endDate = new Date(item.discount.endDate);
-            if (Date.now() > endDate.valueOf()) discount = 0;
-        }
-
-        const price = { discount, price: item.product.price };
-        const total = item.quantity * (price.price * (1 - price.discount));
-
-        return {
-            key: item.product.id,
-            product: item.product.name,
-            image: {
-                src: images[index],
-                width: "100px",
-                height: "100px",
-            },
-            price,
-            quantity: item.quantity,
-            total,
-            action: "wishlist",
-        };
-    });
+    }, [cartTable, cart]); //, [cart]);
 
     return (
         <Content>
