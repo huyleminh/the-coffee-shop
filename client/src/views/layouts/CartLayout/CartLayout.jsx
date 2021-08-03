@@ -172,10 +172,11 @@ function CartLayout() {
         } else {
             try {
                 const response = await WishlistAPI.addToWishlist(user.token, itemID);
+                console.log("RESPONSE: ", response.status);
                 if (response.status === 200)
-                    NotificationBox.triggerError(
-                        "ITEM EXISTED",
-                        `${item.name} already existed in your wishlist.`
+                    NotificationBox.triggerSuccess(
+                        "ITEM ADDED",
+                        `${item.product} added to wishlist successfully.`
                     );
                 else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
@@ -183,7 +184,7 @@ function CartLayout() {
                             if (i["product"]["id"] === item["id"]) {
                                 NotificationBox.triggerError(
                                     "ITEM EXISTED",
-                                    `${item.name} already existed in your wishlist.`
+                                    `${item.product} already existed in your wishlist.`
                                 );
                                 return;
                             }
