@@ -92,17 +92,11 @@
 .checkout__right .checkout__voucher button {
     margin-bottom: 0;
     margin-left: 10px;
-    background-color: #503a24;
-    color: #fff;
     font-weight: 600;
 }
 
 .checkout__right .checkout__voucher input {
     text-transform: uppercase;
-}
-
-.checkout__right .checkout__voucher button:hover {
-    background-color: #684b2e;
 }
 
 .checkout__right .checkout__summary {
@@ -152,9 +146,9 @@
 
 .checkout__buttons #buy-more {
     background-color: #fff;
-    border: 1px solid #9c7044;
+    border: 2px solid #9c7044;
     color: #503a24;
-    transition: color 0.2s, background-color 0.2s;
+    transition: all 0.2s;
 }
 
 .checkout__buttons #buy-more:hover {
@@ -162,13 +156,10 @@
     color: #fff;
 }
 
-.checkout__buttons #confirm {
+.checkout__buttons #buy-more:active {
+    border: 2px solid #503a24;
     background-color: #503a24;
     color: #fff;
-}
-
-.checkout__buttons #confirm:hover {
-    background-color: #684b2e;
 }
 
 @media only screen and (min-width: 560px) and (max-width: 767px) {

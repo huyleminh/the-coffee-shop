@@ -9,8 +9,8 @@ import Loading from "../../../components/Loading";
 import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
-import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
+import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 
 const { Content } = Layout;
 
@@ -19,7 +19,6 @@ function CartLayout() {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
-    const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
     const [isDisable, setIsDisable] = useState(false);
 
@@ -61,33 +60,28 @@ function CartLayout() {
     const handleCheckout = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            localStorage.setItem("cart", JSON.stringify(cart));
             localStorage.removeItem("user");
+            localStorage.removeItem("checkout");
+            const confirm = window.confirm("You are not logged in. Click Ok to go to the login page before you make your checkout.")
+            if (confirm)
+                history.push("/login");
         }
-        localStorage.setItem("checkout", JSON.stringify(cart));
-
-        history.push("/checkout");
+        else {
+            localStorage.setItem("checkout", JSON.stringify(cart));
+            history.push("/checkout");
+        }
     };
 
-    const handleSelected = (keys) => {
-        setSelectedItem(keys);
-    };
+    const handleSelected = (keys) => setSelectedItem(keys);
 
     const handleQuantity = (item, value) => {
-        if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
-
+        if (value === 0) return;
         const index = cartTable.findIndex((element) => element.key === item.key);
-        cart[index].quantity = value;
-        cartTable[index].quantity = value;
-        cartTable[index].total =
-            value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
-        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
+        const newCart = [...cart];
+        newCart[index].quantity = value;
+        setCart(newCart);
 
-        setTotalMoney(totalMoneyTemp);
-        setCart(cart);
-
+        if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             localStorage.setItem("cart", JSON.stringify(cart));
@@ -95,18 +89,16 @@ function CartLayout() {
         } else {
             tappingQuantity.current = setTimeout(async () => {
                 try {
-                    // notification: wait 3s
                     setIsDisable(true);
-
                     const response = await CartAPI.editCart(user.token, {
                         productId: item.key,
                         quantity: value,
                     });
-
                     setIsDisable(false);
+
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart));
-                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully");
+                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
                     } else {
                         if (
                             response.message !==
@@ -115,42 +107,33 @@ function CartLayout() {
                             localStorage.removeItem("user");
 
                         NotificationBox.triggerError(
-                            "CHANGE QUANTITY ERROR",
-                            "Change quantity failed"
+                            "ERROR",
+                            "Fail to change quantity."
                         );
                     }
                 } catch (error) {
-                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                    console.log(error)
+                    alert("Something went wrong");
                 }
             }, 1000);
         }
     };
 
     const handleAddToWishlist = async (item) => {
-        const itemID = item.key;
         const user = JSON.parse(localStorage.getItem("user"));
         const tempWishlistLocal = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
             : [];
-        console.log("ITEM: ", item);
-        console.log("ITEM ID: ", itemID);
-        console.log("WISHLIST LOCAL: ", tempWishlistLocal);
-        console.log("USER: ", user);
-
-        if (user && user.token) {
-            const tempCart = CartAPI.getCart(user.token);
-            console.log("CART: ", tempCart);
-        }
 
         if (!user || !user.token) {
             const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
                 ? JSON.parse(localStorage.getItem("cart"))
                 : [];
-            console.log("CART LOCAL: ", tempCartLocal);
+
             for (let i of tempCartLocal) {
-                if (i.product.id === itemID) {
+                if (i.product.id === item.key) {
                     for (let j of tempWishlistLocal) {
-                        if (j.product.id === itemID) {
+                        if (j.product.id === item.key) {
                             NotificationBox.triggerError(
                                 "ITEM EXISTED IN WISHLIST",
                                 `${i.product.name} added to your wishlist.`
@@ -158,10 +141,8 @@ function CartLayout() {
                             return;
                         }
                     }
-                    tempWishlistLocal.push(i);
                     localStorage.removeItem("user");
-                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal]));
-                    //alert(`${card.name} added.`);
+                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, i]));
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
                         `${i.product.name} added to your wishlist.`
@@ -171,20 +152,19 @@ function CartLayout() {
             }
         } else {
             try {
-                const response = await WishlistAPI.addToWishlist(user.token, itemID);
-                console.log("RESPONSE: ", response.status);
+                const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200)
-                    NotificationBox.triggerSuccess(
-                        "ITEM ADDED",
-                        `${item.product} added to wishlist successfully.`
+                    NotificationBox.triggerError(
+                        "EXISTED",
+                        `${item.product} has already existed in your wishlist.`
                     );
                 else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
                         for (let i of tempWishlistLocal) {
-                            if (i["product"]["id"] === item["id"]) {
+                            if (i.product.id === item.id) {
                                 NotificationBox.triggerError(
-                                    "ITEM EXISTED",
-                                    `${item.product} already existed in your wishlist.`
+                                    "EXISTED",
+                                    `${item.product} has already existed in your wishlist.`
                                 );
                                 return;
                             }
@@ -197,10 +177,10 @@ function CartLayout() {
                     } else NotificationBox.triggerError("ERROR", response.message);
                 } else if (response.status === 401 || response.status === 403) {
                     for (let i of tempWishlistLocal) {
-                        if (i["product"]["id"] === item["product"]["id"]) {
+                        if (i.product.id === item.product.id) {
                             NotificationBox.triggerError(
-                                "ITEM EXISTED",
-                                `${item.name} already existed in your Wishlist.`
+                                "EXISTED",
+                                `${item.product} has already existed in your Wishlist.`
                             );
                             return;
                         }
@@ -209,11 +189,9 @@ function CartLayout() {
                     localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, item]));
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
-                        `${item.name} added to your wishlist.`
+                        `${item.product} added to your wishlist.`
                     );
                 } else if (response.status === 409) {
-                    //alert(`${card.name} already existed in your wishlist.`);
-                    console.log("LOCAL ITEM: ", item);
                     NotificationBox.triggerError(
                         "ITEM EXISTED",
                         `${item.product} already existed in your wishlist.`
@@ -221,15 +199,12 @@ function CartLayout() {
                 }
             } catch (error) {
                 console.log(error);
-                NotificationBox.triggerError("ERROR", `${item.name} something went wrong.`);
+                NotificationBox.triggerError("ERROR", `${item.product} something went wrong.`);
             }
         }
     };
 
-    const handleAction = (record) => {
-        //addItemToWishlist(record);
-        handleAddToWishlist(record);
-    };
+    const handleAction = (record) => handleAddToWishlist(record);
 
     const removeSelectedItem = async (params) => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -241,7 +216,7 @@ function CartLayout() {
         for (let item of cart) {
             deleted = false;
             for (let key of params) {
-                if (item["product"]["id"] === key) {
+                if (item.product.id === key) {
                     isDeleted = true;
                     removeItem.push(item);
                     deleted = true;
@@ -269,7 +244,6 @@ function CartLayout() {
                 let countNotExist = 0;
                 for (let item of response) {
                     if (item.status === 200) {
-                        console.log("success");
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
@@ -340,18 +314,13 @@ function CartLayout() {
                         setCart(cartLocal ? cartLocal : []);
                     }
                 } catch (error) {
+                    console.log(error);
                     NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
             }
         };
-        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
-
-        setTotalMoney(totalMoneyTemp);
-
         fetchCart();
-    }, [cartTable, cart]);
+    }, []);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -364,13 +333,12 @@ function CartLayout() {
             setImages(images);
             setIsLoading(false);
         };
-        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
-
-        setTotalMoney(totalMoneyTemp);
         fetchImages();
-    }, [cartTable, cart]); //, [cart]);
+    }, [cart]);
+
+    const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+        return accumulator + currentItem.total;
+    }, 0);
 
     return (
         <Content>
@@ -419,7 +387,7 @@ function CartLayout() {
                 </div>
                 <div className="totalMoney">
                     <span className="total_text">TOTAL MONEY:</span>
-                    <span>{totalMoney} VND</span>
+                    <span>{totalMoneyTemp} VND</span>
                 </div>
                 <div className="bottomRight__totalCheckout__cart ">
                     <button

@@ -80,6 +80,27 @@ class Order {
         })
     }
 
+    static getByOrderIdAndUserId = (orderId, userId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.order
+            WHERE id = ? AND userId = ?;`
+
+            DatabaseConnection.query(sql, [orderId, userId], (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const orderList = Order.toArrayFromDatabaseObject(rows)
+                    resolve(orderList)
+                }
+            })
+        })
+    }
+
     insert() {
         const values = Object.values(this);
 
@@ -87,6 +108,28 @@ class Order {
             // (id, asliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.order
             VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+
+            DatabaseConnection.query(sql, values, (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
+
+    update(keys, values) {
+        const id = this.id;
+
+        for (let i = 0; i < keys.length; i++) this[keys[i]] = values[i];
+
+        return new Promise((resolve, reject) => {
+            const setStatement = keys.join("=?,") + "=?";
+            const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.order
+            SET ${setStatement}
+            WHERE id = '${id}';`;
 
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {

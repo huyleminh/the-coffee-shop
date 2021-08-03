@@ -1,6 +1,0 @@
-SECRET_TOKEN_KEY="gachienpromax_secrect_token"
-SECRET_REFRESH_TOKEN_KEY="gachienpromax_secrect_refresh_token"
-DATABASE_HOST_NAME="us-cdbr-east-04.cleardb.com"
-DATABASE_USERNAME="bd1fe74b451671"
-DATABASE_PASSWORD="43eb4e2f"
-DATABASE_NAME="heroku_a51da3167c7e5af"
