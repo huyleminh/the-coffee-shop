@@ -34,6 +34,31 @@ class Order {
         });
     };
 
+    static getAllByDate = (startDate, endDate) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT *
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.order o
+            JOIN ${DatabaseConfig.CONFIG.DATABASE}.receiver_info ri ON o.id = ri.orderId
+            WHERE o.createdAt BETWEEN ? AND ?;`
+
+            DatabaseConnection.query(sql, [startDate, endDate], (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const jsonString = JSON.stringify(rows)
+                    const orderList = JSON.parse(jsonString)
+
+                    resolve(orderList)
+                }
+            })
+        })
+    }
+
     static getAllAliasId = () => {
         return new Promise((resolve, reject) => {
             const sql = `SELECT aliasId FROM ${DatabaseConfig.CONFIG.DATABASE}.order;`

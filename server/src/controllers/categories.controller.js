@@ -7,7 +7,7 @@ class CategoriesController {
 
       if (Object.keys(param).length !== 0)
          res.send({ status: 404, message: "Page not found" });
-      else 
+      else
          res.send({ status: 200, data });
    };
 }
