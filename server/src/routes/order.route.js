@@ -11,4 +11,11 @@ orderRouter.get(
     OrderController.getAll
 )
 
+orderRouter.post(
+    "/cancel",
+    AuthorizationMiddleware.verifyToken,
+    AuthorizationMiddleware.verifyDataInToken,
+    OrderController.cancelOneOrder
+)
+
 export default orderRouter;
