@@ -252,10 +252,10 @@ function CheckoutPage() {
 
                 <div className="checkout__buttons">
                     <button id="buy-more" onClick={handleBackToMenu}>
-                        &#60; Buy more
+                        &#60; BUY MORE
                     </button>
                     <button id="confirm" onClick={handleConfirmCheckout}>
-                        {isSending ? <LoadingOutlined spin /> : "Confirm"}
+                        {isSending ? <LoadingOutlined spin /> : "CONFIRM"}
                     </button>
                 </div>
             </div>
