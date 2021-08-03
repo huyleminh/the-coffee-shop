@@ -83,6 +83,7 @@ class OrderController {
             data: orderList.map((order, index) => {
                 return {
                     order: {
+                        id: order.id,
                         aliasId: order.aliasId,
                         createdAt: order.createdAt,
                         status: order.status,

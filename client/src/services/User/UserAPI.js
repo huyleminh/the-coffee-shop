@@ -21,6 +21,13 @@ class UserAPI {
         };
         return ClientAPI.get("/order/view-history", config);
     };
+
+    static cancelOrder = (token, orderId) => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        return ClientAPI.post("/order/cancel", { orderId }, config);
+    };
 }
 
 export default UserAPI;

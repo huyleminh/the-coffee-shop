@@ -1,14 +1,69 @@
 import { Divider, Modal } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import "../../../../assets/css/layouts/profile/OrderHistoryModal.css";
 import ProductTable from "../../../../components/Product/ProductTable";
 import { UserProfileEventsHandler } from "../../../../Events";
+import UserAPI from "../../../../services/User/UserAPI";
+import NotificationBox from "../../../../components/NotificationBox";
+import { LoadingOutlined } from "@ant-design/icons";
 
 function OrderHistoryModal(props) {
     const { isVisible, data } = props;
+    const history = useHistory();
+    const [isSending, setIsSending] = useState(false);
     if (!data) return <div></div>;
 
     const handleCancel = () => UserProfileEventsHandler.trigger("toggleOrderHistoryModal");
+
+    const handleCancelOrder = () => {
+        const productId = data.order.id;
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page.");
+            history.push("/403");
+            return;
+        }
+
+        setIsSending(true);
+        UserAPI.cancelOrder(user.token, productId)
+            .then((res) => {
+                if (res.status === 200) {
+                    setIsSending(false);
+                    NotificationBox.triggerSuccess("CANCEL ORDER", "Cancel order successfully. The page will be reloaded after 2.5 seconds.");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2500);
+                } else if (res.status === 401 || res.status === 403) {
+                    setIsSending(false);
+                    alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    history.push("/403");
+                } else if (res.status === 404) {
+                    setIsSending(false);
+                    alert(res.message);
+                    localStorage.removeItem("user");
+                    history.push("/404");
+                } else if (res.status === 406) {
+                    setIsSending(false);
+                    NotificationBox.triggerError(
+                        "CANCEL ORDER",
+                        "This order can not be cancelled. The employee has already confirmed it."
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2500);
+                } else {
+                    alert("Something went wrong.");
+                    setIsSending(false);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                alert("Something went wrong.");
+                setIsSending(false);
+            });
+    };
 
     const tableRecords = data.products.map((item) => {
         return {
@@ -129,7 +184,9 @@ function OrderHistoryModal(props) {
                                     button.
                                 </i>
                             </span>
-                            <button id="order-modal-cancel">Cancel</button>
+                            <button onClick={handleCancelOrder} id="order-modal-cancel">
+                                {isSending ? <LoadingOutlined spin /> : "Cancel"}
+                            </button>
                         </div>
                     ) : (
                         <></>

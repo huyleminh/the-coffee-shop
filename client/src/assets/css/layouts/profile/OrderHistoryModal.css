@@ -33,6 +33,11 @@
     align-items: flex-end;
 }
 
+.order-modal .order-modal-section .order-modal-section__item:last-child {
+    display: flex;
+    justify-content: space-between;
+}
+
 .order-modal .order-modal-section .order-modal-section__item.tag > .status-tag {
     width: 10%;
     justify-content: flex-start;
@@ -61,4 +66,8 @@
 
 #order-modal-cancel:hover {
     background: rgb(207, 2, 2);
+}
+
+.ant-modal-footer {
+    padding: 10px 24px;
 }

@@ -23,7 +23,7 @@ function CheckoutPage() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [userInfo, setUserInfo] = useState({});
-    const [payment, setPayment] = useState("cod");
+    const [payment, setPayment] = useState(0);
     const [voucher, setVoucher] = useState("");
     const [isSending, setIsSending] = useState(false);
 
@@ -87,15 +87,23 @@ function CheckoutPage() {
     const handleConfirmCheckout = async () => {
         setIsSending(true);
         const products = records.map((record) => {
-            return { id: record.key, quantity: record.quantity, price: record.price.price };
+            const price = record.price.discount
+                ? record.price.price * (1 - record.price.discount)
+                : record.price.price;
+            return { id: record.key, quantity: record.quantity, price: price };
         });
 
-        const flow = new CheckoutWorkflow({ ...userInfo, payment, products });
+        const flow = new CheckoutWorkflow({
+            ...userInfo,
+            payment,
+            products,
+            deliveryFee: SHIPPING_FEE[records.length % 3],
+        });
         const res = await flow.startFlow();
         if (res.status === 200) {
             setIsSending(false);
             alert(res.statusText);
-            history.push("/menu");
+            history.push("/profile/orders/history");
         } else if (res.status === 400) {
             setIsSending(false);
             alert(res.statusText);
@@ -205,11 +213,11 @@ function CheckoutPage() {
                         <div className="checkout__payment">
                             <Radio.Group value={payment} onChange={handleChangePayment}>
                                 <Space direction="vertical">
-                                    <Radio value="cod">Cash on delivery</Radio>
-                                    <Radio value="e-banking">Internet Banking</Radio>
-                                    <Radio style={{ textTransform: "uppercase" }} value="card">
+                                    <Radio value={0}>Cash on delivery</Radio>
+                                    <Radio style={{ textTransform: "uppercase" }} value={1}>
                                         Visa/Master Card
                                     </Radio>
+                                    <Radio value={2}>Internet Banking</Radio>
                                 </Space>
                             </Radio.Group>
                         </div>
@@ -243,7 +251,8 @@ function CheckoutPage() {
                             <div className="checkout__summary-item total">
                                 <span>Total price:</span>
                                 <span style={{ color: "#f00" }}>
-                                    {totalPrice - discountFee} VND
+                                    {totalPrice + SHIPPING_FEE[records.length % 3] - discountFee}{" "}
+                                    VND
                                 </span>
                             </div>
                         </div>
