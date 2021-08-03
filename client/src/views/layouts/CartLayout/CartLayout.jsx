@@ -363,7 +363,7 @@ function CartLayout() {
                     const response = await WishlistAPI.addToWishlist(user.token, item.product.id);
                     if (response.status === 200)
                         NotificationBox.triggerSuccess(
-                            "ADDED",
+                            "ITEM ADDED",
                             `${item.product.name} added to your wishlist successfully.`
                         );
                     else if (response.status === 404) {
