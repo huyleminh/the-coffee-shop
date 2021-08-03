@@ -98,7 +98,7 @@ function CartLayout() {
 
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart));
-                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully");
+                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
                     } else {
                         if (
                             response.message !==
@@ -107,13 +107,13 @@ function CartLayout() {
                             localStorage.removeItem("user");
 
                         NotificationBox.triggerError(
-                            "CHANGE QUANTITY ERROR",
-                            "Change quantity failed"
+                            "ERROR",
+                            "Fail to change quantity."
                         );
                     }
                 } catch (error) {
                     console.log(error)
-                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                    alert("Something went wrong");
                 }
             }, 1000);
         }
@@ -155,16 +155,16 @@ function CartLayout() {
                 const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200)
                     NotificationBox.triggerError(
-                        "ITEM EXISTED",
-                        `${item.name} already existed in your wishlist.`
+                        "EXISTED",
+                        `${item.product} has already existed in your wishlist.`
                     );
                 else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
                         for (let i of tempWishlistLocal) {
                             if (i.product.id === item.id) {
                                 NotificationBox.triggerError(
-                                    "ITEM EXISTED",
-                                    `${item.name} already existed in your wishlist.`
+                                    "EXISTED",
+                                    `${item.product} has already existed in your wishlist.`
                                 );
                                 return;
                             }
@@ -179,8 +179,8 @@ function CartLayout() {
                     for (let i of tempWishlistLocal) {
                         if (i.product.id === item.product.id) {
                             NotificationBox.triggerError(
-                                "ITEM EXISTED",
-                                `${item.name} already existed in your Wishlist.`
+                                "EXISTED",
+                                `${item.product} has already existed in your Wishlist.`
                             );
                             return;
                         }
@@ -189,7 +189,7 @@ function CartLayout() {
                     localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, item]));
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
-                        `${item.name} added to your wishlist.`
+                        `${item.product} added to your wishlist.`
                     );
                 } else if (response.status === 409) {
                     NotificationBox.triggerError(
@@ -199,7 +199,7 @@ function CartLayout() {
                 }
             } catch (error) {
                 console.log(error);
-                NotificationBox.triggerError("ERROR", `${item.name} something went wrong.`);
+                NotificationBox.triggerError("ERROR", `${item.product} something went wrong.`);
             }
         }
     };
