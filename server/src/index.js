@@ -8,6 +8,7 @@ import wishlistRouter from "./routes/wishlist.route.js";
 import cartRouter from "./routes/cart.route.js";
 import checkoutRouter from "./routes/checkout.route.js";
 import orderRouter from "./routes/order.route.js";
+import employeeRouter from "./routes/employee.route.js";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/api/wishlist", wishlistRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/employee", employeeRouter);
 
 app.listen(PORT, () => {
     console.log(
