@@ -1,35 +1,24 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { Layout, notification } from "antd";
+import { Layout } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/cart/CartLayout.css";
 import CartImage from "../../../assets/images/landing-hero.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
+import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
-import NotificationBox from "../../../components/NotificationBox";
+import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
 
 const { Content } = Layout;
-
-const openNotification = (placement) => {
-    notification.info({
-        message: `Notification ${placement}`,
-        description:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
-        placement,
-    });
-};
-// Handle items which are selected
 
 function CartLayout() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
-    const [isRemoving, setIsRemoving] = useState(false);
-    const [itemToBuy, setItemToBuy] = useState([]);
     const [totalMoney, setTotalMoney] = useState(0);
     const [images, setImages] = useState([]);
     const [isDisable, setIsDisable] = useState(false);
@@ -40,198 +29,6 @@ function CartLayout() {
         const cartLocal = JSON.parse(localStorage.getItem("cart"));
         return cartLocal ? cartLocal : [];
     });
-
-    const handleGoMenu = () => {
-        history.push("/menu");
-    };
-
-    const handleCheckout = () => {
-        history.push("/checkout");
-    };
-
-    const handleRemoveItem = (key) => {
-        setIsSending(true);
-        setSelectedItem([key]);
-        setIsRemoving(true);
-        setIsSending(false);
-    };
-
-    const handleSelected = (keys) => {
-        NotificationBox.triggerWarning("Test", "Demo");
-        setSelectedItem(keys);
-        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
-        setTotalMoney(totalMoney);
-    };
-
-    const handleToBuyItem = () => {
-        const itemsToBuy = [];
-        let totalMoney = 0;
-
-        cartTable.forEach((item) => {
-            if (item.quantity > 0) {
-                itemsToBuy.push(item);
-                totalMoney += item.total;
-            }
-        });
-
-        setTotalMoney(totalMoney);
-        setItemToBuy(itemsToBuy);
-    };
-
-    const handleQuantity = (item, value) => {
-        if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
-
-        const index = cartTable.findIndex((element) => element.key === item.key);
-        cart[index].quantity = value;
-        cartTable[index].quantity = value;
-        cartTable[index].total =
-            value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
-        const totalMoney = cartTable.reduce((accumulator, currentItem) => {
-            return accumulator + currentItem.total;
-        }, 0);
-
-        setTotalMoney(totalMoney);
-        setCart(cart);
-
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user || !user.token) {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            localStorage.removeItem("user");
-            // notification: change successfully
-        } else {
-            tappingQuantity.current = setTimeout(async () => {
-                try {
-                    // notification: wait 3s
-                    setIsDisable(true);
-                    openNotification("bottomRight");
-
-                    const response = await CartAPI.editCart(user.token, {
-                        productId: item.key,
-                        quantity: value,
-                    });
-
-                    setIsDisable(false);
-                    if (response.status === 200) {
-                        localStorage.setItem("cart", JSON.stringify(cart));
-                        // notification: change successfully
-                        openNotification("bottomRight");
-                    } else {
-                        if (
-                            response.message !==
-                            "There is at least one product that does not exist in your cart"
-                        )
-                            localStorage.removeItem("user");
-
-                        alert("Change quantity failed");
-                    }
-                } catch (error) {
-                    alert("Something went wrong");
-                }
-            }, 2000);
-        }
-    };
-
-    const removeSelectedItem = () => {
-        const newCart = [];
-        const removeItem = [];
-        let isModified = false;
-        let isDeleted = false;
-        console.log("CART: ", cart);
-        console.log("SELECTED: ", selectedItem);
-        for (let item of cart) {
-            isDeleted = false;
-            for (let key of selectedItem[0]) {
-                console.log(item);
-                if (item["key"] === key) {
-                    isModified = true;
-                    removeItem.push(item);
-                    isDeleted = true;
-                }
-            }
-            if (!isDeleted) {
-                newCart.push(item);
-            }
-        }
-        console.log("NEW CART: ", newCart);
-
-        if (isModified) {
-            setCart(newCart);
-        }
-    };
-
-    const handleAction = (key) => {
-        //ProductItem.handleAddToWishlist();
-        alert("ADDED TO WISHLIST (FAKE)");
-    };
-
-    const handleRemoveSelected = () => {
-        if (selectedItem.length === 0) {
-            alert("No item is being selected.\nPlease select item(s) and try again.");
-        } else {
-            setIsSending(true);
-            setIsRemoving(true);
-            setIsSending(false);
-        }
-    };
-
-    useEffect(() => {
-        const fetchCart = async () => {
-            const user = JSON.parse(localStorage.getItem("user"));
-
-            if (!user || !user.token) {
-                localStorage.removeItem("user");
-                setIsLoading(false);
-            } else {
-                try {
-                    const response = await CartAPI.getCart(user.token);
-                    if (response.status === 200) {
-                        const resCart = response.data;
-                        setCart(resCart);
-                        localStorage.setItem("cart", JSON.stringify(resCart));
-                    } else {
-                        localStorage.removeItem("user");
-                        const cartLocal = localStorage.getItem("cart");
-                        setCart(cartLocal ? cartLocal : []);
-                    }
-                } catch (error) {
-                    alert("Something went wrong.");
-                }
-            }
-        };
-
-        fetchCart();
-    }, []);
-
-    useEffect(() => {
-        const fetchImages = async () => {
-            const imagePromises = cart.map((item) => {
-                const image = item.product.image ? item.product.image : "latte.jpg";
-                return Storage.ref(`products/${image}`).getDownloadURL();
-            });
-
-            const images = await Promise.all(imagePromises);
-            setImages(images);
-            setIsLoading(false);
-        };
-
-        fetchImages();
-    }, [cart]);
-
-    useEffect(() => {
-        if (isRemoving) {
-            setIsLoading(true);
-            removeSelectedItem();
-            setIsRemoving(false);
-            setSelectedItem([]);
-            setIsLoading(false);
-        }
-    }, [isRemoving]);
-
-    useEffect(() => {
-        handleToBuyItem();
-    }, [cart]);
 
     const cartTable = cart.map((item, index) => {
         let discount = 0;
@@ -258,6 +55,321 @@ function CartLayout() {
             action: "wishlist",
         };
     });
+
+    const handleGoMenu = () => history.push("/menu");
+
+    const handleCheckout = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.removeItem("user");
+        }
+        localStorage.setItem("checkout", JSON.stringify(cart));
+
+        history.push("/checkout");
+    };
+
+    const handleSelected = (keys) => {
+        setSelectedItem(keys);
+    };
+
+    const handleQuantity = (item, value) => {
+        if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
+
+        const index = cartTable.findIndex((element) => element.key === item.key);
+        cart[index].quantity = value;
+        cartTable[index].quantity = value;
+        cartTable[index].total =
+            value * (cartTable[index].price.price * (1 - cartTable[index].price.discount));
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
+
+        setTotalMoney(totalMoneyTemp);
+        setCart(cart);
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.removeItem("user");
+        } else {
+            tappingQuantity.current = setTimeout(async () => {
+                try {
+                    // notification: wait 3s
+                    setIsDisable(true);
+
+                    const response = await CartAPI.editCart(user.token, {
+                        productId: item.key,
+                        quantity: value,
+                    });
+
+                    setIsDisable(false);
+                    if (response.status === 200) {
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully");
+                    } else {
+                        if (
+                            response.message !==
+                            "There is at least one product that does not exist in your cart"
+                        )
+                            localStorage.removeItem("user");
+
+                        NotificationBox.triggerError(
+                            "CHANGE QUANTITY ERROR",
+                            "Change quantity failed"
+                        );
+                    }
+                } catch (error) {
+                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                }
+            }, 1000);
+        }
+    };
+
+    const handleAddToWishlist = async (item) => {
+        const itemID = item.key;
+        const user = JSON.parse(localStorage.getItem("user"));
+        const tempWishlistLocal = localStorage.getItem("wishlist")
+            ? JSON.parse(localStorage.getItem("wishlist"))
+            : [];
+        console.log("ITEM: ", item);
+        console.log("ITEM ID: ", itemID);
+        console.log("WISHLIST LOCAL: ", tempWishlistLocal);
+        console.log("USER: ", user);
+
+        if (user && user.token) {
+            const tempCart = CartAPI.getCart(user.token);
+            console.log("CART: ", tempCart);
+        }
+
+        if (!user || !user.token) {
+            const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
+                ? JSON.parse(localStorage.getItem("cart"))
+                : [];
+            console.log("CART LOCAL: ", tempCartLocal);
+            for (let i of tempCartLocal) {
+                if (i.product.id === itemID) {
+                    for (let j of tempWishlistLocal) {
+                        if (j.product.id === itemID) {
+                            NotificationBox.triggerError(
+                                "ITEM EXISTED IN WISHLIST",
+                                `${i.product.name} added to your wishlist.`
+                            );
+                            return;
+                        }
+                    }
+                    tempWishlistLocal.push(i);
+                    localStorage.removeItem("user");
+                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal]));
+                    //alert(`${card.name} added.`);
+                    NotificationBox.triggerSuccess(
+                        "ADDED ITEM TO WISHLIST",
+                        `${i.product.name} added to your wishlist.`
+                    );
+                    return;
+                }
+            }
+        } else {
+            try {
+                const response = await WishlistAPI.addToWishlist(user.token, itemID);
+                if (response.status === 200)
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${item.name} already existed in your wishlist.`
+                    );
+                else if (response.status === 404) {
+                    if (response.message === "This user does not exist") {
+                        for (let i of tempWishlistLocal) {
+                            if (i["product"]["id"] === item["id"]) {
+                                NotificationBox.triggerError(
+                                    "ITEM EXISTED",
+                                    `${item.name} already existed in your wishlist.`
+                                );
+                                return;
+                            }
+                        }
+                        localStorage.removeItem("user");
+                        localStorage.setItem(
+                            "wishlist",
+                            JSON.stringify([...tempWishlistLocal, item])
+                        );
+                    } else NotificationBox.triggerError("ERROR", response.message);
+                } else if (response.status === 401 || response.status === 403) {
+                    for (let i of tempWishlistLocal) {
+                        if (i["product"]["id"] === item["product"]["id"]) {
+                            NotificationBox.triggerError(
+                                "ITEM EXISTED",
+                                `${item.name} already existed in your Wishlist.`
+                            );
+                            return;
+                        }
+                    }
+                    localStorage.removeItem("user");
+                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, item]));
+                    NotificationBox.triggerSuccess(
+                        "ADDED ITEM TO WISHLIST",
+                        `${item.name} added to your wishlist.`
+                    );
+                } else if (response.status === 409) {
+                    //alert(`${card.name} already existed in your wishlist.`);
+                    console.log("LOCAL ITEM: ", item);
+                    NotificationBox.triggerError(
+                        "ITEM EXISTED",
+                        `${item.product} already existed in your wishlist.`
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+                NotificationBox.triggerError("ERROR", `${item.name} something went wrong.`);
+            }
+        }
+    };
+
+    const handleAction = (record) => {
+        //addItemToWishlist(record);
+        handleAddToWishlist(record);
+    };
+
+    const removeSelectedItem = async (params) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const cart = JSON.parse(localStorage.getItem("cart"));
+        const newCart = [];
+        const removeItem = [];
+        let isDeleted = false;
+        let deleted = false;
+        for (let item of cart) {
+            deleted = false;
+            for (let key of params) {
+                if (item["product"]["id"] === key) {
+                    isDeleted = true;
+                    removeItem.push(item);
+                    deleted = true;
+                }
+            }
+            if (!deleted) {
+                newCart.push(item);
+            }
+        }
+
+        if (!user || !user.token) {
+            localStorage.removeItem("user");
+            if (isDeleted) {
+                NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
+                localStorage.setItem("cart", JSON.stringify(newCart));
+                setCart(newCart);
+                setIsSending(false);
+            }
+        } else {
+            try {
+                const removeItemPromise = removeItem.map((item) => {
+                    return CartAPI.deleteProduct(user.token, item.product.id);
+                });
+                const response = await Promise.all(removeItemPromise);
+                let countNotExist = 0;
+                for (let item of response) {
+                    if (item.status === 200) {
+                        console.log("success");
+                    } else if (item.status === 404) {
+                        if (item.message === "This user does not exist") {
+                            localStorage.removeItem("user");
+                        } else {
+                            console.log(item.message);
+                            countNotExist += 1;
+                        }
+                    } else if (item.status === 401 || item.status === 403) {
+                        localStorage.removeItem("user");
+                    }
+                }
+                if (isDeleted) {
+                    NotificationBox.triggerSuccess(
+                        "SUCCESS",
+                        "Remove selected item(s) successfully"
+                    );
+                    if (countNotExist !== 0) {
+                        const errorString =
+                            countNotExist.toString() + "item(s) does not exist in your cart";
+                        NotificationBox.triggerError("ITEM DOES NOT EXIST", errorString);
+                    }
+                    localStorage.setItem("cart", JSON.stringify(newCart));
+                    setCart(newCart);
+                    setIsSending(false);
+                }
+            } catch (error) {
+                console.log(error);
+                NotificationBox.triggerError("ERROR", "Something went wrong");
+            }
+        }
+    };
+
+    const handleRemoveItem = (key) => {
+        setIsSending(true);
+        removeSelectedItem([key]);
+    };
+    const handleRemoveSelected = () => {
+        if (selectedItem.length === 0) {
+            NotificationBox.triggerError(
+                "NO SELECTED ITEM",
+                "No item is being selected.\nPlease select item(s) and try again."
+            );
+        } else {
+            setIsSending(true);
+            removeSelectedItem(selectedItem);
+            setSelectedItem([]);
+            setIsSending(false);
+        }
+    };
+
+    useEffect(() => {
+        const fetchCart = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+
+            if (!user || !user.token) {
+                localStorage.removeItem("user");
+                setIsLoading(false);
+            } else {
+                try {
+                    const response = await CartAPI.getCart(user.token);
+                    if (response.status === 200) {
+                        const resCart = response.data;
+                        setCart(resCart);
+                        localStorage.setItem("cart", JSON.stringify(resCart));
+                    } else {
+                        localStorage.removeItem("user");
+                        const cartLocal = localStorage.getItem("cart");
+                        setCart(cartLocal ? cartLocal : []);
+                    }
+                } catch (error) {
+                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                }
+            }
+        };
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
+
+        setTotalMoney(totalMoneyTemp);
+
+        fetchCart();
+    }, [cartTable, cart]);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            const imagePromises = cart.map((item) => {
+                const image = item.product.image ? item.product.image : "latte.jpg";
+                return Storage.ref(`products/${image}`).getDownloadURL();
+            });
+
+            const images = await Promise.all(imagePromises);
+            setImages(images);
+            setIsLoading(false);
+        };
+        const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
+
+        setTotalMoney(totalMoneyTemp);
+        fetchImages();
+    }, [cartTable, cart]); //, [cart]);
 
     return (
         <Content>
@@ -308,8 +420,12 @@ function CartLayout() {
                     <span className="total_text">TOTAL MONEY:</span>
                     <span>{totalMoney} VND</span>
                 </div>
-                <div className="bottomRight__totalCheckout__cart ">     
-                    <button className="btn_checkout_cart" onClick={handleCheckout} title="Go to checkout">
+                <div className="bottomRight__totalCheckout__cart ">
+                    <button
+                        className="btn_checkout_cart"
+                        onClick={handleCheckout}
+                        title="Go to checkout"
+                    >
                         Checkout
                     </button>
                 </div>

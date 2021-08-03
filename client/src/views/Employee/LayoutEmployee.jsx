@@ -4,7 +4,7 @@ import {
     faHome,
     faIdBadge,
     faListUl,
-    faUserCircle
+    faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";

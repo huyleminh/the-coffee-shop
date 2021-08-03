@@ -157,7 +157,8 @@ function ProductItem(props) {
                     NotificationBox.triggerWarning("EXISTED", `${card.name} has already existed in your wishlist.`);
             } catch (error) {
                 console.log(error);
-                alert("Something went wrong.");
+                //alert("Something went wrong.");
+                NotificationBox.triggerError("ERROR", `${card.name} something went wrong.`);
             }
         }
     };

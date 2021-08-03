@@ -178,21 +178,19 @@
     background: #382612;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item {
+.ant-menu.ant-menu-root .ant-menu-item {
     padding: 0 30px;
     height: 50px;
     line-height: 50px;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item:active {
+.ant-menu.ant-menu-root > .ant-menu-item:active,
+.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-active,
+.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-selected {
     background: #503a24;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-active {
-    background: #503a24;
-}
-
-.ant-menu.ant-menu-root > .ant-menu-item {
+.ant-menu.ant-menu-root .ant-menu-item {
     margin: 0;
 }
 
@@ -203,8 +201,6 @@
     color: #fff;
     width: 20px;
     height: 20px;
-    font-size: 1.2rem;
-    font-weight: 600;
 }
 
 .ant-menu-dark .ant-menu-item,
@@ -338,4 +334,55 @@
 
 .ant-modal-close:hover {
     background-color: #fff;
+}
+
+/* Submenu */
+.ant-menu.ant-menu-root > .ant-menu-submenu {
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-submenu-active {
+    background: #503a24;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-submenu-open {
+    background: #503a24;
+}
+
+.ant-menu-submenu > .ant-menu-submenu-title {
+    padding: 0 30px;
+    min-height: 50px;
+    line-height: 50px;
+    margin: 0;
+}
+
+.ant-menu-submenu > .ant-menu-submenu-title .ant-menu-submenu-arrow {
+    opacity: 1 !important;
+    color: #fff;
+    width: 15px;
+}
+
+.ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-title-content {
+    color: #fff;
+    margin-left: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: #2b1b0d;
+}
+
+.ant-menu-submenu > .ant-menu-sub .ant-menu-item .ant-menu-item-only-child {
+    padding: 0 30px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-submenu .ant-menu-item.ant-menu-item-active,
+.ant-menu.ant-menu-root > .ant-menu-submenu .ant-menu-item:active {
+    background: #22160b;
 }
