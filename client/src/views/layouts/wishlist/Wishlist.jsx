@@ -118,6 +118,7 @@ function Wishlist() {
     const handleRemoveItem = (id) => {
         setIsSending(true);
         removeSelectedItem([{key: id}]);
+        setSelectedItem([]);
     };
 
     const removeSelectedItem = async (params) => {
