@@ -8,6 +8,7 @@ class CheckoutWorkflow {
     #products;
     #isPaid = 0;
     #payMethod;
+    #deliveryFee;
     constructor(props) {
         this.#fullname = props.name ? props.name : "";
         this.#phoneNumber = props.phoneNumber ? props.phoneNumber : "";
@@ -15,7 +16,8 @@ class CheckoutWorkflow {
             ? props.address
             : "undefined&&undefined&&undefined&&undefined";
         this.#products = props.products ? props.products : [];
-        this.#payMethod = props.payment === "cod" ? 0 : 1;
+        this.#payMethod = props.payment ? props.payment : 0;
+        this.#deliveryFee = props.deliveryFee ? props.deliveryFee : 5000;
     }
 
     #validateInformation = () => {
@@ -38,9 +40,10 @@ class CheckoutWorkflow {
                 products: this.#products,
                 isPaid: this.#isPaid,
                 payMethod: this.#payMethod,
+                deliveryFee: this.#deliveryFee,
                 receiverInfo: {
                     fullname: this.#fullname.trim(),
-                    deliveryAddress: this.#deliveryAddress.trim(),
+                    address: this.#deliveryAddress.trim(),
                     phoneNumber: this.#phoneNumber,
                 },
             });
@@ -49,7 +52,7 @@ class CheckoutWorkflow {
                 return {
                     status: 200,
                     statusText:
-                        "Create order successfully. You will be automatically redirected to the menu. Our employees will confirm your order soon.",
+                        "Create order successfully. You will be automatically redirected to the order history in order to cancel the order if you want. Our employees will confirm your order soon.",
                 };
             } else if (response.status === 404) {
                 return {

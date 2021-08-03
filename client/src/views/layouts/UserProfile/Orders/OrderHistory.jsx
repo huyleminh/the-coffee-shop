@@ -12,7 +12,7 @@ function OrderHistory() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
-    const [sortBy, setSortBy] = useState(-1);
+    const [sortBy, setSortBy] = useState(0);
     const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
 
     const handleChangeSortBy = (value) => setSortBy(value);
@@ -20,6 +20,9 @@ function OrderHistory() {
         setCurrentModal({ ...currentModal, visible: !currentModal.visible });
 
     useEffect(() => {
+        document
+            .querySelector(".profile__order")
+            .scrollIntoView({ behavior: "smooth", block: "start" });
         const fetchOrdersHistory = async () => {
             try {
                 const token = JSON.parse(localStorage.getItem("user")).token;
@@ -123,13 +126,20 @@ function OrderHistory() {
             action: index,
         };
         record.totalPrice = item.products.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.price;
-        }, 0);
+            return accumulator + currentValue.price * currentValue.quantity;
+        }, item.order.deliveryFee);
 
         return record;
     });
 
-    const sortedRecords = Sort.sortOrderssByStatus(records, sortBy);
+    const sortedRecords = Sort.sortOrderssByStatus(
+        records.sort(
+            (left, right) =>
+                new Date(right.createdAt.replace(",", "")) -
+                new Date(left.createdAt.replace(",", ""))
+        ),
+        sortBy
+    );
 
     return (
         <div className="profile__order">

@@ -72,13 +72,17 @@ function OrderManagement() {
         setCurrentModal({ ...currentModal, visible: false });
     };
 
+    const handleChangeDate = (e) => {
+        console.log(e);
+    }
+
     return (
         <div className="custom-site-orders">
             <div className="custom-site-orders__filter">
                 <Space direction="horizontal" size="large">
                     <div className="orders__filter-item">
                         <span>Filter by date</span>
-                        <RangePicker />
+                        <RangePicker onChange={handleChangeDate} />
                     </div>
                     <div className="orders__filter-item">
                         <span>Status</span>
