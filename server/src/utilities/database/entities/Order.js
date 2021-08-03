@@ -39,7 +39,7 @@ class Order {
             const sql = `SELECT *
             FROM ${DatabaseConfig.CONFIG.DATABASE}.order o
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.receiver_info ri ON o.id = ri.orderId
-            WHERE o.createdAt BETWEEN ? AND ?;`
+            WHERE o.createdAt BETWEEN CAST(? AS DATETIME) AND CAST(? AS DATETIME);`
 
             DatabaseConnection.query(sql, [startDate, endDate], (error, rows) => {
                 if (error) {
@@ -99,6 +99,27 @@ class Order {
                     const jsonString = JSON.stringify(rows)
                     const orderList = JSON.parse(jsonString)
 
+                    resolve(orderList)
+                }
+            })
+        })
+    }
+
+    static getByOrderId = (orderId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.order
+            WHERE id = ?;`
+
+            DatabaseConnection.query(sql, orderId, (error, rows) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+
+                if (rows === undefined)
+                    reject(new Error("Error: 'rows' is undefined"))
+                else {
+                    const orderList = Order.toArrayFromDatabaseObject(rows)
                     resolve(orderList)
                 }
             })

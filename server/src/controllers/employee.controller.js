@@ -1,6 +1,7 @@
 import Order from '../utilities/database/entities/Order.js'
 import ProductOrder from '../utilities/database/entities/ProductOrder.js'
 import { getRangeDate } from '../utilities/utilityFunctions.js';
+import { OrderStatus, OrderPaymentStatus } from '../utilities/constants.js';
 
 class EmployeeController {
     static getAllOrders = async (req, res) => {
@@ -17,9 +18,9 @@ class EmployeeController {
 
         if (startDate !== undefined && endDate !== undefined && countParams === 2) {
             const rangeDate = getRangeDate(startDate, endDate)
-            const orderList = await Order.getAllByDate(rangeDate.start, rangeDate.end)
+            const orderList = await Order.getAllByDate(rangeDate.start.toJSON(), rangeDate.end.toJSON())
             const productsList = []
-            console.log(rangeDate)
+
             for (let order of orderList)
                 productsList.push(await ProductOrder.getAllProductByOrderId(order.id))
 
@@ -47,6 +48,24 @@ class EmployeeController {
             })
         } else {
             res.send({ status: 400, message: "Params is invalid" })
+        }
+    }
+
+    static verifyOrder = async (req, res) => {
+        const payload = res.locals.payload  // { orderId, status }
+        const [order] = await Order.getByOrderId(payload.orderId)
+
+        if (order === undefined)
+            res.send({ status: 404, message: "This order does not exist" })
+        else if (order.status !== OrderStatus.PENDING)
+            res.send({ status: 406, message: "This action is not acceptable" })
+        else {
+            let status = payload.status
+            if (status === OrderStatus.ACCEPTED && order.isPaid === OrderPaymentStatus.PAID)
+                status = OrderStatus.DELIVERY
+
+            const updateStatus = await order.update(["status"], [status])
+            res.send({ status: 200 })
         }
     }
 }
