@@ -11,4 +11,11 @@ employeeRouter.get(
     EmployeeController.getAllOrders
 )
 
+employeeRouter.post(
+    '/verify-order',
+    AuthorizationMiddleware.verifyToken,
+    AuthorizationMiddleware.verifyDataInToken,
+    EmployeeController.verifyOrder
+)
+
 export default employeeRouter
