@@ -6,7 +6,18 @@ import orderid from "order-id"
 import dotenv from "dotenv"
 
 dotenv.config()
-const orderId = orderid(process.env.SECRET_TOKEN_KEY)
+const orderIdLib = orderid(process.env.SECRET_TOKEN_KEY)
+
+const OrderStatus = {
+    PENDING: 0,
+    ACCEPTED: 1,
+    DENIED: 2,
+    DONE: 3,
+    CANCEL: 4,
+    DELIVERY: 5
+}
+Object.freeze(OrderStatus)
+
 
 class OrderController {
     static createOrder = async (req, res) => {
@@ -16,9 +27,9 @@ class OrderController {
         // generate a aliasId (order-id)
         // and check whether this value has occurred in the database
         const aliasIdList = await Order.getAllAliasId()
-        let aliasId = orderId.generate()
+        let aliasId = orderIdLib.generate()
         while (aliasIdList.includes(aliasId))
-            aliasId = orderId.generate()
+            aliasId = orderIdLib.generate()
 
         // create an Order object
         const now = new Date()
@@ -75,7 +86,7 @@ class OrderController {
                         aliasId: order.aliasId,
                         createdAt: order.createdAt,
                         status: order.status,
-                        status: order.isPaid,
+                        isPaid: order.isPaid,
                         payMethod: order.payMethod,
                         deliveryFee: order.deliveryFee
                     },
@@ -88,6 +99,21 @@ class OrderController {
                 }
             })
         })
+    }
+
+    static cancelOneOrder = async (req, res) => {
+        const { orderId } = res.locals.payload
+        const userInfo = res.locals.userInfo
+        const [order] = await Order.getByOrderIdAndUserId(orderId, userInfo.id)
+
+        if (order === undefined)
+            res.send({ status: 404, message: "This order does not exist" })
+        else if (order.status !== OrderStatus.PENDING)
+            res.send({ status: 406, message: "This order cannot be cancelled" })
+        else {
+            const updateStatus = order.update(["status"], [OrderStatus.CANCEL])
+            res.send({ status: 200 })
+        }
     }
 }
 
