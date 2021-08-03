@@ -1,20 +1,10 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import shortid from "shortid";
 import UserInfo from "../utilities/database/entities/UserInfo.js";
 import UserLogin from "../utilities/database/entities/UserLogin.js";
+import { generateUserId } from "../utilities/utilityFunctions.js";
 
 dotenv.config();
-
-const generateUserId = (userIdList) => {
-    let id;
-    while (true) {
-        id = shortid.generate();
-        id = id.substr(0, 7); // start from 0, length is 7.
-
-        if (userIdList.findIndex((value) => value.id === id) === -1) return id;
-    }
-};
 
 class AuthController {
     static postLogin = async (req, res) => {

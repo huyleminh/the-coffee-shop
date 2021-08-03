@@ -7,6 +7,7 @@ export const DatabaseConnection = mysql.createPool({
     password: DatabaseConfig.CONFIG.PASSWORD,
     database: DatabaseConfig.CONFIG.DATABASE,
     multipleStatements: true,
+    timezone: "+00:00"
 });
 
 export default DatabaseConnection;
