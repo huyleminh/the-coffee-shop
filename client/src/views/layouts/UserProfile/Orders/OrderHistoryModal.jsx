@@ -176,7 +176,7 @@ function OrderHistoryModal(props) {
                     </div>
 
                     {data.order.status === 0 ? (
-                        <div className="order-modal-section__item">
+                        <div className="order-modal-section__item cancel">
                             <span style={{ color: "#f00" }}>
                                 (*){" "}
                                 <i>

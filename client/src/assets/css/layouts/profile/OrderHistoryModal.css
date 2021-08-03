@@ -33,7 +33,7 @@
     align-items: flex-end;
 }
 
-.order-modal .order-modal-section .order-modal-section__item:last-child {
+.order-modal .order-modal-section .order-modal-section__item.cancel {
     display: flex;
     justify-content: space-between;
 }
