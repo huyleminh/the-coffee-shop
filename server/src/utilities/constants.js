@@ -24,4 +24,11 @@ const OrderPaymentStatus = {
 }
 Object.freeze(OrderPaymentStatus)
 
-export { MAX_PRODUCTS_PER_PAGE, UserRole, OrderStatus, OrderPaymentStatus };
+const OrderPaymentMethod = {
+    COD: 0,
+    VISA_MASTERCARD: 1,
+    INTERNET_BANKING: 2
+}
+Object.freeze(OrderPaymentMethod)
+
+export { MAX_PRODUCTS_PER_PAGE, UserRole, OrderStatus, OrderPaymentStatus, OrderPaymentMethod };
