@@ -31,7 +31,9 @@ class OrderController {
             0,
             payload.isPaid,
             payload.payMethod,
-            payload.deliveryFee
+            payload.deliveryFee,
+            payload.totalProducts,
+            payload.totalPrice
         )
 
         // create a ReceiverInfo object
@@ -79,7 +81,9 @@ class OrderController {
                         status: order.status,
                         isPaid: order.isPaid,
                         payMethod: order.payMethod,
-                        deliveryFee: order.deliveryFee
+                        deliveryFee: order.deliveryFee,
+                        totalProducts: order.totalProducts,
+                        totalPrice: order.totalPrice
                     },
                     receiver: {
                         fullname: order.fullname,
