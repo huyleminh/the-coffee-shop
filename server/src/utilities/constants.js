@@ -19,7 +19,8 @@ Object.freeze(OrderStatus)
 
 const OrderPaymentStatus = {
     PENDING: 0,
-    PAID: 1
+    PAID: 1,
+    REFUND: 2
 }
 Object.freeze(OrderPaymentStatus)
 
