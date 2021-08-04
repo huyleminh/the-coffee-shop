@@ -35,7 +35,9 @@ class EmployeeController {
                             status: order.status,
                             isPaid: order.isPaid,
                             payMethod: order.payMethod,
-                            deliveryFee: order.deliveryFee
+                            deliveryFee: order.deliveryFee,
+                            totalProducts: order.totalProducts,
+                            totalPrice: order.totalPrice
                         },
                         receiver: {
                             fullname: order.fullname,
