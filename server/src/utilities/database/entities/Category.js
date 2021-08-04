@@ -1,5 +1,6 @@
 import DatabaseConnection from "../DatabaseConnection.js";
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
+
 class Category {
     constructor(id, name) {
         this.id = id;

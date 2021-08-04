@@ -4,20 +4,10 @@ import ProductOrder from "../utilities/database/entities/ProductOrder.js";
 import { v4 as uuidv4 } from "uuid"
 import orderid from "order-id"
 import dotenv from "dotenv"
+import { OrderStatus } from '../utilities/constants.js';
 
 dotenv.config()
 const orderIdLib = orderid(process.env.SECRET_TOKEN_KEY)
-
-const OrderStatus = {
-    PENDING: 0,
-    ACCEPTED: 1,
-    DENIED: 2,
-    DONE: 3,
-    CANCEL: 4,
-    DELIVERY: 5
-}
-Object.freeze(OrderStatus)
-
 
 class OrderController {
     static createOrder = async (req, res) => {
@@ -104,8 +94,8 @@ class OrderController {
 
     static cancelOneOrder = async (req, res) => {
         const { orderId } = res.locals.payload
-        const userInfo = res.locals.userInfo
-        const [order] = await Order.getByOrderIdAndUserId(orderId, userInfo.id)
+        const userId = res.locals.userInfo.id
+        const [order] = await Order.getByOrderIdAndUserId(orderId, userId)
 
         if (order === undefined)
             res.send({ status: 404, message: "This order does not exist" })

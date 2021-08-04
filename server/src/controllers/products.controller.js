@@ -1,6 +1,5 @@
 import Product from "../utilities/database/entities/Product.js";
-
-const MAX_PRODUCTS_PER_PAGE = 9;
+import { MAX_PRODUCTS_PER_PAGE } from "../utilities/constants.js";
 
 class ProductsController {
     static getProducts = async (req, res) => {
