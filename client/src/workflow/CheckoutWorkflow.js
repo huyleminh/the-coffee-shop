@@ -6,7 +6,6 @@ class CheckoutWorkflow {
     #phoneNumber;
     #deliveryAddress;
     #products;
-    #isPaid = 0;
     #payMethod;
     #deliveryFee;
     constructor(props) {
@@ -35,12 +34,17 @@ class CheckoutWorkflow {
         if (!validate.status) return { status: 400, statusText: validate.error };
 
         try {
+            const total = this.#products.reduce(
+                (accumulator, current) => accumulator + current.price
+            );
             const token = JSON.parse(localStorage.getItem("user")).token;
             const response = await CheckoutAPI.createNewOrder(token, {
                 products: this.#products,
-                isPaid: this.#isPaid,
+                isPaid: this.#payMethod === 0 ? 0 : 1,
                 payMethod: this.#payMethod,
                 deliveryFee: this.#deliveryFee,
+                totalProducts: this.#products.length,
+                totalPrice: total,
                 receiverInfo: {
                     fullname: this.#fullname.trim(),
                     address: this.#deliveryAddress.trim(),
