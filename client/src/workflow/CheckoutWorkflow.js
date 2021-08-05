@@ -36,7 +36,8 @@ class CheckoutWorkflow {
         try {
             const total = this.#products.reduce(
                 (accumulator, current) => accumulator + current.price
-            );
+            , 0);
+
             const token = JSON.parse(localStorage.getItem("user")).token;
             const response = await CheckoutAPI.createNewOrder(token, {
                 products: this.#products,

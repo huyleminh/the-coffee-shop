@@ -254,7 +254,6 @@ function CartLayout() {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
                         } else {
-                            console.log(item.message);
                             countNotExist += 1;
                         }
                     } else if (item.status === 401 || item.status === 403) {
@@ -285,7 +284,6 @@ function CartLayout() {
     const handleRemoveItem = (key) => {
         setIsSending(true);
         removeSelectedItem([key]);
-        console.log(selectedItem);
         const tempSelected = [];
         for (let i of selectedItem) {
             if (i !== key) {
@@ -313,12 +311,6 @@ function CartLayout() {
         const tempCartLocal = JSON.parse(localStorage.getItem("cart"));
         const tempWishlistLocal = JSON.parse(localStorage.getItem("wishlist"));
         const selectedData = [];
-        console.log("USER: ", user);
-        console.log("SELECTED: ", selectedItem);
-        console.log("CART LOCAL: ", tempCartLocal);
-        console.log("WISHLIST LOCAL: ", tempWishlistLocal);
-        console.log("SELECTED DATA: ", selectedData);
-        console.log("NEW WL: ", tempWishlistLocal);
 
         let isExisted = false;
         for (let id of selectedItem) {
@@ -355,11 +347,8 @@ function CartLayout() {
         localStorage.setItem("wishlist", JSON.stringify(tempWishlistLocal));
 
         if (user && user.token) {
-            console.log("ONLINE: \n");
             try {
-                console.log("SELECTED: ", selectedData);
                 for (let item of selectedData) {
-                    console.log("ITEM SELECTED: ", item);
                     const response = await WishlistAPI.addToWishlist(user.token, item.product.id);
                     if (response.status === 200)
                         NotificationBox.triggerSuccess(

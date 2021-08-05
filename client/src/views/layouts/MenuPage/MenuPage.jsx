@@ -35,6 +35,7 @@ function MenuPage(props) {
     //Sort
     const [sortBy, setSortBy] = useState(() => {
         const params = queryString.parse(location.search);
+
         if (params.order) return params.order;
         else return "default";
     });
@@ -112,8 +113,7 @@ function MenuPage(props) {
             path: location.pathname,
             search: queryString.stringify(params),
         });
-
-        setSortBy(params.order);
+        setSortBy(newSort);
     };
 
     useEffect(() => {
