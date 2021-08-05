@@ -78,10 +78,6 @@ function OrderHistoryModal(props) {
         };
     });
 
-    const totalPrice = tableRecords.reduce((accumulator, current) => {
-        return accumulator + current.total;
-    }, 0);
-
     let content = data.order.status ? "" : "None";
     switch (data.order.status) {
         case 0:
@@ -109,6 +105,8 @@ function OrderHistoryModal(props) {
 
     const paidTag =
         data.order.isPaid === 0 ? "not-paid" : data.order.isPaid === 1 ? "paid" : "refunded";
+
+    const removedItems = data.order.totalProducts - data.products.length;
 
     return (
         <Modal
@@ -152,6 +150,17 @@ function OrderHistoryModal(props) {
 
                 <h1 className="order-modal-title">Others information:</h1>
                 <div className="order-modal-section">
+                    {removedItems > 0 ? (
+                        <div className="order-modal-section__item">
+                            <span style={{ color: "#f00", fontStyle: "italic" }}>
+                                (*) There are {removedItems}/{data.order.totalProducts} products
+                                that no longer existed.
+                            </span>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+
                     <div className="order-modal-section__item">
                         <span>Payment method:</span>
                         <span>
@@ -178,7 +187,7 @@ function OrderHistoryModal(props) {
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{totalPrice} VND</span>
+                        <span>{data.order.totalPrice} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
@@ -189,7 +198,7 @@ function OrderHistoryModal(props) {
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {totalPrice + data.order.deliveryFee} VND
+                            {data.order.totalPrice + data.order.deliveryFee} VND
                         </span>
                     </div>
 
@@ -201,7 +210,7 @@ function OrderHistoryModal(props) {
                     </div>
 
                     {data.order.status === 0 ? (
-                        <div className="order-modal-section__item cancel">
+                        <div className="order-modal-section__item tip">
                             <span style={{ color: "#f00" }}>
                                 (*){" "}
                                 <i>
@@ -209,7 +218,7 @@ function OrderHistoryModal(props) {
                                     button.
                                 </i>
                             </span>
-                            <button onClick={handleCancelOrder} id="order-modal-cancel">
+                            <button onClick={handleCancelOrder} className="order-modal-btn" id="order-modal-cancel">
                                 {isSending ? <LoadingOutlined spin /> : "Cancel"}
                             </button>
                         </div>
