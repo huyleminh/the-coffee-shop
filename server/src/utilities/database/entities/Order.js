@@ -2,7 +2,7 @@ import DatabaseConnection from "../DatabaseConnection.js"
 import DatabaseConfig from "../../../configs/DatabaseConfig.js"
 
 class Order {
-    constructor(id, aliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee) {
+    constructor(id, aliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee, totalProducts, totalPrice) {
         this.id = id
         this.aliasId = aliasId
         this.userId = userId
@@ -11,6 +11,8 @@ class Order {
         this.isPaid = isPaid
         this.payMethod = payMethod
         this.deliveryFee = deliveryFee
+        this.totalProducts = totalProducts
+        this.totalPrice = totalPrice
     }
 
     // rows: [RowDataPacket{}].
@@ -29,7 +31,9 @@ class Order {
                 row.status,
                 row.isPaid,
                 row.payMethod,
-                row.deliveryFee
+                row.deliveryFee,
+                row.totalProducts,
+                row.totalPrice
             );
         });
     };
@@ -151,9 +155,9 @@ class Order {
         const values = Object.values(this);
 
         return new Promise((resolve, reject) => {
-            // (id, asliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee)
+            // (id, asliasId, userId, createdAt, status, isPaid, payMethod, deliveryFee, totalProducts, totalPrice)
             const sql = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.order
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {

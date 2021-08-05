@@ -9,6 +9,7 @@ import cartRouter from "./routes/cart.route.js";
 import checkoutRouter from "./routes/checkout.route.js";
 import orderRouter from "./routes/order.route.js";
 import employeeRouter from "./routes/employee.route.js";
+import adminRouter from "./routes/admin.route.js";
 import discountsRouter from "./routes/discounts.route.js";
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/employee", employeeRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/discounts", discountsRouter);
 
 app.listen(PORT, () => {

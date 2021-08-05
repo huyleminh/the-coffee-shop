@@ -160,6 +160,30 @@ class Product {
             })
         })
     }
+
+    static deleteByProductId = (productId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product_ingredient WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product_rating WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product_category WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product_order WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.cart WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.wishlist WHERE productId = ?;
+            DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product WHERE id = ?;
+            `;
+
+            const values = [productId, productId, productId, productId, productId, productId, productId]
+            DatabaseConnection.query(sql, values, (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            })
+        })
+    }
 }
 
 export default Product;
