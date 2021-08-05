@@ -4,7 +4,7 @@ import ProductOrder from "../utilities/database/entities/ProductOrder.js";
 import { v4 as uuidv4 } from "uuid"
 import orderid from "order-id"
 import dotenv from "dotenv"
-import { OrderStatus } from '../utilities/constants.js';
+import { OrderStatus, OrderPaymentStatus, OrderPaymentMethod } from '../utilities/constants.js';
 
 dotenv.config()
 const orderIdLib = orderid(process.env.SECRET_TOKEN_KEY)
@@ -106,7 +106,14 @@ class OrderController {
         else if (order.status !== OrderStatus.PENDING)
             res.send({ status: 406, message: "This order cannot be cancelled" })
         else {
-            const updateStatus = order.update(["status"], [OrderStatus.CANCEL])
+            const keys = ["status"]
+            const values = [OrderStatus.CANCEL]
+            if (order.payMethod !== OrderPaymentMethod.COD) {
+                keys.push("isPaid")
+                values.push(OrderPaymentStatus.REFUND)
+            }
+
+            const updateStatus = order.update(keys, values)
             res.send({ status: 200 })
         }
     }

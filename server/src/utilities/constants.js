@@ -19,8 +19,16 @@ Object.freeze(OrderStatus)
 
 const OrderPaymentStatus = {
     PENDING: 0,
-    PAID: 1
+    PAID: 1,
+    REFUND: 2
 }
 Object.freeze(OrderPaymentStatus)
 
-export { MAX_PRODUCTS_PER_PAGE, UserRole, OrderStatus, OrderPaymentStatus };
+const OrderPaymentMethod = {
+    COD: 0,
+    VISA_MASTERCARD: 1,
+    INTERNET_BANKING: 2
+}
+Object.freeze(OrderPaymentMethod)
+
+export { MAX_PRODUCTS_PER_PAGE, UserRole, OrderStatus, OrderPaymentStatus, OrderPaymentMethod };

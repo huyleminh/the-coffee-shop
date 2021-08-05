@@ -56,17 +56,39 @@ class EmployeeController {
     static verifyOrder = async (req, res) => {
         const payload = res.locals.payload  // { orderId, status }
         const [order] = await Order.getByOrderId(payload.orderId)
+        let orderStatus, paymentStatus  // undefined
 
-        if (order === undefined)
+        if (order === undefined) {
             res.send({ status: 404, message: "This order does not exist" })
-        else if (order.status !== OrderStatus.PENDING)
+            return
+        }
+
+        if (
+            order.status === OrderStatus.PENDING &&
+            (payload.status === OrderStatus.ACCEPTED || payload.status === OrderStatus.DENIED)
+        ) {
+            orderStatus = payload.status
+            if (orderStatus === OrderStatus.DENIED && order.isPaid === OrderPaymentStatus.PAID)
+                paymentStatus = OrderPaymentStatus.REFUND
+        }
+        else if (order.status === OrderStatus.ACCEPTED)
+            orderStatus = OrderStatus.DELIVERY
+        else if (order.status === OrderStatus.DELIVERY) {
+            paymentStatus = OrderPaymentStatus.PAID
+            orderStatus = OrderStatus.DONE
+        }
+
+        if (orderStatus === undefined)
             res.send({ status: 406, message: "This action is not acceptable" })
         else {
-            let status = payload.status
-            if (status === OrderStatus.ACCEPTED && order.isPaid === OrderPaymentStatus.PAID)
-                status = OrderStatus.DELIVERY
+            const keys = ["status"]
+            const values = [orderStatus]
+            if (paymentStatus !== undefined) {
+                keys.push("isPaid")
+                values.push(paymentStatus)
+            }
 
-            const updateStatus = await order.update(["status"], [status])
+            const updateStatus = await order.update(keys, values)
             res.send({ status: 200 })
         }
     }

@@ -1,3 +1,6 @@
+import DatabaseConnection from "../DatabaseConnection.js";
+import DatabaseConfig from "../../../configs/DatabaseConfig.js";
+
 class Discount {
     constructor(id, percent, active, startDate, endDate) {
         this.id = id;
@@ -24,6 +27,25 @@ class Discount {
             );
         });
     };
+
+    static getAll = () => {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.discount;`;
+            DatabaseConnection.query(sqlQuery, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined) {
+                    reject(new Error("Error: 'rows' is underfined"));
+                } else {
+                    const discounts = Discount.toArrayFromDatabaseObject(rows);
+                    resolve(discounts);
+                }
+            });
+        });
+    }
 }
 
 export default Discount;
