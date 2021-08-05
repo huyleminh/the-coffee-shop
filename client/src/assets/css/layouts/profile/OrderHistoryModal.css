@@ -33,7 +33,7 @@
     align-items: flex-end;
 }
 
-.order-modal .order-modal-section .order-modal-section__item.cancel {
+.order-modal .order-modal-section .order-modal-section__item.tip {
     display: flex;
     justify-content: space-between;
 }
@@ -57,15 +57,44 @@
 }
 
 #order-modal-cancel {
-    color: #fff;
-    font-weight: 600;
-    margin-bottom: 0;
-    height: 40px;
-    background: #f00;
+    background: #d3001c;
 }
 
 #order-modal-cancel:hover {
-    background: rgb(207, 2, 2);
+    background: #f90525;
+}
+
+#order-modal-denied {
+    background: #ee0014;
+}
+
+#order-modal-denied:hover {
+    background: #d3001c;
+}
+
+#order-modal-accepted {
+    margin-left: 10px;
+    background: #00d349;
+}
+
+#order-modal-accepted:hover {
+    background: #02be44;
+}
+
+#order-modal-delivering {
+    background: #007ff5;
+}
+
+#order-modal-delivering:hover {
+    background: #0062cf;
+}
+
+#order-modal-done {
+    background: #bdbec2;
+}
+
+#order-modal-done:hover {
+    background: #aeb0b7;
 }
 
 .ant-modal-footer {
