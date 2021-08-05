@@ -12,7 +12,7 @@ class EmployeeAPI {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        return ClientAPI.post("/employee/view-orders", { ...props }, config);
+        return ClientAPI.post("/employee/verify-order", { ...props }, config);
     };
 }
 
