@@ -30,7 +30,10 @@ function OrderHistoryModal(props) {
             .then((res) => {
                 if (res.status === 200) {
                     setIsSending(false);
-                    NotificationBox.triggerSuccess("CANCEL ORDER", "Cancel order successfully. The page will be reloaded after 2.5 seconds.");
+                    NotificationBox.triggerSuccess(
+                        "CANCEL ORDER",
+                        "Cancel order successfully. The page will be reloaded after 2.5 seconds."
+                    );
                     setTimeout(() => {
                         window.location.reload();
                     }, 2500);
@@ -104,6 +107,9 @@ function OrderHistoryModal(props) {
             break;
     }
 
+    const paidTag =
+        data.order.isPaid === 0 ? "not-paid" : data.order.isPaid === 1 ? "paid" : "refunded";
+
     return (
         <Modal
             title="Order details"
@@ -148,7 +154,26 @@ function OrderHistoryModal(props) {
                 <div className="order-modal-section">
                     <div className="order-modal-section__item">
                         <span>Payment method:</span>
-                        <span>COD</span>
+                        <span>
+                            {data.order.payMethod === 0
+                                ? "Cash on delivery"
+                                : data.order.payMethod === 1
+                                ? "VISA/MASTER CARD"
+                                : "Internet Banking"}
+                        </span>
+                    </div>
+
+                    <div className="order-modal-section__item tag">
+                        <span>Pay status:</span>
+                        <div className="status-tag">
+                            <span id={paidTag}>
+                                {data.order.isPaid === 0
+                                    ? "Not Paid"
+                                    : data.order.isPaid === 1
+                                    ? "Paid"
+                                    : "Refunded"}
+                            </span>
+                        </div>
                     </div>
 
                     <div className="order-modal-section__item">
