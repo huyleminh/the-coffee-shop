@@ -65,3 +65,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiL
 GET http://localhost:5000/api/order/view-history HTTP/1.1
 content-type: application/json
 Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLCJ1c2VybmFtZSI6ImN1c3RvbWVyMDEiLCJyb2xlIjozLCJpYXQiOjE2Mjc1NzE4NTYsImV4cCI6MTYyNzU3MzY1Nn0.bBC3QVmtn5_VXGvbLe99O_-Euwcsxk8r9fYA5IzYHX8
+
+###
+GET http://localhost:5000/api/employee/view-orders
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjgxNTE2MzgsImV4cCI6MTYyODE1MzQzOH0.jtdoKDvDt3NE-AWOY_6zT5mE8mLgvRuZPBKvPlgOyjE
