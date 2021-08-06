@@ -312,6 +312,13 @@ function CartLayout() {
         const tempWishlistLocal = JSON.parse(localStorage.getItem("wishlist"));
         const selectedData = [];
 
+        if (selectedItem.length === 0) {
+            NotificationBox.triggerError(
+                "NO SELECTED ITEM",
+                "No item is being selected.\nPlease select item(s) and try again."
+            );
+            return
+        }
         let isExisted = false;
         for (let id of selectedItem) {
             for (let cartItem of tempCartLocal) {
