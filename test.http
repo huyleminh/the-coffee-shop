@@ -72,14 +72,6 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjgxNTE2MzgsImV4cCI6MTYyODE1MzQzOH0.jtdoKDvDt3NE-AWOY_6zT5mE8mLgvRuZPBKvPlgOyjE
 
 ###
-POST http://localhost:5000/api/auth/login
-Content-Type: application/json
-
-{
-    "username": "admin_01",
-    "password": "1234567a"
-}
-###
 GET http://localhost:5000/api/admin/products/get
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3MU45ZE4iLCJ1c2VybmFtZSI6ImFkbWluXzAxIiwicm9sZSI6MSwiaWF0IjoxNjI4MzUwMjA2LCJleHAiOjE2MjgzNTIwMDZ9.dAAGa5CkzHYf117A6s5bFrnyH4MZ24_Ux-dCIzMM4rs
