@@ -278,7 +278,10 @@ function Wishlist() {
 
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
-            alert("No item is being selected.\nPlease select item(s) and try again.");
+            NotificationBox.triggerError(
+                "NO SELECTED ITEM",
+                "No item is being selected.\nPlease select item(s) and try again."
+            );
         } else {
             setIsSending(true);
             removeSelectedItem(selectedItem);
@@ -288,7 +291,10 @@ function Wishlist() {
 
     const handleCartSelected = () => {
         if (selectedItem.length === 0) {
-            alert("No item is being selected.\nPlease select item(s) and try again.");
+            NotificationBox.triggerError(
+                "NO SELECTED ITEM",
+                "No item is being selected.\nPlease select item(s) and try again."
+            );
         } else {
             setIsSending(true);
             addSelectedToCart(selectedItem);
