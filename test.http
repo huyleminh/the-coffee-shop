@@ -70,17 +70,3 @@ Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJlSHVOZlMiLC
 GET http://localhost:5000/api/employee/view-orders
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjgxNTE2MzgsImV4cCI6MTYyODE1MzQzOH0.jtdoKDvDt3NE-AWOY_6zT5mE8mLgvRuZPBKvPlgOyjE
-
-###
-POST http://localhost:5000/api/admin/product/create
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3MU45ZE4iLCJ1c2VybmFtZSI6ImFkbWluXzAxIiwicm9sZSI6MSwiaWF0IjoxNjI4MzUxNTU3LCJleHAiOjE2MjgzNTMzNTd9.vAQZNnoxo08PIL9Ano9HcnbJlpjEiQlpk5zGZuklA28
-
-{
-    "name": "Black tea ca",
-    "image": ".jpg",
-    "description": "alo 1234",
-    "price": 100000,
-    "categoryName": "Tea",
-    "discountId" : "180b0521-2daa-445a-86af-2f2acc90dee7"
-}
