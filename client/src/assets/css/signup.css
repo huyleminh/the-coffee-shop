@@ -140,24 +140,49 @@ button[type="submit"]:hover {
 
     .form__title h1 {
         margin-bottom: 5px;
+        font-size: 2.5rem;
+    }
+
+    .form__title span {
+        font-size: 1.2rem;
     }
 }
 
 @media only screen and (max-height: 830px) {
     .form {
         width: 400px;
+        height: calc(100vh - 50px);
     }
 
-    .form__controll form > :nth-child(n) {
-        margin-top: 10px;
+    .form > :first-child {
+        top: 40px;
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .form {
+        width: 380px;
+        height: calc(100vh - 50px);
     }
 
     .form__title h1 {
-        font-size: 2.3rem;
+        font-size: 2.4rem;
         margin-bottom: 0px;
     }
-    
+
     .form__title span {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
+
+    .form__title {
+        margin: 0px;
+    }
+
+    .policy > span {
+        font-size: 12px;
+    }
+    .policy > span > a {
+        font-size: 12px;
+    }
+    
 }
