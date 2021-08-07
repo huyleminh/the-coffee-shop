@@ -38,7 +38,7 @@ class Product {
         return new Promise((resolve, reject) => {
             const sql = `
             SELECT
-                p.id, p.name, p.image, p.price, p.description,
+                p.id, p.name, p.image, p.price, p.description, p.createdAt,
                 c.name AS 'categoryName',
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
