@@ -119,6 +119,7 @@ function CartLayout() {
     };
 
     const handleAddToWishlist = async (item) => {
+        setIsSending(true);
         const user = JSON.parse(localStorage.getItem("user"));
         const tempWishlistLocal = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
@@ -137,6 +138,7 @@ function CartLayout() {
                                 "ITEM EXISTED IN WISHLIST",
                                 `${i.product.name} added to your wishlist.`
                             );
+                            setIsSending(false);
                             return;
                         }
                     }
@@ -146,6 +148,7 @@ function CartLayout() {
                         "ADDED ITEM TO WISHLIST",
                         `${i.product.name} added to your wishlist.`
                     );
+                    setIsSending(false);
                     return;
                 }
             }
@@ -157,6 +160,7 @@ function CartLayout() {
                         "ADDED",
                         `${item.product} added to your wishlist successfully.`
                     );
+                    setIsSending(false);
                     return;
                 } else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
@@ -166,6 +170,7 @@ function CartLayout() {
                                     "EXISTED",
                                     `${item.product.name} has already existed in your wishlist.`
                                 );
+                                setIsSending(false);
                                 return;
                             }
                         }
@@ -174,9 +179,11 @@ function CartLayout() {
                             "wishlist",
                             JSON.stringify([...tempWishlistLocal, item])
                         );
+                        setIsSending(false);
                         return;
                     } else {
                         NotificationBox.triggerError("ERROR", response.message);
+                        setIsSending(false);
                         return;
                     }
                 } else if (response.status === 401 || response.status === 403) {
@@ -186,6 +193,7 @@ function CartLayout() {
                                 "EXISTED",
                                 `${item.product} has already existed in your Wishlist.`
                             );
+                            setIsSending(false);
                             return;
                         }
                     }
@@ -195,17 +203,20 @@ function CartLayout() {
                         "ADDED ITEM TO WISHLIST",
                         `${item.product} added to your wishlist.`
                     );
+                    setIsSending(false);
                     return;
                 } else if (response.status === 409) {
                     NotificationBox.triggerError(
                         "ITEM EXISTED",
                         `${item.product} already existed in your wishlist.`
                     );
+                    setIsSending(false);
                     return;
                 }
             } catch (error) {
                 console.log(error);
                 NotificationBox.triggerError("ERROR", `${item.product} something went wrong.`);
+                setIsSending(false);
             }
         }
     };
@@ -317,7 +328,7 @@ function CartLayout() {
                 "NO SELECTED ITEM",
                 "No item is being selected.\nPlease select item(s) and try again."
             );
-            return
+            return;
         }
         let isExisted = false;
         for (let id of selectedItem) {
