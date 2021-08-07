@@ -1,4 +1,5 @@
 import shortid from "shortid";
+import { v4 as uuidv4 } from "uuid"
 
 const generateUserId = (userIdList) => {
     let id;
@@ -10,6 +11,14 @@ const generateUserId = (userIdList) => {
     }
 };
 
+const generate36CharsId = (IdArray) => {
+    let id;
+    while (true) {
+        id = uuidv4();
+        if (IdArray.findIndex((value) => value.id === id) === -1) return id;
+    }
+};
+
 const getRangeDate = (startDate, endDate) => {
     const tomorrow = new Date(startDate + 'T17:00:00.000Z')
     const start = new Date(tomorrow.valueOf() - 86400000)
@@ -18,4 +27,4 @@ const getRangeDate = (startDate, endDate) => {
     return { start, end }
 }
 
-export { generateUserId, getRangeDate };
+export { generateUserId, getRangeDate, generate36CharsId };
