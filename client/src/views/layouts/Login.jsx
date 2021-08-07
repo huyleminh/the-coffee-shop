@@ -80,7 +80,7 @@ function Login() {
                             onChange={handleOnChange}
                             required
                         />
-                        <span style={{ textAlign: "center", fontWeight: "750" }}>
+                        <span style={{ textAlign: "center" }}>
                             Not a member yet?{" "}
                             <a href="/signup" style={{ fontWeight: "750" }}>
                                 Sign up
