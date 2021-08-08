@@ -96,7 +96,6 @@ function ProductManagement() {
         {
             key: 1,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000, newPrice: 10000 },
             discount: 0.35,
             action: "view",
@@ -104,7 +103,6 @@ function ProductManagement() {
         {
             key: 2,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
@@ -112,7 +110,6 @@ function ProductManagement() {
         {
             key: 3,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
@@ -120,7 +117,6 @@ function ProductManagement() {
         {
             key: 4,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
@@ -128,7 +124,6 @@ function ProductManagement() {
         {
             key: 5,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
@@ -136,7 +131,6 @@ function ProductManagement() {
         {
             key: 6,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
@@ -144,7 +138,6 @@ function ProductManagement() {
         {
             key: 7,
             name: "Instant coffee",
-            image: { src: "https://i.pinimg.com/originals/df/02/9a/df029a771068c025c5028948ca3ff9b9.jpg", width: 100, height: 100},
             price: { oldPrice: 15000 },
             discount: "",
             action: "view",
