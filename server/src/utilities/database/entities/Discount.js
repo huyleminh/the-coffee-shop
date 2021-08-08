@@ -45,7 +45,7 @@ class Discount {
                 }
             });
         });
-    }
+    };
 
     insert() {
         const values = Object.values(this);

@@ -1,10 +1,8 @@
 import Product from "../utilities/database/entities/Product.js";
+import ProductCategory from "../utilities/database/entities/ProductCategory.js";
 import Category from "../utilities/database/entities/Category.js";
 import Discount from "../utilities/database/entities/Discount.js";
 import { v4 as uuidv4 } from "uuid";
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 class AdminController {
     static getAllProducts = async (req, res) => {
@@ -42,22 +40,17 @@ class AdminController {
 
     static createProduct = async (req, res) => {
         const payload = res.locals.payload;
-        const products = await Product.getAllWithSpecificAttributes(["id", "name"])
-        const indexProductName = products.findIndex(product => product.name === payload.name)
+        const [productExisted] = await Product.getProductsByAttribute("name", payload.name)
 
-        if (indexProductName !== -1)
+        if (productExisted !== undefined)
             res.send({ status: 409, message: "This product has existed in the system" });
         else {
-            const categories = await Category.getAll();
-            const indexCategoryName = categories.findIndex(category => {
-                return category.name === payload.categoryName
-            })
-
             // insert new category if duplicate
-            const categoryId = (indexCategoryName === -1) ? uuidv4() : categories[indexCategoryName].id
-            if (indexCategoryName === -1) {
+            const [categoryExisted] = await Category.getByAttribute("name", payload.categoryName)
+            const categoryId = (categoryExisted === undefined) ? uuidv4() : categoryExisted.id
+            if (categoryExisted === undefined) {
                 const newCategory = new Category(categoryId, payload.categoryName)
-                const insertCategory = await newCategory.insert()
+                const insertNewCategory = await newCategory.insert()
             }
 
             // insert new discount if receive new discount
@@ -66,7 +59,7 @@ class AdminController {
                 const newDiscount = new Discount(
                     discountId,
                     payload.discount.percent,
-                    true,
+                    0,
                     payload.discount.startDate,
                     payload.discount.endDate
                 )
@@ -96,16 +89,59 @@ class AdminController {
     };
 
     static editProduct = async (req, res) => {
-        // Các dữ liệu có sẵn
-        // res.locals.userInfo
-        // res.locals.userLogin
-        // res.locals.payload
-        // res.locals.params
+        const payload = res.locals.payload;
+        if (payload.name !== undefined) {
+            const [product] = await Product.getProductsByAttribute("name", payload.name);
+            if (product !== undefined && product.id !== payload.productId) {
+                res.send({ status: 409, message: "This product has existed in the system" });
+                return;
+            }
+        }
 
-        // Các lỗi đã xử lý
-        // { status: 404, message: "This user does not exist" }
-        // { status: 401, message: "Lack of information in the token" }
-        // { status: 403, message: <depend on error> }
+        // insert new category if need
+        if (payload.categoryName !== undefined) {
+            const [category] = await Category.getByAttribute("name", payload.categoryName)
+            const categoryId = (category === undefined) ? uuidv4() : category.id
+
+            if (category === undefined) {
+                const newCategory = new Category(categoryId, payload.categoryName)
+                const insertNewCategory = await Category.insert()
+            }
+
+            const updateProductCategory = await ProductCategory.updateOneAttribute(
+                { key: "productId", value: payload.productId },
+                { key: "categoryId", value: categoryId }
+            )
+            delete payload.categoryName
+        }
+
+        if (payload.discount === null) {
+            payload.discountId = null
+            delete payload.discount
+        } else if (payload.discount !== undefined) {
+            const discountId = (payload.discount.id === undefined) ? uuidv4() : payload.discount.id
+            if (payload.discount.id === undefined) {
+                const newDiscount = new Discount(
+                    discountId,
+                    payload.discount.percent,
+                    0,
+                    payload.discount.startDate,
+                    payload.discount.endDate
+                )
+                const insertNewDiscount = await newDiscount.insert();
+            }
+
+            payload.discountId = discountId
+            delete payload.discount
+        }
+
+        const productId = payload.productId
+        delete payload.productId
+        const keys = Object.keys(payload)
+        const values = Object.values(payload)
+        const updateProduct = await Product.updateAttributes(productId, keys, values)
+
+        res.send({ status: 200 });
     };
 
     static deleteProduct = async (req, res) => {

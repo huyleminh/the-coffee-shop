@@ -39,50 +39,26 @@ class Category {
         });
     };
 
-    static getAllCategoryId = () => {
+    static getByAttribute = (key, value) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.category;`;
+            const sqlQuery = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.category
+            WHERE ${key} = ?;`;
 
-            DatabaseConnection.query(sql, (error, rows) => {
+            DatabaseConnection.query(sqlQuery, value, (error, result) => {
                 if (error) {
                     reject(error);
                     return;
                 }
 
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
+                if (result === undefined) {
+                    reject(new Error("Error: 'result' is underfined"));
                 } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
+                    const categoriesInfo = Category.toArrayFromDatabaseObject(result);
+                    resolve(categoriesInfo);
                 }
             });
         });
     }
-
-    static getCategoryIdByName = (name) => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.category
-                WHERE name = ?;`;
-
-            DatabaseConnection.query(sql, name, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    };
 
     insert() {
         const values = Object.values(this);
