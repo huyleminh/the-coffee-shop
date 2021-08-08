@@ -2,6 +2,7 @@ import { DatePicker, Select, Space } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import ProductAPI from "../../../services/Product/ProductAPI";
 
 moment.locale("vie");
@@ -11,13 +12,31 @@ const { RangePicker } = DatePicker;
 
 function CreateProductForm(props) {
     const { visible, handleCancel } = props;
+    const history = useHistory();
     const [imageFile, setImageFile] = useState("No file has been choosen.");
     const [discounts, setDiscounts] = useState([]);
     const [currentDiscount, setCurrentDiscount] = useState({});
+    const [productInfo, setProductInfo] = useState({
+        name: "",
+        price: 0,
+        categoryName: "",
+        newDiscount: 0,
+        startDate: null,
+        endDate: null,
+        description: "",
+    });
 
     const handleClose = () => handleCancel();
 
-    const handleSave = () => {};
+    const handleSave = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page.");
+            localStorage.removeItem("user");
+            history.push("/403");
+        } else {
+        }
+    };
 
     const changeImage = (e) => {
         const target = e.target;
@@ -27,11 +46,26 @@ function CreateProductForm(props) {
     const handleChangeDiscount = (value) => {
         const index = discounts.findIndex((item) => item.id === value);
         const targetDiscount = discounts[index];
+        setProductInfo({ ...productInfo, newDiscount: 0, startDate: null, endDate: null });
         setCurrentDiscount({
             percent: targetDiscount.percent,
             startDate: moment(new Date(targetDiscount.startDate), momentFormat),
-            endDate: moment(new Date(targetDiscount), momentFormat),
+            endDate: moment(new Date(targetDiscount.endDate), momentFormat),
         });
+    };
+
+    const handleChangeProductInfo = (e) => {
+        const target = e.target;
+        if (target.name === "newDiscount") setCurrentDiscount({});
+        setProductInfo({ ...productInfo, [target.name]: target.value });
+    };
+
+    const handleChangeDate = (values) => {
+        if (!values) {
+            setProductInfo({ ...productInfo, startDate: null, endDate: null });
+        } else {
+            setProductInfo({ ...productInfo, startDate: values[0], endDate: values[1] });
+        }
     };
 
     useEffect(() => {
@@ -64,7 +98,14 @@ function CreateProductForm(props) {
                 <div className="product-management-modal-content" style={{ padding: "0" }}>
                     <div className="product-management-modal-content__item">
                         <label htmlFor="name">Name</label> <br />
-                        <input type="text" name="name" id="name" placeholder="Product's name" />
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder="Product's name"
+                            value={productInfo.name}
+                            onChange={handleChangeProductInfo}
+                        />
                     </div>
 
                     <div className="product-management-modal-content__item">
@@ -76,12 +117,20 @@ function CreateProductForm(props) {
                                 id="price"
                                 placeholder="Price"
                                 min="0"
+                                value={productInfo.price}
+                                onChange={handleChangeProductInfo}
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="category">Category</label> <br />
-                            <input name="category" id="category" placeholder="Category" />
+                            <label htmlFor="categoryName">Category</label> <br />
+                            <input
+                                name="categoryName"
+                                id="categoryName"
+                                placeholder="Category"
+                                value={productInfo.categoryName}
+                                onChange={handleChangeProductInfo}
+                            />
                         </div>
                     </div>
 
@@ -97,6 +146,7 @@ function CreateProductForm(props) {
                             <Select
                                 style={{ width: "100px" }}
                                 placeholder="Percent"
+                                value={currentDiscount.percent}
                                 onChange={handleChangeDiscount}
                             >
                                 {discounts.map((item) => (
@@ -107,6 +157,7 @@ function CreateProductForm(props) {
                             </Select>
                             <RangePicker
                                 value={[currentDiscount.startDate, currentDiscount.endDate]}
+                                disabled
                             />
                         </Space>
                     </div>
@@ -127,12 +178,15 @@ function CreateProductForm(props) {
                                 id="newDiscount"
                                 placeholder="Discount"
                                 min="0"
-                                value={0}
-                                // onChange={handleOnChange}
+                                value={productInfo.newDiscount}
+                                onChange={handleChangeProductInfo}
                             />
                         </div>
                         <div style={{ width: "252px" }}>
-                            <RangePicker />
+                            <RangePicker
+                                value={[productInfo.startDate, productInfo.endDate]}
+                                onChange={handleChangeDate}
+                            />
                         </div>
                     </div>
 
@@ -144,6 +198,8 @@ function CreateProductForm(props) {
                             id="description"
                             placeholder="Description..."
                             rows="3"
+                            value={productInfo.description}
+                            onChange={handleChangeProductInfo}
                         />
                     </div>
                 </div>

@@ -18,6 +18,12 @@ class FirebaseAPI {
             });
         });
     };
+
+    static uploadImage = () => {
+        return new Promise((resolve, reject) => {
+            resolve("Uploaded.");
+        });
+    };
 }
 
 export default FirebaseAPI;

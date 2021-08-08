@@ -47,17 +47,21 @@ function ProductManagement() {
 
     useEffect(() => {
         const fetchImages = async () => {
-            const imagePromises = products.map((item) => {
+            const imagePromises = products.map((item, index) => {
                 return FirebaseAPI.getImageURL(item.product.image);
             });
 
-            const res = await Promise.all(imagePromises);
-            const newImages = res.map((item) =>
-                item.status === 200
-                    ? item.data
-                    : require("../../../assets/images/latte.jpg").default
-            );
-            setImages(newImages);
+            try {
+                const res = await Promise.allSettled(imagePromises);
+                const newImages = res.map((item) =>
+                    item.status === "fulfilled" && item.value.status === 200
+                        ? item.value.data
+                        : require("../../../assets/images/latte.jpg").default
+                );
+                setImages(newImages);
+            } catch (error) {
+                console.log(error);
+            }
         };
         fetchImages();
     }, [products]);
