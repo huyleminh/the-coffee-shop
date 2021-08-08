@@ -1,6 +1,6 @@
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 import DatabaseConnection from "../DatabaseConnection.js";
-
+import mysql from 'mysql'
 class Product {
     constructor(
         id,
@@ -47,7 +47,7 @@ class Product {
         return new Promise((resolve, reject) => {
             const sql = `
             SELECT
-                p.id, p.name, p.image, p.price, p.description,
+                p.id, p.name, p.image, p.price, p.description, p.createdAt,
                 c.name AS 'categoryName',
                 pr.totalStar, pr.totalRating,
                 p.discountId, d.percent, d.startDate, d.endDate
@@ -105,6 +105,28 @@ class Product {
             });
         });
     };
+
+    static getAllWithSpecificAttributes = (keys) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT ${keys.join(', ')} FROM ${DatabaseConfig.CONFIG.DATABASE}.product;`;
+
+            DatabaseConnection.query(sql, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined) {
+                    reject(new Error("Error: 'rows' is undefined"));
+                } else {
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+
+                    resolve(jsonData);
+                }
+            });
+        });
+    }
 
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
@@ -169,6 +191,30 @@ class Product {
             });
         });
     };
+
+    insert(categoryId) {
+        const values = Object.values(this).concat([this.id, 0, 0]).concat([this.id, categoryId])
+
+        return new Promise((resolve, reject) => {
+            const sql = `
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product (id, name, image, price, description, discountId, updatedAt, createdAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_rating (productId, totalStar, totalRating)
+            VALUES (?, ?, ?);
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (productId, categoryId)
+            VALUES (?, ?);`
+
+            DatabaseConnection.query(sql, values, (error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    resolve();
+                }
+            );
+        });
+    }
 
     static deleteByProductId = (productId) => {
         return new Promise((resolve, reject) => {

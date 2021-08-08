@@ -139,7 +139,7 @@ class UserLogin {
     }
 
     // only can update password and role.
-    update(keys, values){
+    update(keys, values) {
         const id = this.id;
 
         for (let i = 0; i < keys.length; i++) this[keys[i]] = values[i];
