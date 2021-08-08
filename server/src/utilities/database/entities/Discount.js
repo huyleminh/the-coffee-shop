@@ -46,26 +46,6 @@ class Discount {
             });
         });
     };
- 
-    static insert = (discountInfo) => {
-
-        const keys = Object.keys(discountInfo);
-        const values = Object.values(discountInfo);
-        const setStatement = keys.join(",");
-        return new Promise((resolve, reject) => {
-            const sqlQuery = `INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.discount (${setStatement})
-                           VALUES (?, ?, ?, ?, ?);`;
-
-            DatabaseConnection.query(sqlQuery, values, (error) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-              
-                resolve()
-            }
-        }
-    }
 
     insert() {
         const values = Object.values(this);

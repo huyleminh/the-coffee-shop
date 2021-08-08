@@ -1,6 +1,6 @@
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 import DatabaseConnection from "../DatabaseConnection.js";
-import mysql from 'mysql'
+
 class Product {
     constructor(
         id,
@@ -106,27 +106,20 @@ class Product {
         });
     };
 
-    static getAllWithSpecificAttributes = (keys) => {
+    static getProductsByAttribute = (key, value) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT ${keys.join(', ')} FROM ${DatabaseConfig.CONFIG.DATABASE}.product;`;
+            const sql = `SELECT * FROM ${DatabaseConfig.CONFIG.DATABASE}.product
+            WHERE ${key} = ?;`;
 
-            DatabaseConnection.query(sql, (error, rows) => {
+            DatabaseConnection.query(sql, value, (error, rows) => {
                 if (error) {
                     reject(error);
                     return;
                 }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
+                resolve(rows);
             });
         });
-    }
+    };
 
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
@@ -248,35 +241,13 @@ class Product {
         });
     };
 
-    static getProductsByName = (filterValue) => {
+    static updateAttributes = (id, keys, values) => {
         return new Promise((resolve, reject) => {
-            const sql = `
-            SELECT *
-            FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
-            WHERE p.name = ?;`;
-
-            DatabaseConnection.query(sql, filterValue, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                resolve(rows);
-            });
-        });
-    };
-    static edit = (productInfo) => {
-        const id = productInfo.productId;
-        delete productInfo.productId;
-
-        const keys = Object.keys(productInfo);
-        const values = Object.values(productInfo);
-        const setStatement = keys.join("=?,") + "=?";
-        
-        return new Promise((resolve, reject) => {
+            const setStatement = keys.join("=?,") + "=?";
             const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.product
             SET ${setStatement}
             WHERE id = '${id}';`;
-            console.log(sql)
+
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {
                     reject(error);
