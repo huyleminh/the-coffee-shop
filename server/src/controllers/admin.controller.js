@@ -96,16 +96,48 @@ class AdminController {
     };
 
     static editProduct = async (req, res) => {
-        // Các dữ liệu có sẵn
-        // res.locals.userInfo
-        // res.locals.userLogin
-        // res.locals.payload
-        // res.locals.params
+        const payloads = res.locals.payload;
+        if (payloads.name != undefined) {
+            const [checkProductName] = await Product.getProductsByName(
+                payloads["name"]
+            );
+            if (checkProductName !== undefined) {
+                res.send({
+                    status: 409,
+                    message: "This product has existed in the system",
+                });
+                return;
+            }
+        }
 
-        // Các lỗi đã xử lý
-        // { status: 404, message: "This user does not exist" }
-        // { status: 401, message: "Lack of information in the token" }
-        // { status: 403, message: <depend on error> }
+        var discountId;
+
+        if (payloads.discount !== null) {
+            var discount = payloads.discount;
+            delete payloads.discount;
+            if (discount.id !== undefined) {
+                discountId = discount.id;
+            } else {
+                discountId = uuidv4();
+                const discountInfo = {
+                    id: discountId,
+                    percent: discount.percent,
+                    active: 1,
+                    startDate: discount.startDate,
+                    endDate: discount.endDate,
+                };
+                const insertDiscount = await Discount.insert(discountInfo);
+            }
+        } else {
+            delete payloads.discount;
+            discountId = null;
+        }
+
+        payloads.discountId = discountId;
+        const editProduct = await Product.edit(payloads);
+        res.send({
+            status: 200,
+        });
     };
 
     static deleteProduct = async (req, res) => {
