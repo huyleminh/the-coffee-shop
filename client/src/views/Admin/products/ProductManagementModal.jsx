@@ -1,22 +1,50 @@
-import { Modal } from "antd";
-import React from "react";
-import Image from "../../../assets/images/latte.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { DatePicker, Select, Space } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DatePicker, Modal, Select, Skeleton, Space } from "antd";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+
+moment.locale("vie");
+const momentFormat = "DD/MM/YYYY";
 
 const { RangePicker } = DatePicker;
 
-ProductManagementModal.propTypes = {};
-
 function ProductManagementModal(props) {
-    const { visible, handleCancel } = props;
+    const { visible, data, image, handleCancel } = props;
+    const [isLoading, setIsLoading] = useState(true);
+    const [dataModal, setDataModal] = useState({});
+
     const handleClose = () => handleCancel();
 
     const handleSaveChange = () => {};
 
     const handleDelete = () => {};
 
+    const handleOnChange = (e) => {
+        const target = e.target;
+        setDataModal({ ...dataModal, [target.name]: target.value });
+    };
+
+    useEffect(() => {
+        if (!visible) setDataModal({});
+        const newData = {
+            id: data.product.id,
+            name: data.product.name,
+            price: data.product.price,
+            description: data.product.description,
+            category: data.categoryName,
+            rate: parseInt(data.rating.totalStar / data.rating.totalRating).toFixed(1),
+            discount: data.discount ? data.discount.percent : 0,
+            startDate: data.discount ? moment(new Date(data.discount.startDate), momentFormat) : null,
+            endDate: data.discount ? moment(new Date(data.discount.endDate), momentFormat) : null,
+        };
+        setIsLoading(false);
+        setDataModal(newData);
+
+        return () => setDataModal(false);
+    }, [data, visible]);
+
+    if (isLoading) return <></>;
     return (
         <Modal
             title="Product Details"
@@ -42,63 +70,118 @@ function ProductManagementModal(props) {
             }
         >
             <div className="product-management-modal">
-                <div>
-                    <img src={Image} alt="product" />
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        height: "100%",
+                    }}
+                >
+                    {!image ? (
+                        <Skeleton.Image style={{ width: "250px", height: "300px" }} />
+                    ) : (
+                        <img src={image} alt="product" loading="lazy" />
+                    )}
+                    <span style={{ textAlign: "center", fontSize: "1.2rem", fontWeight: 600 }}>
+                        <FontAwesomeIcon icon={faStar} style={{ color: "gold" }} />
+                        {dataModal.rate}
+                    </span>
                 </div>
 
                 <div className="product-management-modal-content">
                     <div className="product-management-modal-content__item">
                         <label>Name</label> <br />
-                        <input type="text" name="" id="" placeholder="Product's name" />
+                        <input
+                            type="text"
+                            name="name"
+                            id=""
+                            placeholder="Product's name"
+                            value={dataModal.name}
+                            onChange={handleOnChange}
+                        />
                     </div>
 
                     <div className="product-management-modal-content__item">
                         <div>
-                            <label>Price</label> <br />
-                            <input type="number" name="" id="" placeholder="Price" min="0" />
+                            <label htmlFor="price">Price</label> <br />
+                            <input
+                                type="number"
+                                name="price"
+                                id="price"
+                                placeholder="Price"
+                                min="0"
+                                value={dataModal.price}
+                                onChange={handleOnChange}
+                            />
                         </div>
 
                         <div>
-                            <label>Category</label> <br />
-                            <input type="text" name="" id="" placeholder="Category" />
+                            <label htmlFor="category">Category</label> <br />
+                            <input
+                                type="text"
+                                name="category"
+                                id="category"
+                                placeholder="Category"
+                                value={dataModal.category}
+                                onChange={handleOnChange}
+                            />
                         </div>
                     </div>
 
                     <div className="product-management-modal-content__item">
                         <label>Discount</label> <br />
                         <Space direction="horizontal" size={[100]}>
-                            <Select style={{ width: "100px" }} placeholder="Percent">
+                            <Select
+                                style={{ width: "100px" }}
+                                placeholder="Percent"
+                                value={dataModal.discount}
+                                onClick={()=> console.log("click")}
+                                loading
+                            >
+                                {/* <Select.Option>0.2</Select.Option>
                                 <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
+                                <Select.Option>0.2</Select.Option> */}
                             </Select>
-                            <RangePicker />
+                            <RangePicker value={[dataModal.startDate, dataModal.endDate]} />
                         </Space>
                     </div>
 
-                    <div className="product-management-modal-content__item">
-                        <label>New discount</label> <br />
-                        <Space direction="horizontal" size={[100]}>
-                            <Select style={{ width: "100px" }} placeholder="Percent">
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                            </Select>
+                    <div
+                        className="product-management-modal-content__item"
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <div>
+                            <label htmlFor="newDiscount">New discount</label> <br />
+                            <input
+                                type="number"
+                                name="newDiscount"
+                                id="newDiscount"
+                                placeholder="Discount"
+                                min="0"
+                                value={0}
+                                onChange={handleOnChange}
+                            />
+                        </div>
+                        <div style={{ width: "220px" }}>
                             <RangePicker />
-                        </Space>
+                        </div>
                     </div>
 
                     <div className="product-management-modal-content__item">
-                        <label>Description</label> <br />
+                        <label htmlFor="description">Description</label> <br />
                         <textarea
                             type="text"
-                            name=""
-                            id=""
+                            name="description"
+                            id="description"
                             placeholder="Description..."
                             rows="3"
-                            value={
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sagittis faucibus iaculis."
-                            }
+                            value={dataModal.description}
+                            onChange={handleOnChange}
                         />
                     </div>
                 </div>

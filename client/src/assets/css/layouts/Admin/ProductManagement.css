@@ -55,7 +55,7 @@
 
 .product-management-modal img {
     width: 250px;
-    height: 100%;
+    height: 320px;
     object-fit: cover;
     border-radius: 5px;
     border: 1px solid #503a2444;
@@ -80,7 +80,7 @@
 
 .product-management-modal-content .product-management-modal-content__item:nth-child(2) {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
 }
 
