@@ -125,7 +125,7 @@ function ProductManagement() {
                     );
                 return (
                     <div className="product-discount">
-                        <span id="discount">{discount} %</span>
+                        <span id="discount">{discount * 100} %</span>
                     </div>
                 );
             },
@@ -193,6 +193,7 @@ function ProductManagement() {
 
             <Divider />
             <Table
+                className="main_table"
                 columns={columns}
                 dataSource={productRecords}
                 pagination={{ position: ["bottomCenter"], pageSize: 5 }}

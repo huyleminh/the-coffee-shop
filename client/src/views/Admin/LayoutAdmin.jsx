@@ -10,7 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
-import React, { useState } from "react";
+//import SubMenu from "antd/lib/menu/SubMenu";
+import React, { useEffect, useState } from "react";
 import { Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
 import PageNotFound from "../errors/PageNotFound";
@@ -20,6 +21,7 @@ import ProductManagement from "./products/ProductManagement";
 import StatisticManagement from "./statistics/StatisticManagement";
 
 const { Header, Sider, Content, Footer } = Layout;
+const { SubMenu } = Menu
 
 function LayoutAdmin() {
     const history = useHistory();
@@ -46,23 +48,21 @@ function LayoutAdmin() {
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
                         <a href={`${match.path}/manage/products`}>Home</a>
                     </Menu.Item>
-
-                    <Menu.SubMenu
+                    <SubMenu 
                         key="management"
                         title="Management"
-                        icon={<FontAwesomeIcon icon={faListAlt} />}
-                    >
-                        <Menu.Item key="products" icon={<FontAwesomeIcon icon={faCube} />}>
-                            <a href={`${match.path}/manage/products`}>Products</a>
-                        </Menu.Item>
-                        <Menu.Item key="ingredients" icon={<FontAwesomeIcon icon={faCube} />}>
-                            <a href={`${match.path}/manage/ingredients`}>Ingredients</a>
-                        </Menu.Item>
-                        <Menu.Item key="employees" icon={<FontAwesomeIcon icon={faUserCircle} />}>
-                            <a href={`${match.path}/manage/employees`}>Employees</a>
-                        </Menu.Item>
-                    </Menu.SubMenu>
-
+                        icon={<FontAwesomeIcon icon={faListAlt} />}>
+                            <Menu.Item key="products" icon={<FontAwesomeIcon icon={faCube}/>}>
+                                <a href={`${match.path}/manage/products`}>Products</a>
+                            </Menu.Item>
+                            <Menu.Item key="ingredients" icon={<FontAwesomeIcon icon={faCube}/>}>
+                                <a href={`${match.path}/manage/ingredients`}>Ingredients</a>
+                            </Menu.Item>
+                            <Menu.Item key="employees" icon={<FontAwesomeIcon icon={faUserCircle} />}>
+                                <a href={`${match.path}/manage/employees`}>Employees</a>
+                            </Menu.Item>
+                    </SubMenu>  
+                    
                     <Menu.Item key="statistics" icon={<FontAwesomeIcon icon={faChartBar} />}>
                         <a href={`${match.path}/manage/statistics`}>Statistics</a>
                     </Menu.Item>
@@ -133,7 +133,7 @@ function LayoutAdmin() {
                 </Content>
 
                 <Footer style={{ textAlign: "center", color: "#503a24" }}>
-                    The Coffe Shop ©2021 Created by Ga Chien Pro Max
+                    The Coffee Shop ©2021 Created by Ga Chien Pro Max
                 </Footer>
             </Layout>
         </Layout>

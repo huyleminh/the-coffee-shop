@@ -1,3 +1,6 @@
+import DatabaseConfig from "../../../configs/DatabaseConfig.js";
+import DatabaseConnection from "../DatabaseConnection.js";
+
 class ProductCategory {
     constructor(productId, categoryId) {
         this.productId = productId;
@@ -18,6 +21,24 @@ class ProductCategory {
             );
         });
     };
+
+    // Each parameter is an object {key, value} with key is column name and value is a new value for key
+    static updateOneAttribute = (condition, newData) => {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.product_category
+            SET ${newData.key} = ?
+            WHERE ${condition.key} = ?;`;
+
+            DatabaseConnection.query(sql, [newData.value, condition.value], (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
 }
 
 export default ProductCategory;

@@ -19,8 +19,8 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "username": "customer01",
-    "password": "1234567c"
+    "username": "admin_01",
+    "password": "1234567a"
 }
 
 ###
@@ -72,6 +72,16 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVyMUUydDgiLCJ1c2VybmFtZSI6ImVtcGxveWVlMDEiLCJyb2xlIjoyLCJpYXQiOjE2MjgxNTE2MzgsImV4cCI6MTYyODE1MzQzOH0.jtdoKDvDt3NE-AWOY_6zT5mE8mLgvRuZPBKvPlgOyjE
 
 ###
+POST http://localhost:5000/api/admin/product/edit
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3MU45ZE4iLCJ1c2VybmFtZSI6ImFkbWluXzAxIiwicm9sZSI6MSwiaWF0IjoxNjI4NDMwMjE0LCJleHAiOjE2Mjg0MzIwMTR9.tX9ixpOg-c99q4s06q7DwbngwVo-Y1Z3jkEXZhaNnS4
+
+{
+    "productId":"5de298df-5a13-4dbd-ad7e-94a8d892aa09",
+    "price":30000,
+    "discount":{"percent":0.15,"startDate":"2021-07-11 19:47:02","endDate":"2021-08-11 19:47:02"}
+}
+
 POST http://localhost:5000/api/admin/product/create
 content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ3MU45ZE4iLCJ1c2VybmFtZSI6ImFkbWluXzAxIiwicm9sZSI6MSwiaWF0IjoxNjI4MzUxNTU3LCJleHAiOjE2MjgzNTMzNTd9.vAQZNnoxo08PIL9Ano9HcnbJlpjEiQlpk5zGZuklA28
