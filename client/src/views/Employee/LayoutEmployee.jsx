@@ -28,7 +28,7 @@ function LayoutEmployee() {
     return (
         <Layout className="custom-site-dashboard">
             <Sider trigger={null} collapsible collapsed={collapsed} width="300px" breakpoint="md">
-                <div className="custom-menu__logo">
+                <div className={`custom-menu__logo ${collapsed}`}>
                     <img src={LogoStore} alt="logo" />
                     <h1>The coffee shop</h1>
                 </div>

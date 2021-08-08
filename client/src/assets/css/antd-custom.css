@@ -167,10 +167,14 @@
 .ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo {
     width: 100%;
     height: 66px;
-    padding: 0px 20px;
+    padding: 0px 25px 0px 10px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #75522b;
+}
+
+.ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo.true {
+    padding: 0px 0px;
+    transition: all 0.3s;
 }
 
 .ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo > h1 {
@@ -186,6 +190,13 @@
     width: 60px;
     height: 60px;
     object-fit: cover;
+
+}
+
+.ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo.true img {
+    width: 55px;
+    height: 55px;
+    transition: all 0.3s;
 }
 
 .custom-site-dashboard > .ant-layout-sider-collapsed .custom-menu__logo > h1 {
@@ -194,6 +205,7 @@
 
 .ant-menu.ant-menu-root {
     background: #382612;
+    margin: 30px 0px;
 }
 
 .ant-menu.ant-menu-root .ant-menu-item {
@@ -271,7 +283,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ddd;
+    color: rgb(196, 195, 195);
     cursor: pointer;
 }
 
@@ -312,7 +324,7 @@
 }
 
 .custom-site-content__user #dashboard-user:hover {
-    color: #ccc;
+    color: #503a24;
 }
 
 /* Main content */
@@ -427,4 +439,7 @@
 
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
     background-color: #22160b;
+
+.ant-tooltip-content .ant-tooltip-inner  > a {
+    color: #fff;
 }
