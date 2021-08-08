@@ -146,6 +146,7 @@ function ProductTable(props) {
                     columns={columnsFiltered}
                     dataSource={records}
                     pagination={pagination}
+                    bordered
                 />
             )}
         </div>

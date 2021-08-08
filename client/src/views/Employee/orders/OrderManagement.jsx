@@ -180,14 +180,14 @@ function OrderManagement() {
     );
 
     return (
-        <div className="custom-site-orders">
-            <div className="custom-site-orders__filter">
+        <div className="custom-site-main-content">
+            <div className="custom-site-main-content__filter">
                 <Space direction="horizontal" size="large">
-                    <div className="orders__filter-item">
+                    <div className="main-content__filter-item">
                         <span>Filter by date</span>
                         <RangePicker value={[date.start, date.end]} onChange={handleChangeDate} />
                     </div>
-                    <div className="orders__filter-item">
+                    <div className="main-content__filter-item">
                         <span>Status</span>
                         <Select value={sortBy} style={{ width: 120 }} onChange={handleChangeSortBy}>
                             <Option value={-1}>Default</Option>

@@ -24,7 +24,6 @@ const { Header, Sider, Content, Footer } = Layout;
 function LayoutAdmin() {
     const history = useHistory();
     const match = useRouteMatch();
-    console.log(match);
     const [collapsed, setCollapsed] = useState(false);
 
     const toggleSiderbar = () => {
@@ -38,7 +37,12 @@ function LayoutAdmin() {
                     <img src={LogoStore} alt="logo" />
                     <h1>The coffee shop</h1>
                 </div>
-                <Menu theme="dark" mode="inline">
+                <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultOpenKeys={["management"]}
+                    defaultSelectedKeys={["products"]}
+                >
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
                         <a href={`${match.path}/manage/products`}>Home</a>
                     </Menu.Item>
