@@ -1,10 +1,14 @@
-import Product from "../utilities/database/entities/Product.js"
-import { generate36CharsId } from "../utilities/utilityFunctions.js";
+import Product from "../utilities/database/entities/Product.js";
+import Category from "../utilities/database/entities/Category.js";
+import Discount from "../utilities/database/entities/Discount.js";
+import { v4 as uuidv4 } from "uuid";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 class AdminController {
     static getAllProducts = async (req, res) => {
         const productList = await Product.getProducts();
-
         const products = productList.map((product) => {
             let discount = null;
             if (product.discountId !== null) {
@@ -32,53 +36,64 @@ class AdminController {
                 discount,
             };
         });
-       
-        res.send({
-            status: 200,
-            data: products,
-        });
-    }
+
+        res.send({ status: 200, data: products });
+    };
 
     static createProduct = async (req, res) => {
         const payload = res.locals.payload;
+        const products = await Product.getAllWithSpecificAttributes(["id", "name"])
+        const indexProductName = products.findIndex(product => product.name === payload.name)
 
-        const valid = await Product.searchProductByName(payload.name);
-        
-        //check if product name has already existed in the database
-        if (valid.length === 0) {
-            const productsId = await Product.getAllProductId();
-            const categoriesID = await Product.getAllCategoryId();
+        if (indexProductName !== -1)
+            res.send({ status: 409, message: "This product has existed in the system" });
+        else {
+            const categories = await Category.getAll();
+            const indexCategoryName = categories.findIndex(category => {
+                return category.name === payload.categoryName
+            })
 
-            const categoryNameValid = await Product.getCategoryIDByName(payload.categoryName);
-            let newProductId = generate36CharsId(productsId);
-            let newCategoryId = "";
-            let categoryIsExisted = false;
-
-            //check if category has already existed in the database
-            if (categoryNameValid.length === 0) {
-                newCategoryId = generate36CharsId(categoriesID);
-            } else {
-                newCategoryId = categoryNameValid[0].id;
-                categoryIsExisted = true;
+            // insert new category if duplicate
+            const categoryId = (indexCategoryName === -1) ? uuidv4() : categories[indexCategoryName].id
+            if (indexCategoryName === -1) {
+                const newCategory = new Category(categoryId, payload.categoryName)
+                const insertCategory = await newCategory.insert()
             }
 
-            //variable contains all information about the new product
-            let newProductInfo = {
-                name: payload.name,
-                image: payload.image === undefined ? "" : `img_${newProductId}${payload.image}`,
-                price: payload.price,
-                description: payload.description,
-                categoryName: payload.categoryName,
-                discountId: payload.discountId === undefined ? null : payload.discountId
+            // insert new discount if receive new discount
+            const discountId = (payload.discount.id === undefined) ? uuidv4() : payload.discount.id
+            if (payload.discount.id === undefined) {
+                const newDiscount = new Discount(
+                    discountId,
+                    payload.discount.percent,
+                    true,
+                    payload.discount.startDate,
+                    payload.discount.endDate
+                )
+                const insertNewDiscount = await newDiscount.insert()
             }
 
-            const insertNewProduct = await Product.createNewProduct(categoryIsExisted, newProductId, newCategoryId, newProductInfo);
+            // insert new product (includes product_rating)
+            const now = new Date()
+            const dateString = now.toJSON()
+            const newProductId = uuidv4()
+            const image = (payload.image === undefined) ? "" : `img_${newProductId}${payload.image}`
+            const newProduct = new Product(
+                newProductId,
+                payload.name,
+                image,
+                payload.price,
+                payload.description,
+                discountId,
+                dateString,
+                dateString
+            )
+            const insertNewProduct = await newProduct.insert(categoryId)
 
-            res.send({status: 200}); //create new product successfully
-        } else {
-            res.send({status: 409, message: "This product has existed in the system"})
+            // create new product successfully
+            res.send({ status: 200 });
         }
-    }
+    };
 
     static editProduct = async (req, res) => {
         // Các dữ liệu có sẵn
@@ -91,19 +106,24 @@ class AdminController {
         // { status: 404, message: "This user does not exist" }
         // { status: 401, message: "Lack of information in the token" }
         // { status: 403, message: <depend on error> }
-    }
+    };
 
     static deleteProduct = async (req, res) => {
-        const params = res.locals.params
-        const countParams = Object.keys(params).length
+        const params = res.locals.params;
+        const countParams = Object.keys(params).length;
 
-        if (countParams !== 1 || (countParams === 1 && params.productId === undefined))
-            res.send({ status: 400, message: "Params is invalid" })
+        if (
+            countParams !== 1 ||
+            (countParams === 1 && params.productId === undefined)
+        )
+            res.send({ status: 400, message: "Params is invalid" });
         else {
-            const deleteProduct = await Product.deleteByProductId(params.productId)
-            res.send({ status: 200 })
+            const deleteProduct = await Product.deleteByProductId(
+                params.productId
+            );
+            res.send({ status: 200 });
         }
-    }
+    };
 }
 
-export default AdminController
+export default AdminController;

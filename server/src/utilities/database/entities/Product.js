@@ -1,6 +1,6 @@
 import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 import DatabaseConnection from "../DatabaseConnection.js";
-
+import mysql from 'mysql'
 class Product {
     constructor(id, name, image, price, description, discountId, updatedAt, createdAt) {
         this.id = id;
@@ -97,6 +97,28 @@ class Product {
         })
     }
 
+    static getAllWithSpecificAttributes = (keys) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT ${keys.join(', ')} FROM ${DatabaseConfig.CONFIG.DATABASE}.product;`;
+
+            DatabaseConnection.query(sql, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                if (rows === undefined) {
+                    reject(new Error("Error: 'rows' is undefined"));
+                } else {
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+
+                    resolve(jsonData);
+                }
+            });
+        });
+    }
+
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
             const sql = `
@@ -161,6 +183,30 @@ class Product {
         })
     }
 
+    insert(categoryId) {
+        const values = Object.values(this).concat([this.id, 0, 0]).concat([this.id, categoryId])
+
+        return new Promise((resolve, reject) => {
+            const sql = `
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product (id, name, image, price, description, discountId, updatedAt, createdAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_rating (productId, totalStar, totalRating)
+            VALUES (?, ?, ?);
+            INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (productId, categoryId)
+            VALUES (?, ?);`
+
+            DatabaseConnection.query(sql, values, (error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    resolve();
+                }
+            );
+        });
+    }
+
     static deleteByProductId = (productId) => {
         return new Promise((resolve, reject) => {
             const sql = `
@@ -183,153 +229,6 @@ class Product {
                 resolve();
             })
         })
-    }
-
-    static getAllProductId = () => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.product;`;
-
-            DatabaseConnection.query(sql, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    }
-
-    static getAllCategoryId = () => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT id FROM ${DatabaseConfig.CONFIG.DATABASE}.category;`;
-
-            DatabaseConnection.query(sql, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    }
-
-    static searchProductByName = (productName) => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT * 
-                FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
-                WHERE p.name = ?;`;
-
-            DatabaseConnection.query(sql, productName, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    }
-
-    static getCategoryIDByName = (name) => {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT c.id FROM ${DatabaseConfig.CONFIG.DATABASE}.category c
-                WHERE c.name = ?;`;
-
-            DatabaseConnection.query(sql, name, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                if (rows === undefined) {
-                    reject(new Error("Error: 'rows' is undefined"));
-                } else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-
-                    resolve(jsonData);
-                }
-            });
-        });
-    };
-
-    static createNewProduct = (categoryIsExisted, productId, categoryId, params) => {
-        return new Promise((resolve, reject) => {
-            let sql = ``;
-            let info = [];
-            let now = new Date();
-            let nowString = now.toJSON();
-
-            if (categoryIsExisted === true) {
-                sql = `
-                    INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product (id, name, image, price, description, updatedAt, createdAt`
-                    if (params.discountId !== null) {
-                        sql += `, discountId)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (categoryId, productId)
-                        VALUES (?, ?);`
-                        info = [productId, params.name, params.image, params.price, params.description, nowString, nowString, params.discountId, categoryId, productId];
-                    } else {
-                        sql += `)
-                        VALUES (?, ?, ?, ?, ?, ?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (categoryId, productId)
-                        VALUES (?, ?);`;
-                        info = [productId, params.name, params.image, params.price, params.description, nowString, nowString, categoryId, productId];
-                    }            
-            } else {
-                sql = `
-                    INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product (id, name, image, price, description, updatedAt, createdAt`
-                    if (params.discountId !== null) {
-                        sql += `, discountId)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.category (id, name)
-                        VALUES (?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (categoryId, productId)
-                        VALUES (?, ?);`
-                        info = [productId, params.name, params.image, params.price, params.description, nowString, nowString, params.discountId, categoryId, params.categoryName, categoryId, productId];
-                    } else {
-                        sql += `)
-                        VALUES (?, ?, ?, ?, ?, ?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.category (id, name)
-                        VALUES (?, ?);
-                        INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (categoryId, productId)
-                        VALUES (?, ?);`;
-                        info = [productId, params.name, params.image, params.price, params.description, nowString, nowString, categoryId, params.categoryName, categoryId, productId];
-                    }
-            }
-
-            DatabaseConnection.query(sql, info, (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-
-                resolve();
-            });
-        });
     }
 }
 
