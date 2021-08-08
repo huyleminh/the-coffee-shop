@@ -82,4 +82,5 @@ input:focus, textarea:focus, select:focus {
 	border: 1px solid #9c7044;
 	box-shadow: 1px 1px 4px #503a24;
 	outline: none;
+	transition: all 0.1s;
 }
