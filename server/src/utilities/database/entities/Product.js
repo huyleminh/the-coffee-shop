@@ -2,7 +2,16 @@ import DatabaseConfig from "../../../configs/DatabaseConfig.js";
 import DatabaseConnection from "../DatabaseConnection.js";
 
 class Product {
-    constructor(id, name, image, price, description, discountId, updatedAt, createdAt) {
+    constructor(
+        id,
+        name,
+        image,
+        price,
+        description,
+        discountId,
+        updatedAt,
+        createdAt
+    ) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -46,24 +55,24 @@ class Product {
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_category pc ON p.id = pc.productId
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.category c ON c.id = pc.categoryId
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_rating pr ON p.id = pr.productId
-            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId;`
+            LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId;`;
 
             DatabaseConnection.query(sql, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static getSpecificProduct = (productId) => {
         return new Promise((resolve, reject) => {
@@ -78,24 +87,24 @@ class Product {
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.category c ON c.id = pc.categoryId
             JOIN ${DatabaseConfig.CONFIG.DATABASE}.product_rating pr ON p.id = pr.productId
             LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount d ON d.id = p.discountId
-            WHERE p.id = ?;`
+            WHERE p.id = ?;`;
 
             DatabaseConnection.query(sql, productId, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static searchProducts = (searchValue) => {
         return new Promise((resolve, reject) => {
@@ -114,20 +123,20 @@ class Product {
 
             DatabaseConnection.query(sql, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static filterProducts = (filterValue) => {
         return new Promise((resolve, reject) => {
@@ -146,20 +155,20 @@ class Product {
 
             DatabaseConnection.query(sql, filterValue, (error, rows) => {
                 if (error) {
-                    reject(error)
-                    return
+                    reject(error);
+                    return;
                 }
 
                 if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"))
+                    reject(new Error("Error: 'rows' is undefined"));
                 else {
-                    const jsonString = JSON.stringify(rows)
-                    const jsonData = JSON.parse(jsonString)
-                    resolve(jsonData)
+                    const jsonString = JSON.stringify(rows);
+                    const jsonData = JSON.parse(jsonString);
+                    resolve(jsonData);
                 }
-            })
-        })
-    }
+            });
+        });
+    };
 
     static deleteByProductId = (productId) => {
         return new Promise((resolve, reject) => {
@@ -173,7 +182,15 @@ class Product {
             DELETE FROM ${DatabaseConfig.CONFIG.DATABASE}.product WHERE id = ?;
             `;
 
-            const values = [productId, productId, productId, productId, productId, productId, productId]
+            const values = [
+                productId,
+                productId,
+                productId,
+                productId,
+                productId,
+                productId,
+                productId,
+            ];
             DatabaseConnection.query(sql, values, (error) => {
                 if (error) {
                     reject(error);
@@ -181,9 +198,49 @@ class Product {
                 }
 
                 resolve();
-            })
-        })
-    }
+            });
+        });
+    };
+
+    static getProductsByName = (filterValue) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            SELECT *
+            FROM ${DatabaseConfig.CONFIG.DATABASE}.product p
+            WHERE p.name = ?;`;
+
+            DatabaseConnection.query(sql, filterValue, (error, rows) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve(rows);
+            });
+        });
+    };
+    static edit = (productInfo) => {
+        const id = productInfo.productId;
+        delete productInfo.productId;
+
+        const keys = Object.keys(productInfo);
+        const values = Object.values(productInfo);
+        const setStatement = keys.join("=?,") + "=?";
+        
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE ${DatabaseConfig.CONFIG.DATABASE}.product
+            SET ${setStatement}
+            WHERE id = '${id}';`;
+            console.log(sql)
+            DatabaseConnection.query(sql, values, (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    };
 }
 
 export default Product;
