@@ -439,6 +439,7 @@
 
 .ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
     background-color: #22160b;
+}
 
 .ant-tooltip-content .ant-tooltip-inner  > a {
     color: #fff;
