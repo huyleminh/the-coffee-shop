@@ -1,26 +1,51 @@
-import { DatePicker, Select, Space, Upload } from "antd";
+import { DatePicker, Select, Space } from "antd";
 import Modal from "antd/lib/modal/Modal";
-import React, { useState } from "react";
-// import PropTypes from "prop-types";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import ProductAPI from "../../../services/Product/ProductAPI";
 
-// CreateProductForm.propTypes = {};
+moment.locale("vie");
+const momentFormat = "DD/MM/YYYY";
 
 const { RangePicker } = DatePicker;
 
 function CreateProductForm(props) {
     const { visible, handleCancel } = props;
     const [imageFile, setImageFile] = useState("No file has been choosen.");
+    const [discounts, setDiscounts] = useState([]);
+    const [currentDiscount, setCurrentDiscount] = useState({});
 
     const handleClose = () => handleCancel();
 
     const handleSave = () => {};
 
-    const handleDelete = () => {};
-
     const changeImage = (e) => {
         const target = e.target;
-        setImageFile(target.files[0].name)
-    }
+        setImageFile(target.files[0].name);
+    };
+
+    const handleChangeDiscount = (value) => {
+        const index = discounts.findIndex((item) => item.id === value);
+        const targetDiscount = discounts[index];
+        setCurrentDiscount({
+            percent: targetDiscount.percent,
+            startDate: moment(new Date(targetDiscount.startDate), momentFormat),
+            endDate: moment(new Date(targetDiscount), momentFormat),
+        });
+    };
+
+    useEffect(() => {
+        const fetchDiscounts = () => {
+            ProductAPI.getDiscounts()
+                .then((res) => {
+                    const data = res.status === 200 && res.data;
+                    const discounts = data.filter((item) => item.endDate > new Date().toJSON());
+                    setDiscounts(discounts);
+                })
+                .catch((error) => console.log(error));
+        };
+        fetchDiscounts();
+    }, []);
 
     return (
         <Modal
@@ -69,25 +94,46 @@ function CreateProductForm(props) {
                     <div className="product-management-modal-content__item">
                         <label>Existed discounts</label> <br />
                         <Space direction="horizontal" size={[100]}>
-                            <Select style={{ width: "100px" }} placeholder="Percent">
-                                {/* <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option> */}
+                            <Select
+                                style={{ width: "100px" }}
+                                placeholder="Percent"
+                                onChange={handleChangeDiscount}
+                            >
+                                {discounts.map((item) => (
+                                    <Select.Option key={item.id} value={item.id}>
+                                        {item.percent}
+                                    </Select.Option>
+                                ))}
                             </Select>
-                            <RangePicker />
+                            <RangePicker
+                                value={[currentDiscount.startDate, currentDiscount.endDate]}
+                            />
                         </Space>
                     </div>
 
-                    <div className="product-management-modal-content__item">
-                        <label>New discount</label> <br />
-                        <Space direction="horizontal" size={[100]}>
-                            <Select style={{ width: "100px" }} placeholder="Percent">
-                                {/* <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option> */}
-                            </Select>
+                    <div
+                        className="product-management-modal-content__item"
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <div>
+                            <label htmlFor="newDiscount">New discount</label> <br />
+                            <input
+                                type="number"
+                                name="newDiscount"
+                                id="newDiscount"
+                                placeholder="Discount"
+                                min="0"
+                                value={0}
+                                // onChange={handleOnChange}
+                            />
+                        </div>
+                        <div style={{ width: "252px" }}>
                             <RangePicker />
-                        </Space>
+                        </div>
                     </div>
 
                     <div className="product-management-modal-content__item">

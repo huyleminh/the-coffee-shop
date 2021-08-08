@@ -1,16 +1,67 @@
 import { Divider, Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import "../../../assets/css/layouts/Admin/ProductManagement.css";
+import AdminAPI from "../../../services/Admin/AdminAPI";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import CreateProductForm from "./CreateProductForm";
 import ProductManagementModal from "./ProductManagementModal";
 
 function ProductManagement() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [currentModal, setCurrentModal] = useState({ visible: false });
+    const history = useHistory();
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
     const [isCreateVisible, setIsCreateVisible] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [images, setImages] = useState([]);
 
     const handleCancelDetails = () => setCurrentModal({ ...currentModal, visible: false });
     const handleCancelCreate = () => setIsCreateVisible(false);
+
+    useEffect(() => {
+        const fetchAllProducts = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.token) {
+                alert("You are not allowed to access this page.");
+                localStorage.removeItem("user");
+                history.push("/403");
+            } else {
+                const response = await AdminAPI.getAllProducts(user.token);
+                if (response.status === 200) {
+                    setProducts(response.data);
+                    setIsLoading(false);
+                } else if (
+                    response.status === 401 ||
+                    response.status === 403 ||
+                    response.status === 404
+                ) {
+                    alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    history.push("/403");
+                }
+            }
+        };
+
+        fetchAllProducts();
+    }, [history]);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            const imagePromises = products.map((item) => {
+                return FirebaseAPI.getImageURL(item.product.image);
+            });
+
+            const res = await Promise.all(imagePromises);
+            const newImages = res.map((item) =>
+                item.status === 200
+                    ? item.data
+                    : require("../../../assets/images/latte.jpg").default
+            );
+            setImages(newImages);
+        };
+        fetchImages();
+    }, [products]);
+
     const columns = [
         {
             title: "Image",
@@ -27,7 +78,7 @@ function ProductManagement() {
                             className="img_style"
                         />
                     );
-                else return <></>;
+                return <></>;
             },
         },
         {
@@ -79,11 +130,11 @@ function ProductManagement() {
             title: "Action",
             dataIndex: "action",
             width: 100,
-            render: () => {
+            render: (index) => {
                 return (
                     <button
                         className="table-view-action"
-                        onClick={() => setCurrentModal({ ...currentModal, visible: true })}
+                        onClick={() => setCurrentModal({ visible: true, dataIndex: index })}
                     >
                         Details
                     </button>
@@ -92,22 +143,25 @@ function ProductManagement() {
         },
     ];
 
-    const sortedRecords = [
-        {
-            key: 1,
-            name: "Instant coffee",
-            price: { oldPrice: 15000, newPrice: 10000 },
-            discount: 0.3,
-            action: "view",
-        },
-        {
-            key: 2,
-            name: "Instant coffee",
-            price: { oldPrice: 15000 },
-            discount: "",
-            action: "view",
-        },
-    ];
+    const productRecords = products.map((item, index) => {
+        const record = {
+            key: item.product.id,
+            image: {
+                src: images[index],
+                width: "100px",
+                height: "100px",
+            },
+            name: item.product.name,
+            price: { oldPrice: item.product.price },
+            discount: null,
+            action: index,
+        };
+        if (item.discount && item.discount.endDate > new Date().toJSON()) {
+            record.discount = item.discount.percent;
+            record.price.newPrice = record.price.oldPrice * (1 - record.discount);
+        }
+        return record;
+    });
 
     return (
         <div className="custom-site-main-content">
@@ -136,16 +190,23 @@ function ProductManagement() {
             <Divider />
             <Table
                 columns={columns}
-                dataSource={sortedRecords}
+                dataSource={productRecords}
                 pagination={{ position: ["bottomCenter"], pageSize: 5 }}
                 bordered
                 loading={isLoading}
             />
 
-            <ProductManagementModal
-                visible={currentModal.visible}
-                handleCancel={handleCancelDetails}
-            />
+            {!isLoading ? (
+                <ProductManagementModal
+                    visible={currentModal.visible}
+                    data={products[currentModal.dataIndex]}
+                    image={images[currentModal.dataIndex]}
+                    handleCancel={handleCancelDetails}
+                />
+            ) : (
+                <></>
+            )}
+
             <CreateProductForm visible={isCreateVisible} handleCancel={handleCancelCreate} />
         </div>
     );
