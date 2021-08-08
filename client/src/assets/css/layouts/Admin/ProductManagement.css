@@ -1,0 +1,142 @@
+.product-discount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+}
+
+.product-discount span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    width: 70px;
+    height: 30px;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.product-discount #none {
+    background-color: #afb0b4;
+}
+
+.product-discount #discount {
+    background: #ee0014;
+}
+
+#delete {
+    background: #ee0014;
+}
+
+#delete:hover {
+    background: #f90525;
+}
+
+#save {
+    background: #007ff5;
+}
+
+#save:hover {
+    background: #0062cf;
+}
+
+/* Modal */
+.ant-modal.custom-modal > .ant-modal-content > .ant-modal-body {
+    padding: 24px 40px;
+}
+
+.product-management-modal {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.product-management-modal img {
+    width: 250px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #503a2444;
+}
+
+.product-management-modal .product-management-modal-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 50px;
+}
+
+.product-management-modal-content .product-management-modal-content__item {
+    height: 100%;
+    width: 100%;
+}
+
+.product-management-modal-content .product-management-modal-content__item:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.product-management-modal-content .product-management-modal-content__item:nth-child(2) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-management-modal-content .product-management-modal-content__item label {
+    font-weight: 600;
+    color: #503a24;
+    font-size: 1rem;
+}
+
+.product-management-modal-content .product-management-modal-content__item > input,
+.product-management-modal-content .product-management-modal-content__item > div > input,
+.product-management-modal-content .product-management-modal-content__item textarea,
+.product-management-modal-content .product-management-modal-content__item > span {
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border-color: #503a2444;
+}
+
+.product-management-modal-content .product-management-modal-content__item textarea {
+    resize:  none;
+    overflow-y: auto;
+    color: #503a24;
+}
+
+.product-management-modal-content .product-management-modal-content__item > span {
+    /* border: 1px solid #503a2444; */
+	margin: 0px;
+	/* outline: none; */
+}
+
+.product-management-modal-content .product-management-modal-content__item > input[type="file"] {
+    position: relative;
+    width: 90px;
+}
+
+.product-management-modal-content .product-management-modal-content__item > input[type="file"]::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.product-management-modal-content .product-management-modal-content__item > input[type="file"]::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: "Choose file";
+    color: #fff;
+    background-color: #503a24;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 100%;
+    outline: none;
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+}

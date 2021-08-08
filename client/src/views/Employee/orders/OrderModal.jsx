@@ -162,7 +162,7 @@ function OrderModal(props) {
 
     return (
         <Modal
-            title="Order details"
+            title="Order Details"
             visible={visible}
             width={800}
             onCancel={handleCancel}
