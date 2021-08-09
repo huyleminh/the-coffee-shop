@@ -51,7 +51,7 @@ function ProductModal(props) {
 
     const addToCartModal = () => {
         if (!addToCart) return;
-        addToCart();
+        addToCart(quantity);
     };
 
     const addToWishlistModal = () => {

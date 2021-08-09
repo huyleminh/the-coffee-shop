@@ -33,7 +33,7 @@ function ProductItem(props) {
     //Initialize card before rendering
     const [card, setCard] = useState(details);
 
-    const handleAddToCart = async () => {
+    const handleAddToCart = async (qtt) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
 
@@ -51,7 +51,7 @@ function ProductItem(props) {
                       endDate: card.endDate,
                   }
                 : null,
-            quantity: 1,
+            quantity: qtt,
         };
 
         let flag = false;
@@ -199,7 +199,7 @@ function ProductItem(props) {
                             className="favourite"
                             onClick={handleAddToWishlist}
                         />
-                        <button onClick={handleAddToCart}>ADD TO CART</button>
+                        <button onClick={() => handleAddToCart(1)}>ADD TO CART</button>
                     </div>
                 }
                 className="custom-card"
