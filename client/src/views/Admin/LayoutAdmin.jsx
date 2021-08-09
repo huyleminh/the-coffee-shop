@@ -10,8 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
-//import SubMenu from "antd/lib/menu/SubMenu";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
 import PageNotFound from "../errors/PageNotFound";

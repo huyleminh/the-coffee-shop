@@ -46,7 +46,7 @@ class AuthController {
         } else {
             jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
                 if (err) res.send({ status: 403 });
-                res.send({ status: 200, data: { role: data.role } });
+                else res.send({ status: 200, data: { role: data.role } });
             });
         }
     };

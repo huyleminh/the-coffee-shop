@@ -1,8 +1,10 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DatePicker, Modal, Select, Skeleton, Space } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import ProductAPI from "../../../services/Product/ProductAPI";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
@@ -13,20 +15,54 @@ function ProductManagementModal(props) {
     const { visible, data, image, handleCancel } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [dataModal, setDataModal] = useState({});
+    const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [discounts, setDiscounts] = useState([]);
+    const [currentDiscount, setCurrentDiscount] = useState({});
 
     const handleClose = () => handleCancel();
 
-    const handleSaveChange = () => {};
+    const handleSaveChange = () => {
+        setIsSaving(true);
+    };
 
-    const handleDelete = () => {};
+    const handleDelete = () => {
+        setIsDeleting(true);
+    };
 
     const handleOnChange = (e) => {
         const target = e.target;
+        if (target.name === "newDiscount") setCurrentDiscount({});
         setDataModal({ ...dataModal, [target.name]: target.value });
     };
 
+    const handleChangeDiscount = (value) => {
+        const index = discounts.findIndex((item) => item.id === value);
+        const targetDiscount = discounts[index];
+
+        setCurrentDiscount({
+            id: targetDiscount.id,
+            percent: targetDiscount.percent * 100,
+            startDate: moment(new Date(targetDiscount.startDate), momentFormat),
+            endDate: moment(new Date(targetDiscount.endDate), momentFormat),
+        });
+        setDataModal({ ...dataModal, newDiscount: 0, startDate: null, endDate: null });
+    };
+
+    const handleChangeNewDiscount = (values) => {
+        if (!values) {
+            setDataModal({ ...dataModal, startDate: null, endDate: null });
+        } else {
+            setDataModal({ ...dataModal, startDate: values[0], endDate: values[1] });
+        }
+    };
+
     useEffect(() => {
-        if (!visible) setDataModal({});
+        if (!visible) {
+            setDataModal({});
+            setIsSaving(false);
+            setIsDeleting(false);
+        }
         const newData = {
             id: data.product.id,
             name: data.product.name,
@@ -34,15 +70,48 @@ function ProductManagementModal(props) {
             description: data.product.description,
             category: data.categoryName,
             rate: parseInt(data.rating.totalStar / data.rating.totalRating).toFixed(1),
-            discount: data.discount ? data.discount.percent : 0,
-            startDate: data.discount ? moment(new Date(data.discount.startDate), momentFormat) : null,
-            endDate: data.discount ? moment(new Date(data.discount.endDate), momentFormat) : null,
+            newDiscount: 0,
+            startDate: null,
+            endDate: null,
         };
+
+        setCurrentDiscount({
+            id: data.discount ? data.discount.discountId : null,
+            percent: data.discount ? data.discount.percent * 100 : 0,
+            startDate: data.discount
+                ? moment(new Date(data.discount.startDate), momentFormat)
+                : null,
+            endDate: data.discount ? moment(new Date(data.discount.endDate), momentFormat) : null,
+        });
         setIsLoading(false);
         setDataModal(newData);
 
-        return () => setDataModal(false);
+        return () => {
+            setDataModal({});
+            setCurrentDiscount({
+                percent: data.discount ? data.discount.percent * 100 : 0,
+                startDate: data.discount
+                    ? moment(new Date(data.discount.startDate), momentFormat)
+                    : null,
+                endDate: data.discount
+                    ? moment(new Date(data.discount.endDate), momentFormat)
+                    : null,
+            });
+        };
     }, [data, visible]);
+
+    useEffect(() => {
+        const fetchDiscounts = () => {
+            ProductAPI.getDiscounts()
+                .then((res) => {
+                    const data = res.status === 200 && res.data;
+                    const discounts = data.filter((item) => item.endDate > new Date().toJSON());
+                    setDiscounts(discounts);
+                })
+                .catch((error) => console.log(error));
+        };
+        fetchDiscounts();
+    }, []);
 
     if (isLoading) return <></>;
     return (
@@ -61,10 +130,10 @@ function ProductManagementModal(props) {
                         id="delete"
                         onClick={handleDelete}
                     >
-                        Delete
+                        {isDeleting ? <LoadingOutlined spin /> : "Delete"}
                     </button>
                     <button className="order-modal-btn" id="save" onClick={handleSaveChange}>
-                        Save
+                        {isSaving ? <LoadingOutlined spin /> : "Save"}
                     </button>
                 </div>
             }
@@ -135,15 +204,19 @@ function ProductManagementModal(props) {
                             <Select
                                 style={{ width: "100px" }}
                                 placeholder="Percent"
-                                value={dataModal.discount}
-                                onClick={()=> console.log("click")}
-                                loading
+                                value={currentDiscount.percent}
+                                onChange={handleChangeDiscount}
                             >
-                                {/* <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option>
-                                <Select.Option>0.2</Select.Option> */}
+                                {discounts.map((item) => (
+                                    <Select.Option key={item.id} value={item.id}>
+                                        {item.percent * 100}
+                                    </Select.Option>
+                                ))}
                             </Select>
-                            <RangePicker value={[dataModal.startDate, dataModal.endDate]} />
+                            <RangePicker
+                                value={[currentDiscount.startDate, currentDiscount.endDate]}
+                                disabled
+                            />
                         </Space>
                     </div>
 
@@ -163,12 +236,15 @@ function ProductManagementModal(props) {
                                 id="newDiscount"
                                 placeholder="Discount"
                                 min="0"
-                                value={0}
+                                value={dataModal.newDiscount}
                                 onChange={handleOnChange}
                             />
                         </div>
                         <div style={{ width: "220px" }}>
-                            <RangePicker />
+                            <RangePicker
+                                value={[dataModal.startDate, dataModal.endDate]}
+                                onChange={handleChangeNewDiscount}
+                            />
                         </div>
                     </div>
 
