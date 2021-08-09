@@ -11,6 +11,7 @@ class AdminController {
             let discount = null;
             if (product.discountId !== null) {
                 discount = {
+                    id: product.discountId,
                     percent: product.percent,
                     startDate: product.startDate,
                     endDate: product.endDate,
@@ -84,7 +85,7 @@ class AdminController {
             const insertNewProduct = await newProduct.insert(categoryId)
 
             // create new product successfully
-            res.send({ status: 200 });
+            res.send({ status: 200, data: image });
         }
     };
 
@@ -100,26 +101,26 @@ class AdminController {
 
         // insert new category if need
         if (payload.categoryName !== undefined) {
-            const [category] = await Category.getByAttribute("name", payload.categoryName)
-            const categoryId = (category === undefined) ? uuidv4() : category.id
+            const [category] = await Category.getByAttribute("name", payload.categoryName);
+            const categoryId = category === undefined ? uuidv4() : category.id;
 
             if (category === undefined) {
-                const newCategory = new Category(categoryId, payload.categoryName)
-                const insertNewCategory = await Category.insert()
+                const newCategory = new Category(categoryId, payload.categoryName);
+                const insertNewCategory = await Category.insert();
             }
 
             const updateProductCategory = await ProductCategory.updateOneAttribute(
                 { key: "productId", value: payload.productId },
                 { key: "categoryId", value: categoryId }
-            )
-            delete payload.categoryName
+            );
+            delete payload.categoryName;
         }
 
         if (payload.discount === null) {
-            payload.discountId = null
-            delete payload.discount
+            payload.discountId = null;
+            delete payload.discount;
         } else if (payload.discount !== undefined) {
-            const discountId = (payload.discount.id === undefined) ? uuidv4() : payload.discount.id
+            const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
             if (payload.discount.id === undefined) {
                 const newDiscount = new Discount(
                     discountId,
@@ -127,19 +128,19 @@ class AdminController {
                     0,
                     payload.discount.startDate,
                     payload.discount.endDate
-                )
+                );
                 const insertNewDiscount = await newDiscount.insert();
             }
 
-            payload.discountId = discountId
-            delete payload.discount
+            payload.discountId = discountId;
+            delete payload.discount;
         }
 
-        const productId = payload.productId
-        delete payload.productId
-        const keys = Object.keys(payload)
-        const values = Object.values(payload)
-        const updateProduct = await Product.updateAttributes(productId, keys, values)
+        const productId = payload.productId;
+        delete payload.productId;
+        const keys = Object.keys(payload);
+        const values = Object.values(payload);
+        const updateProduct = await Product.updateAttributes(productId, keys, values);
 
         res.send({ status: 200 });
     };
@@ -148,15 +149,10 @@ class AdminController {
         const params = res.locals.params;
         const countParams = Object.keys(params).length;
 
-        if (
-            countParams !== 1 ||
-            (countParams === 1 && params.productId === undefined)
-        )
+        if (countParams !== 1 || (countParams === 1 && params.productId === undefined))
             res.send({ status: 400, message: "Params is invalid" });
         else {
-            const deleteProduct = await Product.deleteByProductId(
-                params.productId
-            );
+            const deleteProduct = await Product.deleteByProductId(params.productId);
             res.send({ status: 200 });
         }
     };

@@ -19,9 +19,14 @@ class FirebaseAPI {
         });
     };
 
-    static uploadImage = () => {
+    static uploadImage = (image, name) => {
         return new Promise((resolve, reject) => {
-            resolve("Uploaded.");
+            if (!image || !name) reject({ status: 400, error: "Missing file or file name." });
+
+            const ref = Storage.ref(`/products/${name}`).put(image);
+            ref.then((res) => resolve({ status: 200, data: res })).catch((error) =>
+                reject({ status: 400, error: error.code })
+            );
         });
     };
 }

@@ -1,9 +1,13 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { DatePicker, Select, Space } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import NotificationBox from "../../../components/NotificationBox";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import ProductAPI from "../../../services/Product/ProductAPI";
+import CreateNewProductWorkflow from ".././../../workflow/CreateNewProductWorkflow";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
@@ -25,22 +29,84 @@ function CreateProductForm(props) {
         endDate: null,
         description: "",
     });
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleClose = () => handleCancel();
 
     const handleSave = () => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user || !user.token) {
-            alert("You are not allowed to access this page.");
-            localStorage.removeItem("user");
-            history.push("/403");
+        setIsSaving(true);
+        const newProduct = { ...productInfo };
+        if (currentDiscount.percent !== undefined) {
+            // If user choose existed discount
+            const index = discounts.findIndex((item) => item.id === currentDiscount.id);
+            newProduct.discount = index === -1 ? { id: null } : { id: discounts[index].id };
         } else {
+            // If user choose new discount
+            const { newDiscount, startDate, endDate } = newProduct;
+            if (newDiscount === 0 || !startDate || !endDate) {
+                newProduct.discount = { id: null };
+            } else {
+                newProduct.discount = {
+                    percent: parseFloat(newDiscount) / 100,
+                    startDate: startDate.toJSON(),
+                    endDate: endDate.toJSON(),
+                };
+            }
         }
+
+        delete newProduct.newDiscount;
+        delete newProduct.startDate;
+        delete newProduct.endDate;
+        const flow = new CreateNewProductWorkflow({ ...newProduct, image: imageFile.name });
+        flow.startFlow()
+            .then((res) => {
+                setIsSaving(false);
+                if (res.status === 400) {
+                    NotificationBox.triggerWarning("CREATE WARNING", res.statusText);
+                } else if (res.status === 403) {
+                    localStorage.removeItem("user");
+                    alert(res.statusText);
+                    history.push("/403");
+                } else if (res.status === 409) {
+                    NotificationBox.triggerError("CREATE ERROR", res.statusText);
+                } else if (res.status === 200) {
+                    NotificationBox.triggerSuccess(
+                        "CREATE SUCCESS",
+                        `Create ${newProduct.name} successfully.`
+                    );
+                }
+                const upLoadURL = res.data;
+                if (upLoadURL) {
+                    FirebaseAPI.uploadImage(imageFile, upLoadURL)
+                        .then((res) => {
+                            if (res.status === 200) {
+                            } else if (res.status === 400)
+                                NotificationBox.triggerError(
+                                    "UPLOAD ERROR",
+                                    "Can not upload your image."
+                                );
+                        })
+                        .catch((error) => {
+                            NotificationBox.triggerError(
+                                "UPLOAD ERROR",
+                                "Can not upload your image."
+                            );
+                            console.log(error);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                NotificationBox.triggerError(
+                    "CREATE ERROR",
+                    "Something wenrt wrong. Can not create new product."
+                );
+            });
     };
 
     const changeImage = (e) => {
         const target = e.target;
-        setImageFile(target.files[0].name);
+        setImageFile(target.files[0]);
     };
 
     const handleChangeDiscount = (value) => {
@@ -48,6 +114,7 @@ function CreateProductForm(props) {
         const targetDiscount = discounts[index];
         setProductInfo({ ...productInfo, newDiscount: 0, startDate: null, endDate: null });
         setCurrentDiscount({
+            id: targetDiscount.id,
             percent: targetDiscount.percent,
             startDate: moment(new Date(targetDiscount.startDate), momentFormat),
             endDate: moment(new Date(targetDiscount.endDate), momentFormat),
@@ -90,7 +157,7 @@ function CreateProductForm(props) {
             style={{ borderRadius: "8px" }}
             footer={
                 <button className="order-modal-btn" id="save" onClick={handleSave}>
-                    Save
+                    {isSaving ? <LoadingOutlined spin /> : "Save"}
                 </button>
             }
         >
@@ -136,8 +203,14 @@ function CreateProductForm(props) {
 
                     <div className="product-management-modal-content__item">
                         <label htmlFor="image">Image</label> <br />
-                        <input type="file" name="image" id="image" onChange={changeImage} />
-                        <span>{imageFile}</span>
+                        <input
+                            type="file"
+                            name="image"
+                            id="image"
+                            onChange={changeImage}
+                            accept=".jpg,.jpeg,.png,.jfif"
+                        />
+                        <span>{imageFile.name}</span>
                     </div>
 
                     <div className="product-management-modal-content__item">
@@ -151,7 +224,7 @@ function CreateProductForm(props) {
                             >
                                 {discounts.map((item) => (
                                     <Select.Option key={item.id} value={item.id}>
-                                        {item.percent}
+                                        {item.percent * 100}
                                     </Select.Option>
                                 ))}
                             </Select>
