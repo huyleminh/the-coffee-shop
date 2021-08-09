@@ -1,14 +1,72 @@
 import { Divider, Modal } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import "../../../../assets/css/layouts/profile/OrderHistoryModal.css";
 import ProductTable from "../../../../components/Product/ProductTable";
 import { UserProfileEventsHandler } from "../../../../Events";
+import UserAPI from "../../../../services/User/UserAPI";
+import NotificationBox from "../../../../components/NotificationBox";
+import { LoadingOutlined } from "@ant-design/icons";
 
 function OrderHistoryModal(props) {
     const { isVisible, data } = props;
+    const history = useHistory();
+    const [isSending, setIsSending] = useState(false);
     if (!data) return <div></div>;
 
     const handleCancel = () => UserProfileEventsHandler.trigger("toggleOrderHistoryModal");
+
+    const handleCancelOrder = () => {
+        const productId = data.order.id;
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page.");
+            history.push("/403");
+            return;
+        }
+
+        setIsSending(true);
+        UserAPI.cancelOrder(user.token, productId)
+            .then((res) => {
+                if (res.status === 200) {
+                    setIsSending(false);
+                    NotificationBox.triggerSuccess(
+                        "CANCEL ORDER",
+                        "Cancel order successfully. The page will be reloaded after 2.5 seconds."
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2500);
+                } else if (res.status === 401 || res.status === 403) {
+                    setIsSending(false);
+                    alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    history.push("/403");
+                } else if (res.status === 404) {
+                    setIsSending(false);
+                    alert(res.message);
+                    localStorage.removeItem("user");
+                    history.push("/404");
+                } else if (res.status === 406) {
+                    setIsSending(false);
+                    NotificationBox.triggerError(
+                        "CANCEL ORDER",
+                        "This order can not be cancelled. The employee has already confirmed it."
+                    );
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2500);
+                } else {
+                    alert("Something went wrong.");
+                    setIsSending(false);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                alert("Something went wrong.");
+                setIsSending(false);
+            });
+    };
 
     const tableRecords = data.products.map((item) => {
         return {
@@ -19,10 +77,6 @@ function OrderHistoryModal(props) {
             total: item.price * item.quantity,
         };
     });
-
-    const totalPrice = tableRecords.reduce((accumulator, current) => {
-        return accumulator + current.total;
-    }, 0);
 
     let content = data.order.status ? "" : "None";
     switch (data.order.status) {
@@ -48,6 +102,11 @@ function OrderHistoryModal(props) {
             content = "None";
             break;
     }
+
+    const paidTag =
+        data.order.isPaid === 0 ? "not-paid" : data.order.isPaid === 1 ? "paid" : "refunded";
+
+    const removedItems = data.order.totalProducts - data.products.length;
 
     return (
         <Modal
@@ -91,14 +150,44 @@ function OrderHistoryModal(props) {
 
                 <h1 className="order-modal-title">Others information:</h1>
                 <div className="order-modal-section">
+                    {removedItems > 0 ? (
+                        <div className="order-modal-section__item">
+                            <span style={{ color: "#f00", fontStyle: "italic" }}>
+                                (*) There are {removedItems}/{data.order.totalProducts} products
+                                that no longer existed.
+                            </span>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+
                     <div className="order-modal-section__item">
                         <span>Payment method:</span>
-                        <span>COD</span>
+                        <span>
+                            {data.order.payMethod === 0
+                                ? "Cash on delivery"
+                                : data.order.payMethod === 1
+                                ? "VISA/MASTER CARD"
+                                : "Internet Banking"}
+                        </span>
+                    </div>
+
+                    <div className="order-modal-section__item tag">
+                        <span>Pay status:</span>
+                        <div className="status-tag">
+                            <span id={paidTag}>
+                                {data.order.isPaid === 0
+                                    ? "Not Paid"
+                                    : data.order.isPaid === 1
+                                    ? "Paid"
+                                    : "Refunded"}
+                            </span>
+                        </div>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{totalPrice} VND</span>
+                        <span>{data.order.totalPrice} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
@@ -109,7 +198,7 @@ function OrderHistoryModal(props) {
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {totalPrice + data.order.deliveryFee} VND
+                            {data.order.totalPrice + data.order.deliveryFee} VND
                         </span>
                     </div>
 
@@ -121,7 +210,7 @@ function OrderHistoryModal(props) {
                     </div>
 
                     {data.order.status === 0 ? (
-                        <div className="order-modal-section__item">
+                        <div className="order-modal-section__item tip">
                             <span style={{ color: "#f00" }}>
                                 (*){" "}
                                 <i>
@@ -129,7 +218,9 @@ function OrderHistoryModal(props) {
                                     button.
                                 </i>
                             </span>
-                            <button id="order-modal-cancel">Cancel</button>
+                            <button onClick={handleCancelOrder} className="order-modal-btn" id="order-modal-cancel">
+                                {isSending ? <LoadingOutlined spin /> : "Cancel"}
+                            </button>
                         </div>
                     ) : (
                         <></>

@@ -61,6 +61,7 @@
     text-transform: uppercase;
     text-shadow: 1.5px 1.5px 5px #503a24;
     margin-bottom: 0.3em;
+    cursor: default;
 }
 
 .container .hero button {
@@ -72,6 +73,7 @@
     border-radius: 10px;
     font-weight: 500;
     text-transform: uppercase;
+    cursor: default;
 }
 
 .container .hero .hero__shopping > a {

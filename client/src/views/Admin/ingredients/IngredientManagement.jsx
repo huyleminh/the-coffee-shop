@@ -1,7 +1,7 @@
 import React from "react";
 
 function IngredientManagement() {
-    return <div>Ingerdients management</div>;
+    return <div>Ingredients management</div>;
 }
 
 export default IngredientManagement;

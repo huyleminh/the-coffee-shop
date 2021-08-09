@@ -113,6 +113,24 @@
     border-right-width: 1px !important;
 }
 
+.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    border: 1px solid #503a24;
+    border-radius: 2px;
+    content: "";
+}
+
+.ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+    background: #503a24;
+}
+
 /* Select */
 .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
     border-color: #503a24;
@@ -136,8 +154,6 @@
 .custom-site-dashboard {
     width: 100%;
     min-height: 100vh;
-    max-height: 100vh;
-    height: 100vh;
 }
 
 /* Sider */
@@ -149,10 +165,14 @@
 .ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo {
     width: 100%;
     height: 66px;
-    padding: 0px 20px;
+    padding: 0px 25px 0px 10px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #75522b;
+}
+
+.ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo.true {
+    padding: 0px 0px;
+    transition: all 0.3s;
 }
 
 .ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo > h1 {
@@ -168,6 +188,13 @@
     width: 60px;
     height: 60px;
     object-fit: cover;
+
+}
+
+.ant-layout-sider > .ant-layout-sider-children > .custom-menu__logo.true img {
+    width: 55px;
+    height: 55px;
+    transition: all 0.3s;
 }
 
 .custom-site-dashboard > .ant-layout-sider-collapsed .custom-menu__logo > h1 {
@@ -176,23 +203,26 @@
 
 .ant-menu.ant-menu-root {
     background: #382612;
+    margin: 30px 0px;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item {
+.ant-menu.ant-menu-root .ant-menu-item, .ant-menu.ant-menu-root .ant-menu-submenu-title {
     padding: 0 30px;
     height: 50px;
     line-height: 50px;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item:active {
+.ant-menu.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+    padding: 0 30px;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-item:active,
+.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-active,
+.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-selected {
     background: #503a24;
 }
 
-.ant-menu.ant-menu-root > .ant-menu-item.ant-menu-item-active {
-    background: #503a24;
-}
-
-.ant-menu.ant-menu-root > .ant-menu-item {
+.ant-menu.ant-menu-root .ant-menu-item, .ant-menu.ant-menu-root .ant-menu-submenu-title {
     margin: 0;
 }
 
@@ -203,14 +233,13 @@
     color: #fff;
     width: 20px;
     height: 20px;
-    font-size: 1.2rem;
-    font-weight: 600;
 }
 
 .ant-menu-dark .ant-menu-item,
 .ant-menu-dark .ant-menu-item-group-title,
 .ant-menu-dark .ant-menu-item > a,
-.ant-menu-dark .ant-menu-item > span > a {
+.ant-menu-submenu .ant-menu-submenu-title > *,
+.ant-menu-dark .ant-menu-item > span > a, .ant-menu-inline.ant-menu-root .ant-menu-item > *{
     color: #fff;
     margin-left: 5px;
     font-size: 1.2rem;
@@ -257,7 +286,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ddd;
+    color: rgb(196, 195, 195);
     cursor: pointer;
 }
 
@@ -298,15 +327,17 @@
 }
 
 .custom-site-content__user #dashboard-user:hover {
-    color: #ccc;
+    color: #503a24;
 }
 
 /* Main content */
 .custom-site-main {
     padding: 30px;
+    width: 100%;
+    height: 100%;
 }
 
-.custom-site-main .custom-site-orders {
+.custom-site-main .custom-site-main-content {
     background: #fff;
     width: 100%;
     height: 100%;
@@ -314,17 +345,36 @@
     padding: 30px;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between; */
 }
 
-.custom-site-orders .custom-site-orders__filter {
+.custom-site-main-content .custom-site-main-content__filter {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+}
+
+.custom-site-main-content .custom-site-main-content__filter .main-content__filter-item {
+    height: 40px;
+    display: flex;
+    align-items: flex-end;
     justify-content: flex-end;
 }
 
-.custom-site-orders .custom-site-orders__filter .orders__filter-item > span {
+.custom-site-main-content .custom-site-main-content__filter .main-content__filter-item > span {
     color: #503a24;
-    margin-right: 30px;
+    margin-right: 10px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.custom-site-main-content .custom-site-main-content__filter .main-content__filter-item > input {
+    height: 100%;
+    width: 250px;
+    outline: none;
+    border: 1px solid #503a2444;
+    padding: 8px 10px;
 }
 
 /* Modal */
@@ -338,4 +388,67 @@
 
 .ant-modal-close:hover {
     background-color: #fff;
+}
+
+/* Submenu */
+.ant-menu.ant-menu-root > .ant-menu-submenu-active {
+    background: #503a24;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-submenu-open {
+    background: #503a24;
+}
+
+.ant-menu-submenu > .ant-menu-submenu-title {
+    padding: 5px 30px;
+    min-height: 50px;
+    line-height: 50px;
+    margin: 0;
+}
+
+.ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-title-content {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: #2b1b0d;
+}
+
+.ant-menu-submenu > .ant-menu-sub .ant-menu-item .ant-menu-item-only-child {
+    padding: 0 30px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.ant-menu.ant-menu-root > .ant-menu-submenu .ant-menu-item.ant-menu-item-active,
+.ant-menu.ant-menu-root > .ant-menu-submenu .ant-menu-item:active {
+    background: #22160b;
+}
+
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: #22160b;
+}
+
+.ant-tooltip-content .ant-tooltip-inner  > a {
+    color: #fff;
+}
+
+.ant-tooltip-content > .ant-tooltip-inner, .ant-tooltip-content > .ant-tooltip-arrow > .ant-tooltip-arrow-content {
+    background-color: #503a24;
+}
+
+.ant-tooltip-content > .ant-tooltip-inner {
+    border-radius: 5px;
+}
+
+/*Popup Menu*/
+
+.ant-menu-dark .ant-menu-sub, .ant-menu.ant-menu-dark .ant-menu-sub {
+    background-color: #2b1b0d;
+}
+
+.ant-menu-submenu .ant-menu-item:hover {
+    background-color: #22160b;
 }

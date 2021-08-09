@@ -37,7 +37,8 @@
     font-weight: 600;
 }
 
-.status-tag #pending {
+.status-tag #pending,
+.status-tag #not-paid {
     background-color: #ff933d;
 }
 
@@ -57,7 +58,9 @@
     background-color: #ff1f32;
 }
 
-.status-tag #delivery {
+.status-tag #delivering,
+.status-tag #paid,
+.status-tag #refunded {
     background-color: #007ff5;
 }
 
@@ -68,7 +71,6 @@
 .table-view-action {
     cursor: pointer;
     border-radius: 8px;
-    /* background-color: #9c7044; */
     color: #fff;
     width: 65px;
     height: 40px;

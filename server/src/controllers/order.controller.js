@@ -4,9 +4,10 @@ import ProductOrder from "../utilities/database/entities/ProductOrder.js";
 import { v4 as uuidv4 } from "uuid"
 import orderid from "order-id"
 import dotenv from "dotenv"
+import { OrderStatus, OrderPaymentStatus, OrderPaymentMethod } from '../utilities/constants.js';
 
 dotenv.config()
-const orderId = orderid(process.env.SECRET_TOKEN_KEY)
+const orderIdLib = orderid(process.env.SECRET_TOKEN_KEY)
 
 class OrderController {
     static createOrder = async (req, res) => {
@@ -16,9 +17,9 @@ class OrderController {
         // generate a aliasId (order-id)
         // and check whether this value has occurred in the database
         const aliasIdList = await Order.getAllAliasId()
-        let aliasId = orderId.generate()
+        let aliasId = orderIdLib.generate()
         while (aliasIdList.includes(aliasId))
-            aliasId = orderId.generate()
+            aliasId = orderIdLib.generate()
 
         // create an Order object
         const now = new Date()
@@ -30,7 +31,9 @@ class OrderController {
             0,
             payload.isPaid,
             payload.payMethod,
-            payload.deliveryFee
+            payload.deliveryFee,
+            payload.totalProducts,
+            payload.totalPrice
         )
 
         // create a ReceiverInfo object
@@ -72,12 +75,15 @@ class OrderController {
             data: orderList.map((order, index) => {
                 return {
                     order: {
+                        id: order.id,
                         aliasId: order.aliasId,
                         createdAt: order.createdAt,
                         status: order.status,
-                        status: order.isPaid,
+                        isPaid: order.isPaid,
                         payMethod: order.payMethod,
-                        deliveryFee: order.deliveryFee
+                        deliveryFee: order.deliveryFee,
+                        totalProducts: order.totalProducts,
+                        totalPrice: order.totalPrice
                     },
                     receiver: {
                         fullname: order.fullname,
@@ -88,6 +94,28 @@ class OrderController {
                 }
             })
         })
+    }
+
+    static cancelOneOrder = async (req, res) => {
+        const { orderId } = res.locals.payload
+        const userId = res.locals.userInfo.id
+        const [order] = await Order.getByOrderIdAndUserId(orderId, userId)
+
+        if (order === undefined)
+            res.send({ status: 404, message: "This order does not exist" })
+        else if (order.status !== OrderStatus.PENDING)
+            res.send({ status: 406, message: "This order cannot be cancelled" })
+        else {
+            const keys = ["status"]
+            const values = [OrderStatus.CANCEL]
+            if (order.payMethod !== OrderPaymentMethod.COD) {
+                keys.push("isPaid")
+                values.push(OrderPaymentStatus.REFUND)
+            }
+
+            const updateStatus = order.update(keys, values)
+            res.send({ status: 200 })
+        }
     }
 }
 

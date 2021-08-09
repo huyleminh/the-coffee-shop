@@ -51,25 +51,25 @@ function Header(props) {
                 <div className="header__navigation">
                     <ul>
                         <li>
-                            <a href="/">Home</a>
+                            <a href="/">HOME</a>
                         </li>
                         <li>
-                            <a href="/menu">Menu</a>
+                            <a href="/menu">MENU</a>
                         </li>
                         <li>
-                            <a href="/#about">About</a>
+                            <a href="/#about">ABOUT</a>
                         </li>
                         <li>
-                            <a href="/#contact">Contact</a>
+                            <a href="/#contact">CONTACT</a>
                         </li>
                         {userStatus.role === 1 ? (
                             <li>
-                                <a href="/admin">Admin</a>
+                                <a href="/admin">ADMIN</a>
                             </li>
                         ) : null}
                         {userStatus.role === 2 ? (
                             <li>
-                                <a href="/employee">Employee</a>
+                                <a href="/employee">EMPLOYEE</a>
                             </li>
                         ) : null}
                     </ul>
@@ -79,12 +79,12 @@ function Header(props) {
                     {userStatus.isLogin ? (
                         <ul>
                             <li className="shopping">
-                                <a href="/wishlist" style={{ fontSize: "1.75rem" }} id="wishlist">
+                                <a href="/wishlist" style={{ fontSize: "1.75rem" }} title="Your Wishlist" id="wishlist">
                                     <FontAwesomeIcon icon={faHeart} />
                                 </a>
                             </li>
                             <li className="shopping">
-                                <a href="/cart" style={{ fontSize: "1.75rem" }} id="cart">
+                                <a href="/cart" style={{ fontSize: "1.75rem" }} title="Your Cart" id="cart">
                                     <FontAwesomeIcon icon={faShoppingCart} />
                                 </a>
                             </li>

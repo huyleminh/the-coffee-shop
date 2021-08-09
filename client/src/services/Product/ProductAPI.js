@@ -8,6 +8,10 @@ class ProductAPI {
     static getCategories = () => {
         return ClientAPI.get("/categories");
     }
+
+    static getDiscounts = () => {
+        return ClientAPI.get("/discounts");
+    }
 }
 
 export default ProductAPI;

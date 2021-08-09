@@ -29,6 +29,7 @@ button {
 	border: none;
 	transition: all 0.3s;
 	border-radius: 8px;
+	margin: 0;
 }
 
 button:hover {
@@ -71,12 +72,15 @@ a:hover {
 }
 
 input, textarea, select {
-	border: 1.9px solid #503a24;
+	border: 1px solid #503a24;
 	border-radius: 8px;
 	margin: 0px;
+	outline: none;
 }
 
 input:focus, textarea:focus, select:focus {
-	border: 1.9px solid #9c7044;
+	border: 1px solid #9c7044;
 	box-shadow: 1px 1px 4px #503a24;
+	outline: none;
+	transition: all 0.1s;
 }

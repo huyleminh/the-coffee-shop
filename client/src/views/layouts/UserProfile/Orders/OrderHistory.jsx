@@ -4,15 +4,15 @@ import { useHistory } from "react-router-dom";
 import "../../../../assets/css/layouts/profile/OrderHistory.css";
 import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
-import OrderHistoryModal from "./OrderHistoryModal";
 import Sort from "../../../../utilities/Sort/Sort";
+import OrderHistoryModal from "./OrderHistoryModal";
 const { Option } = Select;
 
 function OrderHistory() {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
-    const [sortBy, setSortBy] = useState(-1);
+    const [sortBy, setSortBy] = useState(0);
     const [currentModal, setCurrentModal] = useState({ visible: false, dataIndex: 0 });
 
     const handleChangeSortBy = (value) => setSortBy(value);
@@ -20,6 +20,9 @@ function OrderHistory() {
         setCurrentModal({ ...currentModal, visible: !currentModal.visible });
 
     useEffect(() => {
+        document
+            .querySelector(".profile__order")
+            .scrollIntoView({ behavior: "smooth", block: "start" });
         const fetchOrdersHistory = async () => {
             try {
                 const token = JSON.parse(localStorage.getItem("user")).token;
@@ -27,6 +30,7 @@ function OrderHistory() {
                 if (response.status === 200) {
                     setOrders(response.data);
                     setIsLoading(false);
+                    console.log(response.data);
                 } else if (response.status === 404) {
                     localStorage.removeItem("user");
                     alert(response.message);
@@ -84,7 +88,7 @@ function OrderHistory() {
                         content = "Cancelled";
                         break;
                     case 5:
-                        content = "Delivery";
+                        content = "Delivering";
                         break;
                     default:
                         content = "None";
@@ -122,14 +126,19 @@ function OrderHistory() {
             status: item.order.status,
             action: index,
         };
-        record.totalPrice = item.products.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.price;
-        }, 0);
+        record.totalPrice = item.order.deliveryFee + item.order.totalPrice;
 
         return record;
     });
 
-    const sortedRecords = Sort.sortOrderssByStatus(records, sortBy);
+    const sortedRecords = Sort.sortOrderssByStatus(
+        records.sort(
+            (left, right) =>
+                new Date(right.createdAt.replace(",", "")) -
+                new Date(left.createdAt.replace(",", ""))
+        ),
+        sortBy
+    );
 
     return (
         <div className="profile__order">
@@ -143,7 +152,7 @@ function OrderHistory() {
                     <Option value={2}>Denied</Option>
                     <Option value={3}>Done</Option>
                     <Option value={4}>Cancelled</Option>
-                    <Option value={5}>Delivery</Option>
+                    <Option value={5}>Delivering</Option>
                 </Select>
             </Space>
 

@@ -171,3 +171,28 @@
         width: 440px;
     }
 }
+
+@media only screen and (max-height: 890px) {
+    .signin__form {
+        width: 420px;
+    }
+
+    .signin__form__controll form > :nth-child(n) {
+        margin-top: 25px;
+        width: 100%;
+    }
+
+    .signin__form__title {
+        margin: 20px 0px;
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .signin__form {
+        height: calc(100vh - 50px);
+    }
+
+    .signin__form > :first-child {
+        top: 20px;
+    }
+}
