@@ -99,7 +99,7 @@ function CreateProductForm(props) {
                 console.log(error);
                 NotificationBox.triggerError(
                     "CREATE ERROR",
-                    "Something wenrt wrong. Can not create new product."
+                    "Something went wrong. Can not create new product."
                 );
             });
     };

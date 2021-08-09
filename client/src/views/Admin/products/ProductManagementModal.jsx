@@ -5,6 +5,9 @@ import { DatePicker, Modal, Select, Skeleton, Space } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import ProductAPI from "../../../services/Product/ProductAPI";
+import AdminAPI from "../../../services/Admin/AdminAPI";
+import NotificationBox from "../../../components/NotificationBox";
+import { Redirect, useHistory } from "react-router-dom";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
@@ -13,6 +16,7 @@ const { RangePicker } = DatePicker;
 
 function ProductManagementModal(props) {
     const { visible, data, image, handleCancel } = props;
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [dataModal, setDataModal] = useState({});
     const [isSaving, setIsSaving] = useState(false);
@@ -22,8 +26,62 @@ function ProductManagementModal(props) {
 
     const handleClose = () => handleCancel();
 
-    const handleSaveChange = () => {
+    const handleSaveChange = async () => {
+        if (isDeleting) {
+            alert("You can not edit it. Please waiting for a moment!")
+            return
+        }
+
         setIsSaving(true);
+
+        const newData = {
+            productId: dataModal.id,
+            name: dataModal.name,
+            description: dataModal.description,
+            price: dataModal.price,
+            categoryName: dataModal.category,
+            discount: { id: null }
+        }
+
+        if (Object.keys(currentDiscount).length !== 0)
+            newData.discount.id = currentDiscount.id
+        else {
+            if (dataModal.newDiscount !== "" && dataModal.newDiscount !== 0 &&
+                dataModal.startDate !== null && dataModal.endDate !== null ) {
+                newData.discount = {
+                    percent: dataModal.newDiscount / 100,
+                    startDate: dataModal.startDate,
+                    endDate: dataModal.endDate
+                }
+            }
+        }
+
+        const user = JSON.parse(localStorage.getItem("user"))
+        try {
+            const response = await AdminAPI.updateProductById(user.token, newData)
+
+            if (response.status === 409) {
+                setIsSaving(false)
+                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText)
+            }
+            else if (response.status === 403 && response.status === 401 && response.status === 404) {
+                localStorage.removeItem("user")
+                alert(response.statusText)
+                history.push("/403")
+            } else {  // status = 200
+                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully")
+                handleClose()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1500);
+            }
+        } catch (error) {
+            NotificationBox.triggerError(
+                "UPDATE ERROR",
+                "Something went wrong. Can not update product."
+            );
+            setIsSaving(false)
+        }
     };
 
     const handleDelete = () => {
@@ -76,7 +134,7 @@ function ProductManagementModal(props) {
         };
 
         setCurrentDiscount({
-            id: data.discount ? data.discount.discountId : null,
+            id: data.discount ? data.discount.id : null,
             percent: data.discount ? data.discount.percent * 100 : 0,
             startDate: data.discount
                 ? moment(new Date(data.discount.startDate), momentFormat)

@@ -106,7 +106,7 @@ class AdminController {
 
             if (category === undefined) {
                 const newCategory = new Category(categoryId, payload.categoryName);
-                const insertNewCategory = await Category.insert();
+                const insertNewCategory = await newCategory.insert();
             }
 
             const updateProductCategory = await ProductCategory.updateOneAttribute(
@@ -116,24 +116,23 @@ class AdminController {
             delete payload.categoryName;
         }
 
-        if (payload.discount === null) {
-            payload.discountId = null;
-            delete payload.discount;
-        } else if (payload.discount !== undefined) {
-            const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
-            if (payload.discount.id === undefined) {
-                const newDiscount = new Discount(
-                    discountId,
-                    payload.discount.percent,
-                    0,
-                    payload.discount.startDate,
-                    payload.discount.endDate
-                );
-                const insertNewDiscount = await newDiscount.insert();
-            }
+        if (payload.discount !== undefined) {
+            if (payload.discount.id !== null) {
+                const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
+                if (payload.discount.id === undefined) {
+                    const newDiscount = new Discount(
+                        discountId,
+                        payload.discount.percent,
+                        0,
+                        payload.discount.startDate,
+                        payload.discount.endDate
+                    );
+                    const insertNewDiscount = await newDiscount.insert();
+                }
 
-            payload.discountId = discountId;
-            delete payload.discount;
+                payload.discountId = discountId;
+                delete payload.discount;
+            }
         }
 
         const productId = payload.productId;
