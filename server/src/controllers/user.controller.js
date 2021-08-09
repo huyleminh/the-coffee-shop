@@ -57,12 +57,6 @@ class UserController {
             )
         }
 
-        if (Object.keys(dataFromRequest).length !== 0) {
-            const updateUserInfo = await userNeedEdit.update(
-                Object.keys(dataFromRequest),
-                Object.values(dataFromRequest)
-            );
-        }
         res.send({ status: 204 });
     };
 }
