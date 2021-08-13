@@ -3,7 +3,12 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DatePicker, Modal, Select, Skeleton, Space } from "antd";
 import moment from "moment";
+import queryString from "query-string";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import NotificationBox from "../../../components/NotificationBox";
+import AdminAPI from "../../../services/Admin/AdminAPI";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import ProductAPI from "../../../services/Product/ProductAPI";
 import AdminAPI from "../../../services/Admin/AdminAPI";
 import NotificationBox from "../../../components/NotificationBox";
@@ -84,8 +89,68 @@ function ProductManagementModal(props) {
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (isSaving) {
+            alert("You can not delete this product. Please wait for a moment.");
+            return;
+        }
         setIsDeleting(true);
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page.");
+            localStorage.removeItem("user");
+            history.push("/403");
+        } else {
+            try {
+                const response = await AdminAPI.deleteProductById(
+                    user.token,
+                    queryString.stringify({ productId: dataModal.id })
+                );
+                setIsDeleting(false);
+                if (response.status === 200) {
+                    NotificationBox.triggerSuccess(
+                        "DELETE PRODUCT SUCCESS",
+                        `Delete ${dataModal.name} successfully.`
+                    );
+
+                    const imageName = dataModal.img;
+                    console.log(imageName);
+                    FirebaseAPI.deleteImage(imageName);
+                    // .then((res) => {
+                    //     if (res.status === 200) {
+                    //     } else if (res.status === 400) {
+                    //         NotificationBox.triggerError(
+                    //             "DELETE PRODUCT ERROR",
+                    //             `Can not delete ${dataModal.name} image.`
+                    //         );
+                    //         console.log(res.error);
+                    //     }
+                    // })
+                    // .catch((e) => {});
+                    handleClose();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else if (
+                    response.status === 401 ||
+                    response.status === 403 ||
+                    response.status === 404
+                ) {
+                    alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    history.push("/403");
+                } else if (response.status === 400) {
+                    NotificationBox.triggerError(
+                        "DELETE ERROR",
+                        `Can not delete ${dataModal.name}.`
+                    );
+                }
+            } catch (error) {
+                setIsDeleting(false);
+                console.log(error);
+                NotificationBox.triggerError("DELETE PRODUCT ERROR", "Something went wrong.");
+            }
+        }
     };
 
     const handleOnChange = (e) => {
@@ -123,6 +188,7 @@ function ProductManagementModal(props) {
         }
         const newData = {
             id: data.product.id,
+            img: data.product.image,
             name: data.product.name,
             price: data.product.price,
             description: data.product.description,
