@@ -10,9 +10,6 @@ import NotificationBox from "../../../components/NotificationBox";
 import AdminAPI from "../../../services/Admin/AdminAPI";
 import FirebaseAPI from "../../../services/FirsebaseAPI";
 import ProductAPI from "../../../services/Product/ProductAPI";
-import AdminAPI from "../../../services/Admin/AdminAPI";
-import NotificationBox from "../../../components/NotificationBox";
-import { Redirect, useHistory } from "react-router-dom";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
