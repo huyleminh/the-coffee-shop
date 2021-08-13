@@ -3,7 +3,12 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DatePicker, Modal, Select, Skeleton, Space } from "antd";
 import moment from "moment";
+import queryString from "query-string";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import NotificationBox from "../../../components/NotificationBox";
+import AdminAPI from "../../../services/Admin/AdminAPI";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import ProductAPI from "../../../services/Product/ProductAPI";
 
 moment.locale("vie");
@@ -13,6 +18,7 @@ const { RangePicker } = DatePicker;
 
 function ProductManagementModal(props) {
     const { visible, data, image, handleCancel } = props;
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [dataModal, setDataModal] = useState({});
     const [isSaving, setIsSaving] = useState(false);
@@ -22,12 +28,126 @@ function ProductManagementModal(props) {
 
     const handleClose = () => handleCancel();
 
-    const handleSaveChange = () => {
+    const handleSaveChange = async () => {
+        if (isDeleting) {
+            alert("You can not edit it. Please waiting for a moment!")
+            return
+        }
+
         setIsSaving(true);
+
+        const newData = {
+            productId: dataModal.id,
+            name: dataModal.name,
+            description: dataModal.description,
+            price: dataModal.price,
+            categoryName: dataModal.category,
+            discount: { id: null }
+        }
+
+        if (Object.keys(currentDiscount).length !== 0)
+            newData.discount.id = currentDiscount.id
+        else {
+            if (dataModal.newDiscount !== "" && dataModal.newDiscount !== 0 &&
+                dataModal.startDate !== null && dataModal.endDate !== null ) {
+                newData.discount = {
+                    percent: dataModal.newDiscount / 100,
+                    startDate: dataModal.startDate,
+                    endDate: dataModal.endDate
+                }
+            }
+        }
+
+        const user = JSON.parse(localStorage.getItem("user"))
+        try {
+            const response = await AdminAPI.updateProductById(user.token, newData)
+
+            if (response.status === 409) {
+                setIsSaving(false)
+                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText)
+            }
+            else if (response.status === 403 && response.status === 401 && response.status === 404) {
+                localStorage.removeItem("user")
+                alert(response.statusText)
+                history.push("/403")
+            } else {  // status = 200
+                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully")
+                handleClose()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1500);
+            }
+        } catch (error) {
+            NotificationBox.triggerError(
+                "UPDATE ERROR",
+                "Something went wrong. Can not update product."
+            );
+            setIsSaving(false)
+        }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (isSaving) {
+            alert("You can not delete this product. Please wait for a moment.");
+            return;
+        }
         setIsDeleting(true);
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page.");
+            localStorage.removeItem("user");
+            history.push("/403");
+        } else {
+            try {
+                const response = await AdminAPI.deleteProductById(
+                    user.token,
+                    queryString.stringify({ productId: dataModal.id })
+                );
+                setIsDeleting(false);
+                if (response.status === 200) {
+                    NotificationBox.triggerSuccess(
+                        "DELETE PRODUCT SUCCESS",
+                        `Delete ${dataModal.name} successfully.`
+                    );
+
+                    const imageName = dataModal.img;
+                    console.log(imageName);
+                    FirebaseAPI.deleteImage(imageName);
+                    // .then((res) => {
+                    //     if (res.status === 200) {
+                    //     } else if (res.status === 400) {
+                    //         NotificationBox.triggerError(
+                    //             "DELETE PRODUCT ERROR",
+                    //             `Can not delete ${dataModal.name} image.`
+                    //         );
+                    //         console.log(res.error);
+                    //     }
+                    // })
+                    // .catch((e) => {});
+                    handleClose();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else if (
+                    response.status === 401 ||
+                    response.status === 403 ||
+                    response.status === 404
+                ) {
+                    alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    history.push("/403");
+                } else if (response.status === 400) {
+                    NotificationBox.triggerError(
+                        "DELETE ERROR",
+                        `Can not delete ${dataModal.name}.`
+                    );
+                }
+            } catch (error) {
+                setIsDeleting(false);
+                console.log(error);
+                NotificationBox.triggerError("DELETE PRODUCT ERROR", "Something went wrong.");
+            }
+        }
     };
 
     const handleOnChange = (e) => {
@@ -65,6 +185,7 @@ function ProductManagementModal(props) {
         }
         const newData = {
             id: data.product.id,
+            img: data.product.image,
             name: data.product.name,
             price: data.product.price,
             description: data.product.description,
@@ -76,7 +197,7 @@ function ProductManagementModal(props) {
         };
 
         setCurrentDiscount({
-            id: data.discount ? data.discount.discountId : null,
+            id: data.discount ? data.discount.id : null,
             percent: data.discount ? data.discount.percent * 100 : 0,
             startDate: data.discount
                 ? moment(new Date(data.discount.startDate), momentFormat)

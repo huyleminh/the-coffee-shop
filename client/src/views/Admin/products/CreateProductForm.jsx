@@ -94,12 +94,16 @@ function CreateProductForm(props) {
                             console.log(error);
                         });
                 }
+                handleClose();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             })
             .catch((error) => {
                 console.log(error);
                 NotificationBox.triggerError(
                     "CREATE ERROR",
-                    "Something wenrt wrong. Can not create new product."
+                    "Something went wrong. Can not create new product."
                 );
             });
     };

@@ -42,7 +42,7 @@ class AppEventsAbstract {
 class AppEvents extends AppEventsAbstract {}
 class HomePageEvents extends AppEventsAbstract {}
 class MenuPageEvents extends AppEventsAbstract {}
-class UserProfileEvents extends AppEventsAbstract{}
+class UserProfileEvents extends AppEventsAbstract {}
 
 export const AppEventsHandler = new AppEvents();
 export const HomePageEventsHandler = new HomePageEvents();
