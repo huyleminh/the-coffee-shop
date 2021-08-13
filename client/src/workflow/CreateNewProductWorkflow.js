@@ -47,7 +47,7 @@ class CreateNewProductWorkflow {
             newInformation.image = this.#image.match(/(\.jpg)|(\.png)|(\.jpeg)|(\.jfif)/g);
         newInformation.categoryName =
             newInformation.categoryName[0].toUpperCase() + newInformation.categoryName.slice(1);
-        console.log(newInformation);
+
         try {
             const response = await AdminAPI.createNewProduct(user.token, { ...newInformation });
             if (response.status === 200) {

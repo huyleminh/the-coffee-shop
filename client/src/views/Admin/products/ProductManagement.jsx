@@ -14,9 +14,15 @@ function ProductManagement() {
     const [isCreateVisible, setIsCreateVisible] = useState(false);
     const [products, setProducts] = useState([]);
     const [images, setImages] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handleCancelDetails = () => setCurrentModal({ ...currentModal, visible: false });
     const handleCancelCreate = () => setIsCreateVisible(false);
+
+    const handleChangeSearchTearm = (e) => {
+        const target = e.target;
+        setSearchTerm(target.value);
+    };
 
     useEffect(() => {
         const fetchAllProducts = async () => {
@@ -147,25 +153,27 @@ function ProductManagement() {
         },
     ];
 
-    const productRecords = products.map((item, index) => {
-        const record = {
-            key: item.product.id,
-            image: {
-                src: images[index],
-                width: "100px",
-                height: "100px",
-            },
-            name: item.product.name,
-            price: { oldPrice: item.product.price },
-            discount: null,
-            action: index,
-        };
-        if (item.discount && item.discount.endDate > new Date().toJSON()) {
-            record.discount = item.discount.percent;
-            record.price.newPrice = record.price.oldPrice * (1 - record.discount);
-        }
-        return record;
-    });
+    const productRecords = products
+        .map((item, index) => {
+            const record = {
+                key: item.product.id,
+                image: {
+                    src: images[index],
+                    width: "100px",
+                    height: "100px",
+                },
+                name: item.product.name,
+                price: { oldPrice: item.product.price },
+                discount: null,
+                action: index,
+            };
+            if (item.discount && item.discount.endDate > new Date().toJSON()) {
+                record.discount = item.discount.percent;
+                record.price.newPrice = record.price.oldPrice * (1 - record.discount);
+            }
+            return record;
+        })
+        .filter((item) => item.name.toLowerCase().match(searchTerm));
 
     return (
         <div className="custom-site-main-content">
@@ -179,6 +187,8 @@ function ProductManagement() {
                         type="text"
                         name="search"
                         placeholder="Type product's name here to search"
+                        value={searchTerm}
+                        onChange={handleChangeSearchTearm}
                     />
                 </div>
                 <div className="main-content__filter-item">

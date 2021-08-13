@@ -94,6 +94,10 @@ function CreateProductForm(props) {
                             console.log(error);
                         });
                 }
+                handleClose();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             })
             .catch((error) => {
                 console.log(error);

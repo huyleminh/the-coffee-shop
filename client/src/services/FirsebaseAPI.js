@@ -24,9 +24,24 @@ class FirebaseAPI {
             if (!image || !name) reject({ status: 400, error: "Missing file or file name." });
 
             const ref = Storage.ref(`/products/${name}`).put(image);
-            ref.then((res) => resolve({ status: 200, data: res })).catch((error) =>
-                reject({ status: 400, error: error.code })
-            );
+            ref.then((res) => resolve({ status: 200, data: res })).catch((error) => {
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                reject({ status: 400, error: error.code });
+            });
+        });
+    };
+
+    static deleteImage = (name) => {
+        return new Promise((resolve, reject) => {
+            if (!name) reject({ status: 400, error: "Missing image's name." });
+
+            const ref = Storage.ref(`/products/${name}`).delete();
+            ref.then(() => resolve({ status: 200 })).catch((error) => {
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                reject({ status: 400, error: error.code });
+            });
         });
     };
 }
