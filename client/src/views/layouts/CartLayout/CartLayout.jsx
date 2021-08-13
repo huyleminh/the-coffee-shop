@@ -69,12 +69,30 @@ function CartLayout() {
             );
             if (confirm) history.push("/login");
         } else {
-            localStorage.setItem("checkout", JSON.stringify(cart));
-            history.push("/checkout");
+            if (selectedItem.length !== 0) {
+                console.log("SELECTED: ", selectedItem);
+                console.log("CART: ", cart);
+                let checkoutItems = [];
+                for (let key of selectedItem) {
+                    for (let item of cart) {
+                        if (key === item.product.id) {
+                            checkoutItems.push(item);
+                        }
+                    }
+                }
+                console.log("CHECKOUT: ", checkoutItems);
+                localStorage.setItem("checkout", JSON.stringify(checkoutItems));
+                history.push("/checkout");
+            } else {
+                localStorage.setItem("checkout", JSON.stringify(cart));
+                history.push("/checkout");
+            }
         }
     };
 
-    const handleSelected = (keys) => setSelectedItem(keys);
+    const handleSelected = (keys) => {
+        setSelectedItem(keys);
+    };
 
     const handleQuantity = (item, value) => {
         if (value === 0) return;
@@ -125,34 +143,38 @@ function CartLayout() {
             ? JSON.parse(localStorage.getItem("wishlist"))
             : [];
 
-        if (!user || !user.token) {
-            const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
-                ? JSON.parse(localStorage.getItem("cart"))
-                : [];
+        const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
+            ? JSON.parse(localStorage.getItem("cart"))
+            : [];
 
-            for (let i of tempCartLocal) {
-                if (i.product.id === item.key) {
-                    for (let j of tempWishlistLocal) {
-                        if (j.product.id === item.key) {
+        for (let i of tempCartLocal) {
+            if (i.product.id === item.key) {
+                for (let j of tempWishlistLocal) {
+                    if (j.product.id === item.key) {
+                        if (!user || !user.token) {
                             NotificationBox.triggerError(
                                 "ITEM EXISTED IN WISHLIST",
                                 `${i.product.name} added to your wishlist.`
                             );
-                            setIsSending(false);
-                            return;
                         }
+                        setIsSending(false);
+                        return;
                     }
-                    localStorage.removeItem("user");
-                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, i]));
+                }
+                localStorage.removeItem("user");
+                localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, i]));
+                if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
                         `${i.product.name} added to your wishlist.`
                     );
-                    setIsSending(false);
-                    return;
                 }
+                setIsSending(false);
+                return;
             }
-        } else {
+        }
+
+        if (user && user.token) {
             try {
                 const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200) {
@@ -465,9 +487,29 @@ function CartLayout() {
         fetchImages();
     }, [cart]);
 
-    const totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
-        return accumulator + currentItem.total;
-    }, 0);
+    let totalMoneyTemp = 0;
+
+    if (selectedItem.length !== 0) {
+        for (let key of selectedItem) {
+            for (let item of cart) {
+                if (key === item.product.id) {
+                    if (item.discount !== null) {
+                        const price =
+                            Math.floor(item.product.price * (1 - item.discount.percent)) *
+                            item.quantity;
+                        totalMoneyTemp += price;
+                    } else {
+                        const price = Math.floor(item.product.price * item.quantity);
+                        totalMoneyTemp += price;
+                    }
+                }
+            }
+        }
+    } else {
+        totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.total;
+        }, 0);
+    }
 
     return (
         <Content>
