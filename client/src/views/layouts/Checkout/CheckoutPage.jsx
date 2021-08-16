@@ -1,3 +1,4 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Layout, Radio, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
@@ -5,10 +6,11 @@ import "../../../assets/css/layouts/checkout/CheckoutPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
+import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CheckoutAPI from "../../../services/Checkout/CheckoutAPI";
+import Format from "../../../utilities/Format/Format";
 import CheckoutWorkflow from "../../../workflow/CheckoutWorkflow";
-import { LoadingOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 
@@ -103,8 +105,12 @@ function CheckoutPage() {
             const res = await flow.startFlow();
             if (res.status === 200) {
                 setIsSending(false);
-                alert(res.statusText);
-                history.push("/profile/orders/history");
+                NotificationBox.triggerSuccess("CHECKOUT SUCCESS", res.statusText);
+                NotificationBox.triggerInfo(
+                    "CHECKOUT INFO",
+                    "The page will redirect after 4 seconds."
+                );
+                setTimeout(() => history.push("/profile/orders/history"), 4000);
             } else if (res.status === 400) {
                 setIsSending(false);
                 alert(res.statusText);
@@ -252,20 +258,25 @@ function CheckoutPage() {
                         <div className="checkout__summary">
                             <div className="checkout__summary-item">
                                 <span>Total:</span>
-                                <span>{totalPrice} VND</span>
+                                <span>{Format.formatPriceWithVND(totalPrice)} VND</span>
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Shipping fee:</span>
-                                <span>{SHIPPING_FEE[records.length % 3]} VND</span>
+                                <span>
+                                    {Format.formatPriceWithVND(SHIPPING_FEE[records.length % 3])}{" "}
+                                    VND
+                                </span>
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Voucher:</span>
-                                <span>- {discountFee} VND</span>
+                                <span> - {Format.formatPriceWithVND(discountFee)} VND</span>
                             </div>
                             <div className="checkout__summary-item total">
                                 <span>Total price:</span>
                                 <span style={{ color: "#f00" }}>
-                                    {totalPrice + SHIPPING_FEE[records.length % 3] - discountFee}{" "}
+                                    {Format.formatPriceWithVND(
+                                        totalPrice + SHIPPING_FEE[records.length % 3] - discountFee
+                                    )}{" "}
                                     VND
                                 </span>
                             </div>

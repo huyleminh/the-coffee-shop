@@ -1,7 +1,9 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Radio, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Loading from "../../../../components/Loading";
+import NotificationBox from "../../../../components/NotificationBox";
 import UserAPI from "../../../../services/User/UserAPI";
 import { ChangeProfileWorkflow } from "../../../../workflow/ManageProfileWorkflow";
 
@@ -23,13 +25,16 @@ function UserProfileForm() {
         username: "username",
         ward: "",
     });
+    const [isSaving, setIsSaving] = useState(false);
 
-    const toggleEdit = () => {
-        setIsDisabled(false);
-    };
+    const [oldUserProfile, setOldUserProfile] = useState({});
+
+    const toggleEdit = () => setIsDisabled(false);
 
     const handleCancel = () => {
+        if (isDisabled) return;
         setIsDisabled(true);
+        setUserProfile(oldUserProfile);
     };
 
     const handleInputChange = (e) => {
@@ -41,6 +46,7 @@ function UserProfileForm() {
     };
 
     const handleSave = async () => {
+        setIsSaving(true);
         const { fullname, phoneNumber, address, ward, district, city, gender } = userProfile;
         const flow = new ChangeProfileWorkflow({
             fullname,
@@ -51,33 +57,35 @@ function UserProfileForm() {
             city,
             gender,
         });
-        const res = await flow.startFlow();
+        try {
+            const res = await flow.startFlow();
 
-        switch (res.status) {
-            case 204:
-                alert(res.statusText);
-                handleCancel();
-                break;
-            case 400:
-                alert(res.statusText);
-                break;
-            case 401:
-            case 404:
-                alert(res.statusText);
-                localStorage.clear();
-                history.push("/404");
-                break;
-            case 403:
-                alert("You are not allowed.");
-                localStorage.clear();
+            if (res.status === 204) {
+                NotificationBox.triggerSuccess("CHANGE PROFILE SUCCESS", res.statusText);
+                setIsDisabled(true);
+                setIsSaving(false);
+            } else if (res.status === 400) {
+                NotificationBox.triggerWarning("CHANGE PROFILE WARNING", res.statusText);
+                setIsSaving(false);
+            } else if (res.status === 401 || res.status === 404) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
+                alert("You are not logged in, please login again.");
+                history.push("/login");
+            } else if (res.status === 403) {
+                alert("You are not allowed to access this page.");
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 history.push("/403");
-                break;
-            case 409:
-                alert(res.statusText);
-                break;
-
-            default:
-                console.log(res);
+            } else if (res.status === 409) {
+                NotificationBox.triggerError("CHANGE PROFILE ERROR", res.statusText);
+                setIsDisabled(true);
+                setIsSaving(false);
+            }
+        } catch (error) {
+            console.log(error);
+            NotificationBox.triggerError("CHANGE PROFILE ERROR", "Something went wrong.");
+            setIsSaving(false);
         }
     };
 
@@ -116,6 +124,7 @@ function UserProfileForm() {
                     localStorage.setItem("profile", JSON.stringify(resProfile));
 
                     setUserProfile(resProfile);
+                    setOldUserProfile(resProfile);
                     setIsLoading(false);
                 } else if (response.status === 404) {
                     alert(response.message);
@@ -235,7 +244,7 @@ function UserProfileForm() {
                     </div>
                     <div className="profileForm_items btn-group">
                         <button onClick={handleSave} disabled={isDisabled}>
-                            Save
+                            {isSaving ? <LoadingOutlined spin /> : "Save"}
                         </button>
                         <button onClick={handleCancel} disabled={isDisabled}>
                             Cancel
