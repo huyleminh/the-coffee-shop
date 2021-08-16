@@ -6,6 +6,7 @@ import AdminAPI from "../../../services/Admin/AdminAPI";
 import FirebaseAPI from "../../../services/FirsebaseAPI";
 import CreateProductForm from "./CreateProductForm";
 import ProductManagementModal from "./ProductManagementModal";
+import Format from "../../../utilities/Format/Format.js"
 
 function ProductManagement() {
     const history = useHistory();
@@ -103,17 +104,17 @@ function ProductManagement() {
                     return (
                         <ul className="price_style">
                             <li style={{ textDecoration: "line-through" }}>
-                                {priceObj.oldPrice} VND
+                                {Format.formatPriceWithVND(priceObj.oldPrice)} VND
                             </li>
                             <li style={{ color: "#f00", fontWeight: "650" }}>
-                                {priceObj.newPrice} VND
+                                {Format.formatPriceWithVND(priceObj.newPrice)} VND
                             </li>
                         </ul>
                     );
                 } else
                     return (
                         <ul className="price_style">
-                            <li>{priceObj.oldPrice} VND</li>
+                            <li>{Format.formatPriceWithVND(priceObj.oldPrice)} VND</li>
                         </ul>
                     );
             },

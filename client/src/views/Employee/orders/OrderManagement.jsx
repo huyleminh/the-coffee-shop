@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import EmployeeAPI from "../../../services/Employee/EmployeeAPI";
 import Sort from "../../../utilities/Sort/Sort";
 import OrderModal from "./OrderModal";
+import Format from "../../../utilities/Format/Format";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
@@ -35,7 +36,7 @@ function OrderManagement() {
             title: "Total",
             dataIndex: "totalPrice",
             render: (price) => {
-                return <span>{price} VND</span>;
+                return <span>{Format.formatPriceWithVND(price)} VND</span>;
             },
         },
         { title: "Created Date", dataIndex: "createdAt" },

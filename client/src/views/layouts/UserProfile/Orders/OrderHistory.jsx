@@ -5,6 +5,7 @@ import "../../../../assets/css/layouts/profile/OrderHistory.css";
 import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
 import Sort from "../../../../utilities/Sort/Sort";
+import Format from "../../../../utilities/Format/Format";
 import OrderHistoryModal from "./OrderHistoryModal";
 const { Option } = Select;
 
@@ -62,7 +63,7 @@ function OrderHistory() {
             title: "Price",
             dataIndex: "totalPrice",
             render: (price) => {
-                return <span>{price} VND</span>;
+                return <span>{Format.formatPriceWithVND(price)} VND</span>;
             },
         },
         { title: "Order date", dataIndex: "createdAt" },

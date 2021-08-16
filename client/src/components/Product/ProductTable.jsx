@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputNumber, Table } from "antd";
 import React from "react";
 import "../../assets/css/Table/ProductTable.css";
+import Format from "../../utilities/Format/Format.js"
 
 ProductTable.propTypes = {};
 
@@ -52,14 +53,14 @@ function ProductTable(props) {
                     const newPrice = (1 - priceObj.discount) * priceObj.price;
                     return (
                         <ul className="price_style">
-                            <li style={{ textDecoration: "line-through" }}>{priceObj.price} VND</li>
-                            <li style={{ color: "#f00", fontWeight: "650" }}>{newPrice} VND</li>
+                            <li style={{ textDecoration: "line-through" }}>{Format.formatPriceWithVND(priceObj.price)} VND</li>
+                            <li style={{ color: "#f00", fontWeight: "650" }}>{Format.formatPriceWithVND(newPrice)} VND</li>
                         </ul>
                     );
                 } else
                     return (
                         <ul className="price_style">
-                            <li>{priceObj.price} VND</li>
+                            <li>{Format.formatPriceWithVND(priceObj.price)} VND</li>
                         </ul>
                     );
             },
@@ -82,7 +83,7 @@ function ProductTable(props) {
             title: "Total",
             dataIndex: "total",
             render: (total) => {
-                return <span>{total} VND</span>;
+                return <span>{Format.formatPriceWithVND(total)} VND</span>;
             },
         },
         {

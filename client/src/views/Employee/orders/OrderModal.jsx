@@ -6,6 +6,7 @@ import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import EmployeeAPI from "../../../services/Employee/EmployeeAPI";
 import { LoadingOutlined } from "@ant-design/icons";
+import Format from "../../../utilities/Format/Format"
 
 OrderModal.propTypes = {
     visible: PropTypes.bool,
@@ -239,18 +240,18 @@ function OrderModal(props) {
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{data.order.totalPrice} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.totalPrice)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Shipping fee:</span>
-                        <span>{data.order.deliveryFee} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.deliveryFee)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {data.order.totalPrice + data.order.deliveryFee} VND
+                            {Format.formatPriceWithVND(data.order.totalPrice + data.order.deliveryFee)} VND
                         </span>
                     </div>
 

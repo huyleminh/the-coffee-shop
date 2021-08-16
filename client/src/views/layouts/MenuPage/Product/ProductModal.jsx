@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import "../../../../assets/css/layouts/menu/ProductModal.css";
 import { MenuPageEventsHandler } from "../../../../Events";
+import Format from "../../../../utilities/Format/Format"
 
 ProductModal.propTypes = {
     handleVisible: PropTypes.func,
@@ -90,11 +91,11 @@ function ProductModal(props) {
                                         marginLeft: "auto",
                                     }}
                                 >
-                                    {details.oldPrice}&nbsp;VND
+                                    {Format.formatPriceWithVND(details.oldPrice)}&nbsp;VND
                                 </span>
                             ) : (
                                 <span style={{ marginLeft: "auto" }}>
-                                    {details.oldPrice}&nbsp;VND
+                                    {Format.formatPriceWithVND(details.oldPrice)}&nbsp;VND
                                 </span>
                             )}
                         </div>
@@ -108,7 +109,7 @@ function ProductModal(props) {
                                 <>
                                     <span id="discount">{details.discount}%</span>
                                     <span style={{ color: "#f72f2f"}}>
-                                        {details.newPrice}&nbsp;VND
+                                        {Format.formatPriceWithVND(details.newPrice)}&nbsp;VND
                                     </span>
                                 </>
                             ) : null}
