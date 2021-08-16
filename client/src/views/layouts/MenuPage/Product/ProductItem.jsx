@@ -9,6 +9,7 @@ import { Storage } from "../../../../utilities/firebase/FirebaseConfig";
 import ProductModal from "./ProductModal";
 import CartAPI from "../../../../services/Cart/CartAPI.js";
 import NotificationBox from "../../../../components/NotificationBox";
+import Format from "../../../../utilities/Format/Format.js"
 
 ProductItem.propTypes = {
     details: PropTypes.shape({
@@ -214,14 +215,14 @@ function ProductItem(props) {
                         {card.discount ? (
                             <>
                                 <li style={{ textDecoration: "line-through" }}>
-                                    {card.oldPrice}&nbsp;VND
+                                    {Format.formatPriceWithVND(card.oldPrice)}&nbsp;VND
                                 </li>
                                 <li style={{ color: "#f72f2f", fontWeight: "650" }}>
-                                    {card.newPrice}&nbsp;VND
+                                    {Format.formatPriceWithVND(card.newPrice)}&nbsp;VND
                                 </li>
                             </>
                         ) : (
-                            <li>{card.oldPrice}&nbsp;VND</li>
+                            <li>{Format.formatPriceWithVND(card.oldPrice)}&nbsp;VND</li>
                         )}
                     </ul>
                 </div>

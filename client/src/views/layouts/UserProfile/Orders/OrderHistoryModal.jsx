@@ -7,6 +7,7 @@ import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
 import NotificationBox from "../../../../components/NotificationBox";
 import { LoadingOutlined } from "@ant-design/icons";
+import Format from "../../../../utilities/Format/Format";
 
 function OrderHistoryModal(props) {
     const { isVisible, data } = props;
@@ -187,18 +188,18 @@ function OrderHistoryModal(props) {
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{data.order.totalPrice} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.totalPrice)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Shipping fee:</span>
-                        <span>{data.order.deliveryFee} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.deliveryFee)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {data.order.totalPrice + data.order.deliveryFee} VND
+                            {Format.formatPriceWithVND(data.order.totalPrice + data.order.deliveryFee)} VND
                         </span>
                     </div>
 

@@ -13,6 +13,7 @@ import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
 import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import Format from "../../../utilities/Format/Format.js"
 
 const { Content } = Layout;
 
@@ -521,7 +522,7 @@ function CartLayout() {
                 </div>
                 <div className="totalMoney">
                     <span className="total_text">TOTAL MONEY:</span>
-                    <span>{totalMoneyTemp} VND</span>
+                    <span>{Format.formatPriceWithVND(totalMoneyTemp)} VND</span>
                 </div>
                 <div className="bottomRight__totalCheckout__cart ">
                     <button
