@@ -99,22 +99,32 @@ function CheckoutPage() {
             products,
             deliveryFee: SHIPPING_FEE[records.length % 3],
         });
-        const res = await flow.startFlow();
-        if (res.status === 200) {
-            setIsSending(false);
-            alert(res.statusText);
-            history.push("/profile/orders/history");
-        } else if (res.status === 400) {
-            setIsSending(false);
-            alert(res.statusText);
-        } else if (res.status === 403) {
-            alert(res.statusText);
-            history.push("/login");
-        } else if (res.status === 404) {
-            alert(
-                res.statusText + " Please comeback to your cart and start creating an order again."
-            );
-            history.push("/cart");
+        try {
+            const res = await flow.startFlow();
+            if (res.status === 200) {
+                setIsSending(false);
+                alert(res.statusText);
+                history.push("/profile/orders/history");
+            } else if (res.status === 400) {
+                setIsSending(false);
+                alert(res.statusText);
+            } else if (res.status === 403) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("checkout");
+                alert(res.statusText);
+                history.push("/login");
+            } else if (res.status === 404) {
+                localStorage.removeItem("user");
+                localStorage.removeItem("checkout");
+                alert(
+                    res.statusText +
+                        " Please comeback to your cart and start creating an order again."
+                );
+                history.push("/cart");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong.");
         }
     };
 
@@ -129,9 +139,13 @@ function CheckoutPage() {
                     setUserInfo(dataUser);
                     setIsLoading(false);
                 } else if (response.status === 404) {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("checkout");
                     alert("Can not find your information.");
-                    history.push("/404");
+                    history.push("/403");
                 } else if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("checkout");
                     alert("You are not logged in, please login again.");
                     history.push("/login");
                 }

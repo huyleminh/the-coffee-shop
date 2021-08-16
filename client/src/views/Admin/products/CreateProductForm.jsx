@@ -119,7 +119,7 @@ function CreateProductForm(props) {
         setProductInfo({ ...productInfo, newDiscount: 0, startDate: null, endDate: null });
         setCurrentDiscount({
             id: targetDiscount.id,
-            percent: targetDiscount.percent,
+            percent: targetDiscount.percent * 100,
             startDate: moment(new Date(targetDiscount.startDate), momentFormat),
             endDate: moment(new Date(targetDiscount.endDate), momentFormat),
         });
@@ -218,7 +218,7 @@ function CreateProductForm(props) {
                     </div>
 
                     <div className="product-management-modal-content__item">
-                        <label>Existed discounts</label> <br />
+                        <label>Existed discounts (%)</label> <br />
                         <Space direction="horizontal" size={[100]}>
                             <Select
                                 style={{ width: "100px" }}
@@ -248,7 +248,7 @@ function CreateProductForm(props) {
                         }}
                     >
                         <div>
-                            <label htmlFor="newDiscount">New discount</label> <br />
+                            <label htmlFor="newDiscount">New discount (%)</label> <br />
                             <input
                                 type="number"
                                 name="newDiscount"

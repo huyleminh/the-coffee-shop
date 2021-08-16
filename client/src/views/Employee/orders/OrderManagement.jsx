@@ -38,7 +38,11 @@ function OrderManagement() {
                 return <span>{price} VND</span>;
             },
         },
-        { title: "Created Date", dataIndex: "createdAt" },
+        {
+            title: "Created Date",
+            dataIndex: "createdAt",
+            render: (dateString) => new Date(dateString).toLocaleString(),
+        },
         {
             title: "Status",
             dataIndex: "status",
@@ -161,7 +165,7 @@ function OrderManagement() {
             key: item.order.aliasId,
             aliasId: item.order.aliasId,
             totalPrice: 0,
-            createdAt: new Date(item.order.createdAt).toLocaleString(),
+            createdAt: item.order.createdAt,
             status: item.order.status,
             action: index,
         };
@@ -171,11 +175,7 @@ function OrderManagement() {
     });
 
     const sortedRecords = Sort.sortOrderssByStatus(
-        records.sort(
-            (left, right) =>
-                new Date(right.createdAt.replace(",", "")) -
-                new Date(left.createdAt.replace(",", ""))
-        ),
+        records.sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
         sortBy
     );
 

@@ -63,11 +63,11 @@ function OrderModal(props) {
                     setIsSending(false);
                     NotificationBox.triggerSuccess(
                         "VERIFY ORDER",
-                        "Verify order successfully. The page will be reloaded after 1 seconds."
+                        "Verify order successfully. The page will be reloaded after 1.5 seconds."
                     );
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000);
+                    }, 1500);
                 } else if (response.status === 401 || response.status === 403) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");

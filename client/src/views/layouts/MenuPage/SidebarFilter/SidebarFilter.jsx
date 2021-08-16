@@ -110,7 +110,7 @@ function SidebarFilter(props) {
                         <Space direction="vertical">
                             <Radio value="default">Default</Radio>
                             <Radio value="popularity">Popularity</Radio>
-                            <Radio value="price-asc">Price: Low to high</Radio>
+                            <Radio value="price-asc">Price: Low to High</Radio>
                             <Radio value="price-desc">Price: High to Low</Radio>
                             <Radio value="alphabet-asc">A-Z</Radio>
                             <Radio value="alphabet-desc">Z-A</Radio>
