@@ -30,51 +30,79 @@ function ProductManagementModal(props) {
 
     const handleSaveChange = async () => {
         if (isDeleting) {
-            alert("You can not edit it. Please waiting for a moment!")
-            return
+            alert("You can not edit it. Please waiting for a moment!");
+            return;
         }
 
         setIsSaving(true);
 
+        if (dataModal.name === "" || dataModal.name.match(/^\s+$/g)) {
+            alert("Product name must be filled.");
+            setIsSaving(false);
+            return;
+        }
+
+        if (dataModal.category === "" || dataModal.category.match(/^\s+$/g)) {
+            alert("Product category must be filled.");
+            setIsSaving(false);
+            return;
+        }
+
+        if (dataModal.price === "" || parseFloat(dataModal.price) <= 0) {
+            alert("Product price must be larger than 0.");
+            setIsSaving(false);
+            return;
+        }
+
         const newData = {
             productId: dataModal.id,
-            name: dataModal.name,
+            name: dataModal.name.trim(),
             description: dataModal.description,
             price: dataModal.price,
-            categoryName: dataModal.category,
-            discount: { id: null }
-        }
+            categoryName: dataModal.category.trim().toLowerCase(),
+            discount: { id: null },
+        };
 
-        if (Object.keys(currentDiscount).length !== 0)
-            newData.discount.id = currentDiscount.id
+        newData.categoryName =
+            newData.categoryName[0].toUpperCase() + newData.categoryName.slice(1);
+
+        if (Object.keys(currentDiscount).length !== 0) newData.discount.id = currentDiscount.id;
         else {
-            if (dataModal.newDiscount !== "" && dataModal.newDiscount !== 0 &&
-                dataModal.startDate !== null && dataModal.endDate !== null ) {
+            if (
+                dataModal.newDiscount !== "" &&
+                parseFloat(dataModal.newDiscount) > 0 &&
+                dataModal.startDate !== null &&
+                dataModal.endDate !== null
+            ) {
                 newData.discount = {
-                    percent: dataModal.newDiscount / 100,
+                    percent: parseFloat(dataModal.newDiscount) / 100,
                     startDate: dataModal.startDate,
-                    endDate: dataModal.endDate
-                }
+                    endDate: dataModal.endDate,
+                };
             }
         }
 
-        const user = JSON.parse(localStorage.getItem("user"))
+        const user = JSON.parse(localStorage.getItem("user"));
         try {
-            const response = await AdminAPI.updateProductById(user.token, newData)
+            const response = await AdminAPI.updateProductById(user.token, newData);
 
             if (response.status === 409) {
-                setIsSaving(false)
-                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText)
-            }
-            else if (response.status === 403 && response.status === 401 && response.status === 404) {
-                localStorage.removeItem("user")
-                alert(response.statusText)
-                history.push("/403")
-            } else {  // status = 200
-                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully")
-                handleClose()
+                setIsSaving(false);
+                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText);
+            } else if (
+                response.status === 403 &&
+                response.status === 401 &&
+                response.status === 404
+            ) {
+                localStorage.removeItem("user");
+                alert(response.statusText);
+                history.push("/403");
+            } else {
+                // status = 200
+                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully");
+                handleClose();
                 setTimeout(() => {
-                    window.location.reload()
+                    window.location.reload();
                 }, 1500);
             }
         } catch (error) {
@@ -82,7 +110,7 @@ function ProductManagementModal(props) {
                 "UPDATE ERROR",
                 "Something went wrong. Can not update product."
             );
-            setIsSaving(false)
+            setIsSaving(false);
         }
     };
 

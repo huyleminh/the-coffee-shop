@@ -31,7 +31,6 @@ function OrderHistory() {
                 if (response.status === 200) {
                     setOrders(response.data);
                     setIsLoading(false);
-                    console.log(response.data);
                 } else if (response.status === 404) {
                     localStorage.removeItem("user");
                     alert(response.message);
@@ -66,7 +65,11 @@ function OrderHistory() {
                 return <span>{Format.formatPriceWithVND(price)} VND</span>;
             },
         },
-        { title: "Order date", dataIndex: "createdAt" },
+        {
+            title: "Order date",
+            dataIndex: "createdAt",
+            render: (dateString) => new Date(dateString).toLocaleString(),
+        },
         {
             title: "Status",
             dataIndex: "status",
@@ -123,7 +126,7 @@ function OrderHistory() {
             key: item.order.aliasId,
             aliasId: item.order.aliasId,
             totalPrice: 0,
-            createdAt: new Date(item.order.createdAt).toLocaleString(),
+            createdAt: item.order.createdAt,
             status: item.order.status,
             action: index,
         };
@@ -133,11 +136,7 @@ function OrderHistory() {
     });
 
     const sortedRecords = Sort.sortOrderssByStatus(
-        records.sort(
-            (left, right) =>
-                new Date(right.createdAt.replace(",", "")) -
-                new Date(left.createdAt.replace(",", ""))
-        ),
+        records.sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
         sortBy
     );
 

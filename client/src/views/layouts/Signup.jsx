@@ -78,7 +78,7 @@ function Signup() {
                     <form action="">
                         <input
                             type="text"
-                            placeholder="Fullname"
+                            placeholder="Full name"
                             autoFocus={true}
                             name="fullname"
                             required

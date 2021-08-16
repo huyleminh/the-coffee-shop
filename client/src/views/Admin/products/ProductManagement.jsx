@@ -174,7 +174,7 @@ function ProductManagement() {
             }
             return record;
         })
-        .filter((item) => item.name.toLowerCase().match(searchTerm));
+        .filter((item) => item.name.toLowerCase().match(searchTerm.toLowerCase()));
 
     return (
         <div className="custom-site-main-content">

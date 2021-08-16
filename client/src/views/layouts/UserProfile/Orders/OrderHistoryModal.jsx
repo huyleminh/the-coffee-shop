@@ -33,11 +33,11 @@ function OrderHistoryModal(props) {
                     setIsSending(false);
                     NotificationBox.triggerSuccess(
                         "CANCEL ORDER",
-                        "Cancel order successfully. The page will be reloaded after 2.5 seconds."
+                        "Cancel order successfully. The page will be reloaded after 1.5 seconds."
                     );
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2500);
+                    }, 1500);
                 } else if (res.status === 401 || res.status === 403) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");
