@@ -79,7 +79,7 @@ function Wishlist() {
         };
         fetchImages();
     }, [data]);
-
+    
     const tempArray = data.map(function (item, index) {
         let row = {};
         row.key = item.product.id;
@@ -118,7 +118,13 @@ function Wishlist() {
     const handleRemoveItem = (id) => {
         setIsSending(true);
         removeSelectedItem([{key: id}]);
-        setSelectedItem([]);
+        let newSelected = []
+        for (let item of selectedItem) {
+            if (item["key"] !== id) {
+                newSelected.push(item)
+            }
+        }
+        setSelectedItem(newSelected);
     };
 
     const removeSelectedItem = async (params) => {
@@ -318,12 +324,12 @@ function Wishlist() {
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>
                     <div className="cmd_item" title="Add selected item(s) to cart">
-                        <button className="btn_cart_selected" onClick={handleCartSelected}>
+                        <button className="btn_cart_selected" onClick={handleCartSelected} disabled={isSending}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </button>
                     </div>
                     <div className="cmd_item" title="Remove selected item(s) from wishlist">
-                        <button className="table-deleted" onClick={handleRemoveSelected}>
+                        <button className="table-deleted" onClick={handleRemoveSelected} disabled={isSending}>
                             Remove
                         </button>
                     </div>
@@ -343,7 +349,7 @@ function Wishlist() {
                         <ProductTable
                             records={tempArray}
                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-                            disable
+                            disabled={isSending}
                             hiddens={["quantity", "total"]}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}

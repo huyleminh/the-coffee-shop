@@ -86,3 +86,7 @@
     background-color: #9c7044;
     color: #fff;
 }
+
+.btn_cart_selected:disabled {
+    cursor: wait;
+}
