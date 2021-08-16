@@ -21,11 +21,11 @@ export class ChangeProfileWorkflow {
     }
 
     #validateProfile = () => {
-        let validateStatus = UserValidation.validateFullname(this.#fullname);
-        if (!validateStatus) return validateStatus;
+        let validateStatus = UserValidation.validateFullname(this.#fullname.trim());
+        if (!validateStatus.status) return validateStatus;
 
-        validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber);
-        if (!validateStatus) return validateStatus;
+        validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber.trim());
+        if (!validateStatus.status) return validateStatus;
 
         this.#address = `${this.#address}&&${this.ward}&&${this.district}&&${this.city}`;
         delete this.ward;
@@ -44,9 +44,9 @@ export class ChangeProfileWorkflow {
         try {
             const token = JSON.parse(localStorage.getItem("user")).token;
             const response = await UserAPI.changeProfile(token, {
-                fullname: this.#fullname,
-                phoneNumber: this.#phoneNumber,
-                address: this.#address,
+                fullname: this.#fullname.trim(),
+                phoneNumber: this.#phoneNumber.trim(),
+                address: this.#address.trim(),
                 gender: this.#gender,
             });
 

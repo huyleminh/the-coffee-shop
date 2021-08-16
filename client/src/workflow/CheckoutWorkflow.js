@@ -24,7 +24,6 @@ class CheckoutWorkflow {
         validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber.trim());
         if (!validateStatus.status) return validateStatus;
 
-        console.log(this.#deliveryAddress);
         if (this.#deliveryAddress === "" || this.#deliveryAddress.match(/^\s+$/g))
             return { status: false, error: "Please input delivery address." };
 

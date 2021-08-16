@@ -1,6 +1,8 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { ChangeSecurityWorkflow } from "../../../../workflow/ManageProfileWorkflow";
 import { useHistory } from "react-router-dom";
+import NotificationBox from "../../../../components/NotificationBox";
+import { ChangeSecurityWorkflow } from "../../../../workflow/ManageProfileWorkflow";
 
 function UserSecurityForm(props) {
     const history = useHistory();
@@ -10,12 +12,12 @@ function UserSecurityForm(props) {
         newPassword: "",
         confirmPassword: "",
     });
+    const [isSaving, setIsSaving] = useState(false);
 
-    const toggleEdit = () => {
-        setIsDisabled(false);
-    };
+    const toggleEdit = () => setIsDisabled(false);
 
     const handleCancel = () => {
+        if (isDisabled) return;
         const prev = { ...security };
         Object.keys(prev).forEach((key) => (prev[key] = ""));
         setSecurity(prev);
@@ -31,38 +33,44 @@ function UserSecurityForm(props) {
     };
 
     const handleSave = async () => {
-        setIsDisabled(true);
+        setIsSaving(true);
         const flow = new ChangeSecurityWorkflow({ ...security });
 
         const res = await flow.startFlow();
-        console.log(res);
 
         switch (res.status) {
             case 204:
-                alert(res.statusText);
+                NotificationBox.triggerSuccess("CHANGE PASSWORD SUCCESS", res.statusText);
+                setIsSaving(false);
                 handleCancel();
                 break;
             case 400:
-                alert(res.statusText);
+                NotificationBox.triggerWarning("CHANGE PASSWORD WARNING", res.statusText);
+                setIsSaving(false);
                 break;
             case 401:
             case 404:
-                alert(res.statusText);
-                localStorage.clear();
-                history.push("/404");
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
+                alert("You are not logged in, please login again.");
+                history.push("/login");
                 break;
             case 403:
-                alert("You are not allowed.");
-                localStorage.clear();
-                console.log(res.statusText);
+                alert("You are not allowed to access this page.");
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 history.push("/403");
                 break;
             case 409:
-                alert(res.statusText);
+                NotificationBox.triggerError("CHANGE PASSWORD ERROR", res.statusText);
+                setIsDisabled(true);
+                setIsSaving(false);
                 break;
 
             default:
+                NotificationBox.triggerError("CHANGE PASSWORD ERROR", "Something went wrong.");
                 console.log(res);
+                setIsSaving(false);
         }
     };
 
@@ -109,8 +117,12 @@ function UserSecurityForm(props) {
                     />
                 </div>
                 <div className="profileForm_items btn-group">
-                    <button onClick={handleSave} disabled={isDisabled}>Save</button>
-                    <button onClick={handleCancel} disabled={isDisabled}>Cancel</button>
+                    <button onClick={handleSave} disabled={isDisabled}>
+                        {isSaving ? <LoadingOutlined spin /> : "Save"}
+                    </button>
+                    <button onClick={handleCancel} disabled={isDisabled}>
+                        Cancel
+                    </button>
                 </div>
             </div>
         </>
