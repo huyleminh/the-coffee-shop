@@ -295,6 +295,7 @@ function Wishlist() {
 
         if (flag) {
             localStorage.removeItem("user");
+            localStorage.setItem("cart", JSON.stringify(items));
             if (existedList.length !== 0) {
                 for (let item of existedList) {
                     NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
