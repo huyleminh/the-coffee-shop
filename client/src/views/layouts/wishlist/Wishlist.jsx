@@ -115,13 +115,9 @@ function Wishlist() {
         return row;
     });
 
-    const handleGoToMenu = () => {
-        history.push("/menu");
-    };
+    const handleGoToMenu = () => history.push("/menu");
 
-    const handleSelected = (keys, rows) => {
-        setSelectedItem(rows);
-    };
+    const handleSelected = (rows) => setSelectedItem(rows);
 
     const handleRemoveItem = (id) => {
         setIsSending(true);
