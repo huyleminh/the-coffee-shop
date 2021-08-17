@@ -117,7 +117,7 @@ function Wishlist() {
 
     const handleGoToMenu = () => history.push("/menu");
 
-    const handleSelected = (rows) => setSelectedItem(rows);
+    const handleSelected = (rows, records) => setSelectedItem(records);
 
     const handleRemoveItem = (id) => {
         setIsSending(true);
@@ -132,6 +132,7 @@ function Wishlist() {
     };
 
     const removeSelectedItem = async (params) => {
+        console.log(params)
         const user = JSON.parse(localStorage.getItem("user"));
         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
         const newWishlist = [];
@@ -153,6 +154,7 @@ function Wishlist() {
                 newWishlist.push(item);
             }
         }
+        console.log(removeItem)
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
@@ -167,6 +169,7 @@ function Wishlist() {
             }
         } else {
             try {
+                console.log("in")
                 const removeItemPromise = removeItem.map((item) => {
                     return WishlistAPI.deleteItem(user.token, item.product.id);
                 });
@@ -176,6 +179,7 @@ function Wishlist() {
                 for (let item of response) {
                     if (item.status === 200) {
                         countSuccess += 1;
+                        console.log("success")
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
