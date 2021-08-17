@@ -30,6 +30,7 @@ function Wishlist() {
 
     useEffect(() => {
         const fetchWishlist = async () => {
+            setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));
 
             if (!user || !user.token) {
