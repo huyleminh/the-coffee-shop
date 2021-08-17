@@ -167,7 +167,6 @@ function Wishlist() {
             }
         } else {
             try {
-                console.log("in")
                 const removeItemPromise = removeItem.map((item) => {
                     return WishlistAPI.deleteItem(user.token, item.product.id);
                 });
