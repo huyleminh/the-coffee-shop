@@ -216,8 +216,9 @@ function Wishlist() {
         let listOfSelected = JSON.parse(JSON.stringify(params));
 
         const items = JSON.parse(JSON.stringify(cart));
+        const existedList = [];
+        const successList = [];
         let isExisted = false;
-        let countExisted = 0;
         for (let element of listOfSelected) {
             isExisted = false;
             for (let pro of cart) {
@@ -245,7 +246,10 @@ function Wishlist() {
                               },
                     quantity: 1,
                 });
-            } else countExisted += 1;
+                successList.push(element.product);
+            } else {
+                existedList.push(element.product)
+            }
         }
         let flag = false;
         if (user && user.token) {
@@ -260,7 +264,6 @@ function Wishlist() {
                 for (let item of response) {
                     if (item.status === 200) {
                         console.log("success");
-                        localStorage.setItem("cart", JSON.stringify(items));
                     } else if (item.status === 409) {
                         console.log("existed");
                     } else {
@@ -273,12 +276,24 @@ function Wishlist() {
                         else console.log("success");
                     }
                 }
-                if (countExisted !== 0) {
-                    NotificationBox.triggerSuccess(
-                        "ADD TO CART",
-                        `Added sucessfully. ${countExisted} item(s) existed in your cart.`
-                    );
-                } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// <<<<<<< hotfix/wishlist-notification
+//                 localStorage.setItem("cart", JSON.stringify(items));
+//                 if (existedList.length !== 0) {
+//                     for (let item of existedList) {
+//                         NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+//                     }
+//                 }
+//                 for (let item of successList) {
+//                     NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+//                 }
+// =======
+//                 if (countExisted !== 0) {
+//                     NotificationBox.triggerSuccess(
+//                         "ADD TO CART",
+//                         `Added sucessfully. ${countExisted} item(s) existed in your cart.`
+//                     );
+//                 } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// >>>>>>> staging
                 setIsSending(false);
             } catch (error) {
                 console.log(error);
@@ -288,13 +303,24 @@ function Wishlist() {
 
         if (flag) {
             localStorage.removeItem("user");
-            localStorage.setItem("cart", JSON.stringify(items));
-            if (countExisted !== 0) {
-                NotificationBox.triggerSuccess(
-                    "ADD TO CART",
-                    `Added sucessfully. ${countExisted} item(s) existed in your cart.`
-                );
-            } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// <<<<<<< hotfix/wishlist-notification
+//             if (existedList.length !== 0) {
+//                 for (let item of existedList) {
+//                     NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+//                 }
+//             }
+//             for (let item of successList) {
+//                 NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+//             }
+// =======
+//             localStorage.setItem("cart", JSON.stringify(items));
+//             if (countExisted !== 0) {
+//                 NotificationBox.triggerSuccess(
+//                     "ADD TO CART",
+//                     `Added sucessfully. ${countExisted} item(s) existed in your cart.`
+//                 );
+//             } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// >>>>>>> staging
             setIsSending(false);
         }
     };
