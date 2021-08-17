@@ -132,7 +132,6 @@ function Wishlist() {
     };
 
     const removeSelectedItem = async (params) => {
-        console.log(params)
         const user = JSON.parse(localStorage.getItem("user"));
         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
         const newWishlist = [];
@@ -154,7 +153,6 @@ function Wishlist() {
                 newWishlist.push(item);
             }
         }
-        console.log(removeItem)
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
