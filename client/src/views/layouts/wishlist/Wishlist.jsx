@@ -77,7 +77,6 @@ function Wishlist() {
                 const images = await Promise.allSettled(imagePromises);
                 const postImages = images.map((item) => item.status === "fulfilled" && item.value.status === 200 ? item.value.data : require("../../../assets/images/latte.jpg").default)
                 setImages(postImages);
-                console.log(postImages)
             }
             catch(err) {
                 console.log(err)
