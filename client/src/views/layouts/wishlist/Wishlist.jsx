@@ -276,24 +276,15 @@ function Wishlist() {
                         else console.log("success");
                     }
                 }
-// <<<<<<< hotfix/wishlist-notification
-//                 localStorage.setItem("cart", JSON.stringify(items));
-//                 if (existedList.length !== 0) {
-//                     for (let item of existedList) {
-//                         NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
-//                     }
-//                 }
-//                 for (let item of successList) {
-//                     NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
-//                 }
-// =======
-//                 if (countExisted !== 0) {
-//                     NotificationBox.triggerSuccess(
-//                         "ADD TO CART",
-//                         `Added sucessfully. ${countExisted} item(s) existed in your cart.`
-//                     );
-//                 } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
-// >>>>>>> staging
+                localStorage.setItem("cart", JSON.stringify(items));
+                if (existedList.length !== 0) {
+                    for (let item of existedList) {
+                        NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+                    }
+                }
+                for (let item of successList) {
+                    NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+                }
                 setIsSending(false);
             } catch (error) {
                 console.log(error);
@@ -303,24 +294,14 @@ function Wishlist() {
 
         if (flag) {
             localStorage.removeItem("user");
-// <<<<<<< hotfix/wishlist-notification
-//             if (existedList.length !== 0) {
-//                 for (let item of existedList) {
-//                     NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
-//                 }
-//             }
-//             for (let item of successList) {
-//                 NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
-//             }
-// =======
-//             localStorage.setItem("cart", JSON.stringify(items));
-//             if (countExisted !== 0) {
-//                 NotificationBox.triggerSuccess(
-//                     "ADD TO CART",
-//                     `Added sucessfully. ${countExisted} item(s) existed in your cart.`
-//                 );
-//             } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
-// >>>>>>> staging
+            if (existedList.length !== 0) {
+                for (let item of existedList) {
+                    NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+                }
+            }
+            for (let item of successList) {
+                NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+            }
             setIsSending(false);
         }
     };
