@@ -36,21 +36,19 @@ function LandingPage() {
                     <h1>About us</h1>
                     <br />
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-                        finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
-                        Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,
-                        vestibulum tristique risus ligula a nisl. Nam mi purus, tristique at
-                        bibendum vel, elementum scelerisque dolor. Etiam ullamcorper eros vel
-                        placerat ultrices. Curabitur eget odio et ex egestas dapibus. Integer
-                        viverra eros enim, vitae facilisis massa vestibulum vestibulum.
+                        <b>THE COFFEE SHOP</b> was established in <b>June 2021</b> by <b>Ga Chien Pro Max</b>, which is originally <b>Ga Chien Team</b>, based on:
                         <br /><br />
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-                        finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
-                        Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,
-                        vestibulum tristique risus ligula a nisl. Nam mi purus, tristique at
-                        bibendum vel, elementum scelerisque dolor. Etiam ullamcorper eros vel
-                        placerat ultrices. Curabitur eget odio et ex egestas dapibus. Integer
-                        viverra eros enim, vitae facilisis massa vestibulum vestibulum.
+                        <b>- Our Vision:</b> become a stable and well-known coffee shop in the country, which has sufficient potential to compete with the reputable others.
+                        <br /><br />
+                        <b>- Our Goal:</b> The satisfaction of customers is the measure for our success.
+                        <br /><br />
+                        <b>- Our Business Philosophy:</b>
+                        <br />
+                        <b>&emsp;&emsp;* Quality:</b> The quality of products is our priority, which plays an important role in competition and corporate culture.
+                        <br />
+                        <b>&emsp;&emsp;* Professional:</b> Try our best to form a professional, creative, active and well-trained staff.
+                        <br />
+                        <b>&emsp;&emsp;* Consistent:</b> Continuously enhance our reputation, create a discrepancy with the rest and develop high quality labour resources. 
                     </p>
                 </div>
 

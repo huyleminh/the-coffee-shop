@@ -120,8 +120,12 @@
 }
 
 .about__left > p {
-    word-break: break-all;
     white-space: pre-wrap;
+    text-align: justify;
+}
+
+.about__left > p > span {
+    padding: 20px;
 }
 
 .about__right,
