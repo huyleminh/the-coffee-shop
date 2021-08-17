@@ -1,4 +1,6 @@
 import { LoadingOutlined } from "@ant-design/icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -9,21 +11,18 @@ import Loading from "../../../components/Loading";
 import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CartAPI from "../../../services/Cart/CartAPI.js";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
-import { Storage } from "../../../utilities/firebase/FirebaseConfig.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import Format from "../../../utilities/Format/Format.js"
+import Format from "../../../utilities/Format/Format.js";
 
 const { Content } = Layout;
 
 function CartLayout() {
     const history = useHistory();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [images, setImages] = useState([]);
-    const [isDisable, setIsDisable] = useState(false);
 
     const tappingQuantity = useRef(null);
 
@@ -71,8 +70,6 @@ function CartLayout() {
             if (confirm) history.push("/login");
         } else {
             if (selectedItem.length !== 0) {
-                console.log("SELECTED: ", selectedItem);
-                console.log("CART: ", cart);
                 let checkoutItems = [];
                 for (let key of selectedItem) {
                     for (let item of cart) {
@@ -81,7 +78,6 @@ function CartLayout() {
                         }
                     }
                 }
-                console.log("CHECKOUT: ", checkoutItems);
                 localStorage.setItem("checkout", JSON.stringify(checkoutItems));
                 history.push("/checkout");
             } else {
@@ -91,9 +87,7 @@ function CartLayout() {
         }
     };
 
-    const handleSelected = (keys) => {
-        setSelectedItem(keys);
-    };
+    const handleSelected = (keys) => setSelectedItem(keys);
 
     const handleQuantity = (item, value) => {
         if (value === 0) return;
@@ -103,6 +97,7 @@ function CartLayout() {
         setCart(newCart);
 
         if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
+
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             localStorage.setItem("cart", JSON.stringify(cart));
@@ -110,12 +105,12 @@ function CartLayout() {
         } else {
             tappingQuantity.current = setTimeout(async () => {
                 try {
-                    setIsDisable(true);
+                    setIsSending(true);
                     const response = await CartAPI.editCart(user.token, {
                         productId: item.key,
                         quantity: value,
                     });
-                    setIsDisable(false);
+                    setIsSending(false);
 
                     if (response.status === 200) {
                         localStorage.setItem("cart", JSON.stringify(cart));
@@ -138,19 +133,18 @@ function CartLayout() {
     };
 
     const handleAddToWishlist = async (item) => {
-        setIsSending(true);
         const user = JSON.parse(localStorage.getItem("user"));
-        const tempWishlistLocal = localStorage.getItem("wishlist")
+        const wishListLocal = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
             : [];
 
-        const tempCartLocal = JSON.parse(localStorage.getItem("cart"))
+        const cartLocal = JSON.parse(localStorage.getItem("cart"))
             ? JSON.parse(localStorage.getItem("cart"))
             : [];
 
-        for (let i of tempCartLocal) {
+        for (let i of cartLocal) {
             if (i.product.id === item.key) {
-                for (let j of tempWishlistLocal) {
+                for (let j of wishListLocal) {
                     if (j.product.id === item.key) {
                         if (!user || !user.token) {
                             NotificationBox.triggerError(
@@ -158,25 +152,24 @@ function CartLayout() {
                                 `${i.product.name} added to your wishlist.`
                             );
                         }
-                        setIsSending(false);
                         return;
                     }
                 }
                 localStorage.removeItem("user");
-                localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, i]));
+                localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, i]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
                         `${i.product.name} added to your wishlist.`
                     );
                 }
-                setIsSending(false);
                 return;
             }
         }
 
         if (user && user.token) {
             try {
+                setIsSending(true);
                 const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200) {
                     NotificationBox.triggerSuccess(
@@ -184,10 +177,9 @@ function CartLayout() {
                         `${item.product} added to your wishlist successfully.`
                     );
                     setIsSending(false);
-                    return;
                 } else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
-                        for (let i of tempWishlistLocal) {
+                        for (let i of wishListLocal) {
                             if (i.product.id === item.id) {
                                 NotificationBox.triggerError(
                                     "EXISTED",
@@ -198,10 +190,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
-                        localStorage.setItem(
-                            "wishlist",
-                            JSON.stringify([...tempWishlistLocal, item])
-                        );
+                        localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         setIsSending(false);
                         return;
                     } else {
@@ -210,7 +199,7 @@ function CartLayout() {
                         return;
                     }
                 } else if (response.status === 401 || response.status === 403) {
-                    for (let i of tempWishlistLocal) {
+                    for (let i of wishListLocal) {
                         if (i.product.id === item.product.id) {
                             NotificationBox.triggerError(
                                 "EXISTED",
@@ -221,7 +210,7 @@ function CartLayout() {
                         }
                     }
                     localStorage.removeItem("user");
-                    localStorage.setItem("wishlist", JSON.stringify([...tempWishlistLocal, item]));
+                    localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
                         "ADDED ITEM TO WISHLIST",
                         `${item.product} added to your wishlist.`
@@ -246,41 +235,31 @@ function CartLayout() {
 
     const handleAction = (record) => handleAddToWishlist(record);
 
-    const removeSelectedItem = async (params) => {
+    const removeSelectedItem = async (selectedItems) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = JSON.parse(localStorage.getItem("cart"));
         const newCart = [];
-        const removeItem = [];
-        let isDeleted = false;
-        let deleted = false;
-        for (let item of cart) {
-            deleted = false;
-            for (let key of params) {
-                if (item.product.id === key) {
-                    isDeleted = true;
-                    removeItem.push(item);
-                    deleted = true;
-                }
-            }
-            if (!deleted) {
-                newCart.push(item);
-            }
-        }
+        const removeItems = [];
+
+        cart.forEach((item) => {
+            if (selectedItems.indexOf(item.product.id) > -1) removeItems.push(item);
+            else newCart.push(item);
+        });
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
-            if (isDeleted) {
+            if (removeItems.length > 0) {
                 NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
-                setIsSending(false);
             }
         } else {
+            setIsSending(true);
             try {
-                const removeItemPromise = removeItem.map((item) => {
+                const removeItemPromises = removeItems.map((item) => {
                     return CartAPI.deleteProduct(user.token, item.product.id);
                 });
-                const response = await Promise.all(removeItemPromise);
+                const response = await Promise.all(removeItemPromises);
                 let countNotExist = 0;
                 for (let item of response) {
                     if (item.status === 200) {
@@ -294,7 +273,7 @@ function CartLayout() {
                         localStorage.removeItem("user");
                     }
                 }
-                if (isDeleted) {
+                if (removeItems.length > 0) {
                     NotificationBox.triggerSuccess(
                         "SUCCESS",
                         "Remove selected item(s) successfully"
@@ -315,17 +294,8 @@ function CartLayout() {
         }
     };
 
-    const handleRemoveItem = (key) => {
-        setIsSending(true);
-        removeSelectedItem([key]);
-        const tempSelected = [];
-        for (let i of selectedItem) {
-            if (i !== key) {
-                tempSelected.push(i);
-            }
-        }
-        setSelectedItem(tempSelected);
-    };
+    const handleRemoveItem = (key) => removeSelectedItem([key]);
+
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
             NotificationBox.triggerError(
@@ -333,17 +303,15 @@ function CartLayout() {
                 "No item is being selected.\nPlease select item(s) and try again."
             );
         } else {
-            setIsSending(true);
             removeSelectedItem(selectedItem);
             setSelectedItem([]);
-            setIsSending(false);
         }
     };
 
     const handleWishlistSelected = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
-        const tempCartLocal = JSON.parse(localStorage.getItem("cart"));
-        const tempWishlistLocal = JSON.parse(localStorage.getItem("wishlist"));
+        const cartLocal = JSON.parse(localStorage.getItem("cart"));
+        const wishListLocal = JSON.parse(localStorage.getItem("wishlist"));
         const selectedData = [];
 
         if (selectedItem.length === 0) {
@@ -355,9 +323,9 @@ function CartLayout() {
         }
         let isExisted = false;
         for (let id of selectedItem) {
-            for (let cartItem of tempCartLocal) {
+            for (let cartItem of cartLocal) {
                 isExisted = false;
-                for (let wishlistItem of tempWishlistLocal) {
+                for (let wishlistItem of wishListLocal) {
                     if (id === wishlistItem.product.id) {
                         if (!user || !user.token) {
                             NotificationBox.triggerError(
@@ -373,7 +341,7 @@ function CartLayout() {
                 }
                 if (id === cartItem.product.id) {
                     selectedData.push(cartItem);
-                    tempWishlistLocal.push(cartItem);
+                    wishListLocal.push(cartItem);
                     if (!user || !user.token) {
                         NotificationBox.triggerSuccess(
                             "ITEM ADDED",
@@ -385,7 +353,7 @@ function CartLayout() {
             }
         }
 
-        localStorage.setItem("wishlist", JSON.stringify(tempWishlistLocal));
+        localStorage.setItem("wishlist", JSON.stringify(wishListLocal));
 
         if (user && user.token) {
             try {
@@ -398,7 +366,7 @@ function CartLayout() {
                         );
                     else if (response.status === 404) {
                         if (response.message === "This user does not exist") {
-                            for (let i of tempWishlistLocal) {
+                            for (let i of wishListLocal) {
                                 if (i.product.id === item.product.id) {
                                     NotificationBox.triggerError(
                                         "EXISTED",
@@ -410,11 +378,11 @@ function CartLayout() {
                             localStorage.removeItem("user");
                             localStorage.setItem(
                                 "wishlist",
-                                JSON.stringify([...tempWishlistLocal, item])
+                                JSON.stringify([...wishListLocal, item])
                             );
                         } else NotificationBox.triggerError("ERROR", response.message);
                     } else if (response.status === 401 || response.status === 403) {
-                        for (let i of tempWishlistLocal) {
+                        for (let i of wishListLocal) {
                             if (i.product.id === item.product.id) {
                                 NotificationBox.triggerError(
                                     "EXISTED",
@@ -424,10 +392,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
-                        localStorage.setItem(
-                            "wishlist",
-                            JSON.stringify([...tempWishlistLocal, item])
-                        );
+                        localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         NotificationBox.triggerSuccess(
                             "ADDED ITEM TO WISHLIST",
                             `${item.product.name} added to your wishlist.`
@@ -447,6 +412,7 @@ function CartLayout() {
     };
 
     useEffect(() => {
+        localStorage.removeItem("checkout");
         const fetchCart = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
 
@@ -457,12 +423,12 @@ function CartLayout() {
                 try {
                     const response = await CartAPI.getCart(user.token);
                     if (response.status === 200) {
-                        const resCart = response.data;
-                        setCart(resCart);
-                        localStorage.setItem("cart", JSON.stringify(resCart));
+                        setCart(response.data);
+                        setIsLoading(false);
+                        localStorage.setItem("cart", JSON.stringify(response.data));
                     } else {
                         localStorage.removeItem("user");
-                        const cartLocal = localStorage.getItem("cart");
+                        const cartLocal = JSON.parse(localStorage.getItem("cart"));
                         setCart(cartLocal ? cartLocal : []);
                     }
                 } catch (error) {
@@ -477,13 +443,20 @@ function CartLayout() {
     useEffect(() => {
         const fetchImages = async () => {
             const imagePromises = cart.map((item) => {
-                const image = item.product.image ? item.product.image : "latte.jpg";
-                return Storage.ref(`products/${image}`).getDownloadURL();
+                return FirebaseAPI.getImageURL(item.product.image);
             });
 
-            const images = await Promise.all(imagePromises);
-            setImages(images);
-            setIsLoading(false);
+            try {
+                const images = await Promise.allSettled(imagePromises);
+                const postImages = images.map((item) =>
+                    item.status === "fulfilled" && item.value.status === 200
+                        ? item.value.data
+                        : require("../../../assets/images/latte.jpg").default
+                );
+                setImages(postImages);
+            } catch (err) {
+                console.log(err);
+            }
         };
         fetchImages();
     }, [cart]);
@@ -518,7 +491,7 @@ function CartLayout() {
             <div className="wrapper cart">
                 <div className="command_bar_cart">
                     <div className="cmd_item_cart">
-                        {isSending ? <LoadingOutlined spin /> : <span></span>}
+                        {isSending ? <LoadingOutlined spin /> : <></>}
                     </div>
                     <div className="cmd_item_cart">
                         <span>{selectedItem.length} item(s) selected</span>
@@ -549,7 +522,7 @@ function CartLayout() {
                         <ProductTable
                             records={cartTable}
                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-                            disabled={isDisable}
+                            disabled={isSending}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}
                             handleQuantity={handleQuantity}

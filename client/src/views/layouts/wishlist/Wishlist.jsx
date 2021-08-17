@@ -59,13 +59,13 @@ function Wishlist() {
                     }
                 } catch (error) {
                     console.log(error);
-                    alert("Something went wrong.");
+                    NotificationBox.triggerError("ERROR", "Something went wrong");
                 }
             }
         };
 
         fetchWishlist();
-    }, [history]);
+    }, []);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -75,16 +75,19 @@ function Wishlist() {
 
             try {
                 const images = await Promise.allSettled(imagePromises);
-                const postImages = images.map((item) => item.status === "fulfilled" && item.value.status === 200 ? item.value.data : require("../../../assets/images/latte.jpg").default)
+                const postImages = images.map((item) =>
+                    item.status === "fulfilled" && item.value.status === 200
+                        ? item.value.data
+                        : require("../../../assets/images/latte.jpg").default
+                );
                 setImages(postImages);
-            }
-            catch(err) {
-                console.log(err)
+            } catch (err) {
+                console.log(err);
             }
         };
         fetchImages();
     }, [data]);
-    
+
     const tempArray = data.map(function (item, index) {
         let row = {};
         row.key = item.product.id;
@@ -112,21 +115,17 @@ function Wishlist() {
         return row;
     });
 
-    const handleGoToMenu = () => {
-        history.push("/menu");
-    };
+    const handleGoToMenu = () => history.push("/menu");
 
-    const handleSelected = (keys, rows) => {
-        setSelectedItem(rows);
-    };
+    const handleSelected = (rows) => setSelectedItem(rows);
 
     const handleRemoveItem = (id) => {
         setIsSending(true);
-        removeSelectedItem([{key: id}]);
-        let newSelected = []
+        removeSelectedItem([{ key: id }]);
+        let newSelected = [];
         for (let item of selectedItem) {
             if (item["key"] !== id) {
-                newSelected.push(item)
+                newSelected.push(item);
             }
         }
         setSelectedItem(newSelected);
@@ -158,7 +157,10 @@ function Wishlist() {
         if (!user || !user.token) {
             localStorage.removeItem("user");
             if (isExist) {
-                NotificationBox.triggerSuccess("REMOVED", `Successfully remove ${countItems} item(s).`)
+                NotificationBox.triggerSuccess(
+                    "REMOVED",
+                    `Successfully remove ${countItems} item(s).`
+                );
                 localStorage.setItem("wishlist", JSON.stringify(newWishlist));
                 setData(newWishlist);
                 setIsSending(false);
@@ -173,24 +175,28 @@ function Wishlist() {
                 let countNotExist = 0;
                 for (let item of response) {
                     if (item.status === 200) {
-                        console.log("success");
-                        countSuccess += 1
+                        countSuccess += 1;
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
                         } else {
-                            console.log(item.message);
                             countNotExist += 1;
                         }
                     } else if (item.status === 401 || item.status === 403) {
                         localStorage.removeItem("user");
-                        countSuccess += 1
+                        countSuccess += 1;
                     }
                 }
                 if (isExist) {
-                    NotificationBox.triggerSuccess("REMOVED", `Successfully remove ${countSuccess} item(s).`)
+                    NotificationBox.triggerSuccess(
+                        "REMOVED",
+                        `Successfully remove ${countSuccess} item(s).`
+                    );
                     if (countNotExist !== 0) {
-                        NotificationBox.triggerWarning("Not Existed", `${countNotExist} item(s) do(es) not exist in your wishlist.`)
+                        NotificationBox.triggerWarning(
+                            "Not Existed",
+                            `${countNotExist} item(s) do(es) not exist in your wishlist.`
+                        );
                     }
                     localStorage.setItem("wishlist", JSON.stringify(newWishlist));
                     setData(newWishlist);
@@ -270,15 +276,24 @@ function Wishlist() {
                         else console.log("success");
                     }
                 }
-                localStorage.setItem("cart", JSON.stringify(items));
-                if (existedList.length !== 0) {
-                    for (let item of existedList) {
-                        NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
-                    }
-                }
-                for (let item of successList) {
-                    NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
-                }
+// <<<<<<< hotfix/wishlist-notification
+//                 localStorage.setItem("cart", JSON.stringify(items));
+//                 if (existedList.length !== 0) {
+//                     for (let item of existedList) {
+//                         NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+//                     }
+//                 }
+//                 for (let item of successList) {
+//                     NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+//                 }
+// =======
+//                 if (countExisted !== 0) {
+//                     NotificationBox.triggerSuccess(
+//                         "ADD TO CART",
+//                         `Added sucessfully. ${countExisted} item(s) existed in your cart.`
+//                     );
+//                 } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// >>>>>>> staging
                 setIsSending(false);
             } catch (error) {
                 console.log(error);
@@ -288,14 +303,24 @@ function Wishlist() {
 
         if (flag) {
             localStorage.removeItem("user");
-            if (existedList.length !== 0) {
-                for (let item of existedList) {
-                    NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
-                }
-            }
-            for (let item of successList) {
-                NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
-            }
+// <<<<<<< hotfix/wishlist-notification
+//             if (existedList.length !== 0) {
+//                 for (let item of existedList) {
+//                     NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+//                 }
+//             }
+//             for (let item of successList) {
+//                 NotificationBox.triggerSuccess("ADD TO CART", `${item} is added to your cart.`);
+//             }
+// =======
+//             localStorage.setItem("cart", JSON.stringify(items));
+//             if (countExisted !== 0) {
+//                 NotificationBox.triggerSuccess(
+//                     "ADD TO CART",
+//                     `Added sucessfully. ${countExisted} item(s) existed in your cart.`
+//                 );
+//             } else NotificationBox.triggerSuccess("ADD TO CART", `Added sucessfully.`);
+// >>>>>>> staging
             setIsSending(false);
         }
     };
@@ -336,18 +361,26 @@ function Wishlist() {
             <div className="wrapper wishlist">
                 <div className="command_bar">
                     <div className="cmd_item">
-                        {isSending ? <LoadingOutlined spin /> : <span></span>}
+                        {isSending ? <LoadingOutlined spin /> : <></>}
                     </div>
                     <div className="cmd_item">
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>
                     <div className="cmd_item" title="Add selected item(s) to cart">
-                        <button className="btn_cart_selected" onClick={handleCartSelected} disabled={isSending}>
+                        <button
+                            className="btn_cart_selected"
+                            onClick={handleCartSelected}
+                            disabled={isSending}
+                        >
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </button>
                     </div>
                     <div className="cmd_item" title="Remove selected item(s) from wishlist">
-                        <button className="table-deleted" onClick={handleRemoveSelected} disabled={isSending}>
+                        <button
+                            className="table-deleted"
+                            onClick={handleRemoveSelected}
+                            disabled={isSending}
+                        >
                             Remove
                         </button>
                     </div>
