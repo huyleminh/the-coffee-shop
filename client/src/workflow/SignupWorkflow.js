@@ -21,7 +21,13 @@ export default class SignupWorkflow {
     }
 
     #validateSignupInformation = () => {
-        let validateStatus = UserValidation.validateUsername(this.#_username);
+        let validateStatus = UserValidation.validateFullname(this.#fullname);
+        if (!validateStatus.status) return validateStatus;
+
+        validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber);
+        if (!validateStatus.status) return validateStatus;
+
+        validateStatus = UserValidation.validateUsername(this.#_username);
         if (!validateStatus.status) return validateStatus;
 
         validateStatus = UserValidation.validatePassword(this.#_password);
@@ -30,12 +36,6 @@ export default class SignupWorkflow {
         if (this.#_password !== this.#_confirmPassword) {
             return { status: false, error: "Incorrect confirm password." };
         }
-
-        validateStatus = UserValidation.validatePhoneNumber(this.#phoneNumber);
-        if (!validateStatus.status) return validateStatus;
-
-        validateStatus = UserValidation.validateFullname(this.#fullname);
-        if (!validateStatus.status) return validateStatus;
 
         return { status: true };
     };
@@ -59,7 +59,7 @@ export default class SignupWorkflow {
                 localStorage.setItem("user", JSON.stringify(user));
                 return { status: 201 };
             } else if (response.status === 409) {
-                return { status: 400, statusText: "User existed." };
+                return { status: 400, statusText: "Can not signup. This user is already existed." };
             }
         } catch (error) {
             console.log(error);

@@ -39,7 +39,7 @@ export default class UserValidation {
             //not a number
             return {
                 status: false,
-                error: "Phone number do not accept character",
+                error: "Phone number does not accept character",
             };
         } else if (phoneNumber[0] !== "0") {
             return {

@@ -4,9 +4,9 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import EmployeeAPI from "../../../services/Employee/EmployeeAPI";
+import Format from "../../../utilities/Format/Format";
 import Sort from "../../../utilities/Sort/Sort";
 import OrderModal from "./OrderModal";
-import Format from "../../../utilities/Format/Format";
 
 moment.locale("vie");
 const momentFormat = "DD/MM/YYYY";
@@ -95,9 +95,7 @@ function OrderManagement() {
         },
     ];
 
-    const toggleModal = () => {
-        setCurrentModal({ ...currentModal, visible: false });
-    };
+    const toggleModal = () => setCurrentModal({ ...currentModal, visible: false });
 
     const handleChangeDate = (values) => {
         if (!values) {
