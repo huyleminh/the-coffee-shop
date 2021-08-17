@@ -302,7 +302,10 @@ function ProductManagementModal(props) {
                         <img src={image} alt="product" loading="lazy" />
                     )}
                     <span style={{ textAlign: "center", fontSize: "1.2rem", fontWeight: 600 }}>
-                        <FontAwesomeIcon icon={faStar} style={{ color: "gold" }} />
+                        <FontAwesomeIcon
+                            icon={faStar}
+                            style={{ color: "gold", marginRight: "5px" }}
+                        />
                         {dataModal.rate}
                     </span>
                 </div>
