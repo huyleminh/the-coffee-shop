@@ -133,7 +133,6 @@ function CartLayout() {
     };
 
     const handleAddToWishlist = async (item) => {
-        setIsSending(true);
         const user = JSON.parse(localStorage.getItem("user"));
         const wishListLocal = localStorage.getItem("wishlist")
             ? JSON.parse(localStorage.getItem("wishlist"))
@@ -153,7 +152,6 @@ function CartLayout() {
                                 `${i.product.name} added to your wishlist.`
                             );
                         }
-                        setIsSending(false);
                         return;
                     }
                 }
@@ -165,13 +163,13 @@ function CartLayout() {
                         `${i.product.name} added to your wishlist.`
                     );
                 }
-                setIsSending(false);
                 return;
             }
         }
 
         if (user && user.token) {
             try {
+                setIsSending(true);
                 const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200) {
                     NotificationBox.triggerSuccess(
@@ -179,7 +177,6 @@ function CartLayout() {
                         `${item.product} added to your wishlist successfully.`
                     );
                     setIsSending(false);
-                    return;
                 } else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
                         for (let i of wishListLocal) {
@@ -193,10 +190,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
-                        localStorage.setItem(
-                            "wishlist",
-                            JSON.stringify([...wishListLocal, item])
-                        );
+                        localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         setIsSending(false);
                         return;
                     } else {
@@ -241,41 +235,31 @@ function CartLayout() {
 
     const handleAction = (record) => handleAddToWishlist(record);
 
-    const removeSelectedItem = async (params) => {
+    const removeSelectedItem = async (selectedItems) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = JSON.parse(localStorage.getItem("cart"));
         const newCart = [];
-        const removeItem = [];
-        let isDeleted = false;
-        let deleted = false;
-        for (let item of cart) {
-            deleted = false;
-            for (let key of params) {
-                if (item.product.id === key) {
-                    isDeleted = true;
-                    removeItem.push(item);
-                    deleted = true;
-                }
-            }
-            if (!deleted) {
-                newCart.push(item);
-            }
-        }
+        const removeItems = [];
+
+        cart.forEach((item) => {
+            if (selectedItems.indexOf(item.product.id) > -1) removeItems.push(item);
+            else newCart.push(item);
+        });
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
-            if (isDeleted) {
+            if (removeItems.length > 0) {
                 NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
-                setIsSending(false);
             }
         } else {
+            setIsSending(true);
             try {
-                const removeItemPromise = removeItem.map((item) => {
+                const removeItemPromises = removeItems.map((item) => {
                     return CartAPI.deleteProduct(user.token, item.product.id);
                 });
-                const response = await Promise.all(removeItemPromise);
+                const response = await Promise.all(removeItemPromises);
                 let countNotExist = 0;
                 for (let item of response) {
                     if (item.status === 200) {
@@ -289,7 +273,7 @@ function CartLayout() {
                         localStorage.removeItem("user");
                     }
                 }
-                if (isDeleted) {
+                if (removeItems.length > 0) {
                     NotificationBox.triggerSuccess(
                         "SUCCESS",
                         "Remove selected item(s) successfully"
@@ -310,17 +294,8 @@ function CartLayout() {
         }
     };
 
-    const handleRemoveItem = (key) => {
-        setIsSending(true);
-        removeSelectedItem([key]);
-        const tempSelected = [];
-        for (let i of selectedItem) {
-            if (i !== key) {
-                tempSelected.push(i);
-            }
-        }
-        setSelectedItem(tempSelected);
-    };
+    const handleRemoveItem = (key) => removeSelectedItem([key]);
+
     const handleRemoveSelected = () => {
         if (selectedItem.length === 0) {
             NotificationBox.triggerError(
@@ -328,10 +303,8 @@ function CartLayout() {
                 "No item is being selected.\nPlease select item(s) and try again."
             );
         } else {
-            setIsSending(true);
             removeSelectedItem(selectedItem);
             setSelectedItem([]);
-            setIsSending(false);
         }
     };
 
@@ -419,10 +392,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
-                        localStorage.setItem(
-                            "wishlist",
-                            JSON.stringify([...wishListLocal, item])
-                        );
+                        localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         NotificationBox.triggerSuccess(
                             "ADDED ITEM TO WISHLIST",
                             `${item.product.name} added to your wishlist.`
