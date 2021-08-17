@@ -10,7 +10,7 @@ import ProductTable from "../../../components/Product/ProductTable";
 import Loading from "../../../components/Loading";
 import WishlistAPI from "../../../services/Wishlist/WishlistAPI";
 import CartAPI from "../../../services/Cart/CartAPI.js";
-import { Storage } from "../../../utilities/firebase/FirebaseConfig";
+import FirebaseAPI from "../../../services/FirsebaseAPI";
 import { LoadingOutlined } from "@ant-design/icons";
 import NotificationBox from "../../../components/NotificationBox";
 
@@ -30,6 +30,7 @@ function Wishlist() {
 
     useEffect(() => {
         const fetchWishlist = async () => {
+            setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));
 
             if (!user || !user.token) {
@@ -42,6 +43,7 @@ function Wishlist() {
                         const resWishlist = response.data;
                         setData(resWishlist);
                         localStorage.setItem("wishlist", JSON.stringify(resWishlist));
+                        setIsLoading(false);
                     } else if (
                         response.status === 404 ||
                         response.status === 401 ||
@@ -63,23 +65,26 @@ function Wishlist() {
         };
 
         fetchWishlist();
-    }, []);
+    }, [history]);
 
     useEffect(() => {
         const fetchImages = async () => {
-            const imagePromises = data.map((item) => {
-                const image = item.product.image;
-                if (image) return Storage.ref(`products/${item.product.image}`).getDownloadURL();
-                else return Storage.ref(`products/latte.jpg`).getDownloadURL();
+            const imagePromises = data.map((item, index) => {
+                return FirebaseAPI.getImageURL(item.product.image);
             });
 
-            const images = await Promise.all(imagePromises);
-            setImages(images);
-            setIsLoading(false);
+            try {
+                const images = await Promise.allSettled(imagePromises);
+                const postImages = images.map((item) => item.status === "fulfilled" && item.value.status === 200 ? item.value.data : require("../../../assets/images/latte.jpg").default)
+                setImages(postImages);
+            }
+            catch(err) {
+                console.log(err)
+            }
         };
         fetchImages();
     }, [data]);
-
+    
     const tempArray = data.map(function (item, index) {
         let row = {};
         row.key = item.product.id;
@@ -118,7 +123,13 @@ function Wishlist() {
     const handleRemoveItem = (id) => {
         setIsSending(true);
         removeSelectedItem([{key: id}]);
-        setSelectedItem([]);
+        let newSelected = []
+        for (let item of selectedItem) {
+            if (item["key"] !== id) {
+                newSelected.push(item)
+            }
+        }
+        setSelectedItem(newSelected);
     };
 
     const removeSelectedItem = async (params) => {
@@ -318,12 +329,12 @@ function Wishlist() {
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>
                     <div className="cmd_item" title="Add selected item(s) to cart">
-                        <button className="btn_cart_selected" onClick={handleCartSelected}>
+                        <button className="btn_cart_selected" onClick={handleCartSelected} disabled={isSending}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                         </button>
                     </div>
                     <div className="cmd_item" title="Remove selected item(s) from wishlist">
-                        <button className="table-deleted" onClick={handleRemoveSelected}>
+                        <button className="table-deleted" onClick={handleRemoveSelected} disabled={isSending}>
                             Remove
                         </button>
                     </div>
@@ -343,7 +354,7 @@ function Wishlist() {
                         <ProductTable
                             records={tempArray}
                             pagination={{ position: ["bottomCenter"], pageSize: 5 }}
-                            disable
+                            disabled={isSending}
                             hiddens={["quantity", "total"]}
                             handleSelected={handleSelected}
                             handleDeleted={handleRemoveItem}

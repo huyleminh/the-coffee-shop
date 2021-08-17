@@ -92,21 +92,33 @@ function ProductTable(props) {
             render: (action, record) => {
                 const icon =
                     action === "cart" ? (
+                        props.disabled ? (<span
+                            title="Add to cart"
+                            className="table-cart-disabled"
+                        >
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                        </span>) : (
                         <span
                             title="Add to cart"
                             className="table-cart"
                             onClick={() => handleAction(record)}
                         >
                             <FontAwesomeIcon icon={faShoppingCart} />
-                        </span>
+                        </span>)
                     ) : action === "wishlist" ? (
+                        props.disabled ? (<span
+                            title="Add to wishlist"
+                            className="table-wishlist-disabled"
+                        >
+                            <FontAwesomeIcon icon={faHeart} />
+                        </span>) : (
                         <span
                             title="Add to wishlist"
                             className="table-wishlist"
                             onClick={() => handleAction(record)}
                         >
                             <FontAwesomeIcon icon={faHeart} />
-                        </span>
+                        </span>)
                     ) : (
                         <></>
                     );
@@ -114,7 +126,7 @@ function ProductTable(props) {
                 return (
                     <div>
                         {icon}
-                        <button className="table-deleted" onClick={() => handleDeleted(record.key)}>
+                        <button className="table-deleted" onClick={() => handleDeleted(record.key)} disabled={props.disabled}>
                             Remove
                         </button>
                     </div>
