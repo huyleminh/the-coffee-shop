@@ -31,7 +31,6 @@ function ProfilePage(props) {
                 <div className={`profile__sidebar ${activeClassname}`}>
                     <FontAwesomeIcon icon={faTimes} id="exit" onClick={toggleSidebar} />
                     <img src={defaultAvatar} alt="defaultAvatar" className="avatar"></img>
-                    {/* <h1 className="username">username</h1> */}
                     <ul className="nav__sidebar">
                         <li>
                             <a href="/profile">Profile</a>

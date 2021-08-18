@@ -32,9 +32,8 @@ function CheckoutPage() {
     let totalPrice = 0;
     const checkoutList = JSON.parse(localStorage.getItem("checkout"));
 
-    const records = !checkoutList
-        ? []
-        : checkoutList.map((item) => {
+    const records = checkoutList
+        ? checkoutList.map((item) => {
               const record = {
                   key: item.product.id,
                   product: item.product.name,
@@ -60,7 +59,8 @@ function CheckoutPage() {
 
               totalPrice += record.total;
               return record;
-          });
+          })
+        : [];
 
     // Discount from vouchers
     const discountFee =
@@ -82,9 +82,7 @@ function CheckoutPage() {
         setUserInfo(prev);
     };
 
-    const handleBackToMenu = () => {
-        history.push("/menu");
-    };
+    const handleBackToMenu = () => history.push("/menu");
 
     const handleConfirmCheckout = async () => {
         setIsSending(true);
@@ -115,13 +113,9 @@ function CheckoutPage() {
                 setIsSending(false);
                 alert(res.statusText);
             } else if (res.status === 403) {
-                localStorage.removeItem("user");
-                localStorage.removeItem("checkout");
                 alert(res.statusText);
                 history.push("/login");
             } else if (res.status === 404) {
-                localStorage.removeItem("user");
-                localStorage.removeItem("checkout");
                 alert(
                     res.statusText +
                         " Please comeback to your cart and start creating an order again."
@@ -141,24 +135,24 @@ function CheckoutPage() {
                 const response = await CheckoutAPI.getUserInformation(token);
                 if (response.status === 200) {
                     const dataUser = response.data;
-                    dataUser.address = dataUser.address.replaceAll(/&&/g, ", ");
+                    dataUser.address = dataUser.address
+                        .replaceAll(/&&/g, ", ")
+                        .replaceAll(/(undefined,)|(undefined)/g, " ")
+                        .trim();
                     setUserInfo(dataUser);
                     setIsLoading(false);
                 } else if (response.status === 404) {
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("checkout");
-                    alert("Can not find your information.");
-                    history.push("/403");
+                    // alert("Can not find your information.");
+                    // history.push("/403");
                 } else if (response.status === 401 || response.status === 403) {
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("checkout");
-                    alert("You are not logged in, please login again.");
+                    alert(
+                        "You are not logged in or your session has expired. You will be automatically redirected to the login page."
+                    );
                     history.push("/login");
                 }
             } catch (error) {
                 console.log(error);
-                alert("Something went wrong. You will be automatically redirected to the menu.");
-                history.push("/menu");
+                alert("Something went wrong.");
             }
         };
 

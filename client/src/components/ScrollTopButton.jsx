@@ -20,9 +20,7 @@ function ScrollTopButton() {
             const scrollY = window.scrollY;
 
             if (scrollY > 400) scrollButton.classList.add("active");
-            else {
-                scrollButton.classList.remove("active");
-            }
+            else scrollButton.classList.remove("active");
         };
 
         window.addEventListener("scroll", onVisible);

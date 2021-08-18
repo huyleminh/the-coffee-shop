@@ -59,7 +59,7 @@ function Wishlist() {
                     }
                 } catch (error) {
                     console.log(error);
-                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                    alert("Something went wrong");
                 }
             }
         };
@@ -122,41 +122,25 @@ function Wishlist() {
     const handleRemoveItem = (id) => {
         setIsSending(true);
         removeSelectedItem([{ key: id }]);
-        let newSelected = [];
-        for (let item of selectedItem) {
-            if (item["key"] !== id) {
-                newSelected.push(item);
-            }
-        }
-        setSelectedItem(newSelected);
     };
 
-    const removeSelectedItem = async (params) => {
+    const removeSelectedItem = async (selectedItems) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
         const newWishlist = [];
         const removeItem = [];
-        let isExist = false;
-        let deleted = false;
         let countItems = 0;
-        for (let item of wishlist) {
-            deleted = false;
-            for (let key of params) {
-                if (item["product"]["id"] === key["key"]) {
-                    isExist = true;
-                    removeItem.push(item);
-                    deleted = true;
-                    countItems += 1;
-                }
-            }
-            if (!deleted) {
-                newWishlist.push(item);
-            }
-        }
+
+        wishlist.forEach((item) => {
+            if (selectedItems.indexOf(item.product.id) > -1) {
+                removeItem.push(item);
+                countItems++;
+            } else newWishlist.push(item);
+        });
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
-            if (isExist) {
+            if (removeItem.length > 0) {
                 NotificationBox.triggerSuccess(
                     "REMOVED",
                     `Successfully remove ${countItems} item(s).`
@@ -170,32 +154,34 @@ function Wishlist() {
                 const removeItemPromise = removeItem.map((item) => {
                     return WishlistAPI.deleteItem(user.token, item.product.id);
                 });
+
                 const response = await Promise.all(removeItemPromise);
-                let countSuccess = 0;
-                let countNotExist = 0;
+                let countSuccess = 0,
+                    countNotExist = 0;
+
                 for (let item of response) {
                     if (item.status === 200) {
-                        countSuccess += 1;
-                        console.log("success")
+                        countSuccess++;
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
                         } else {
-                            countNotExist += 1;
+                            countNotExist++;
                         }
                     } else if (item.status === 401 || item.status === 403) {
                         localStorage.removeItem("user");
-                        countSuccess += 1;
+                        countSuccess++;
                     }
                 }
-                if (isExist) {
+
+                if (removeItem.length > 0) {
                     NotificationBox.triggerSuccess(
                         "REMOVED",
                         `Successfully remove ${countSuccess} item(s).`
                     );
                     if (countNotExist !== 0) {
                         NotificationBox.triggerWarning(
-                            "Not Existed",
+                            "NOT EXISTED",
                             `${countNotExist} item(s) do(es) not exist in your wishlist.`
                         );
                     }
@@ -210,11 +196,11 @@ function Wishlist() {
         }
     };
 
-    const addSelectedToCart = async (params) => {
+    const addSelectedToCart = async (selectedItems) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
 
-        let listOfSelected = JSON.parse(JSON.stringify(params));
+        let listOfSelected = JSON.parse(JSON.stringify(selectedItems));
 
         const items = JSON.parse(JSON.stringify(cart));
         const existedList = [];
@@ -249,11 +235,12 @@ function Wishlist() {
                 });
                 successList.push(element.product);
             } else {
-                existedList.push(element.product)
+                existedList.push(element.product);
             }
         }
-        let flag = false;
+        let flag = true;
         if (user && user.token) {
+            flag = false;
             try {
                 const promiseList = listOfSelected.map((item) => {
                     return CartAPI.addToCart(user.token, {
@@ -264,9 +251,7 @@ function Wishlist() {
                 const response = await Promise.all(promiseList);
                 for (let item of response) {
                     if (item.status === 200) {
-                        console.log("success");
                     } else if (item.status === 409) {
-                        console.log("existed");
                     } else {
                         if (
                             item.status === 401 ||
@@ -274,13 +259,15 @@ function Wishlist() {
                             item.message === "This user does not exist"
                         )
                             flag = true;
-                        else console.log("success");
                     }
                 }
                 localStorage.setItem("cart", JSON.stringify(items));
                 if (existedList.length !== 0) {
                     for (let item of existedList) {
-                        NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+                        NotificationBox.triggerWarning(
+                            "EXISTED",
+                            `${item} has already existed in your cart.`
+                        );
                     }
                 }
                 for (let item of successList) {
@@ -291,14 +278,17 @@ function Wishlist() {
                 console.log(error);
                 alert("Something went wrong");
             }
-        } else flag = true;
+        }
 
         if (flag) {
             localStorage.removeItem("user");
             localStorage.setItem("cart", JSON.stringify(items));
             if (existedList.length !== 0) {
                 for (let item of existedList) {
-                    NotificationBox.triggerWarning("EXISTED", `${item} has already existed in your cart.`);
+                    NotificationBox.triggerWarning(
+                        "EXISTED",
+                        `${item} has already existed in your cart.`
+                    );
                 }
             }
             for (let item of successList) {
@@ -343,9 +333,7 @@ function Wishlist() {
             <Hero title="Wishlist" sologan="" image={MenuImage} />
             <div className="wrapper wishlist">
                 <div className="command_bar">
-                    <div className="cmd_item">
-                        {isSending ? <LoadingOutlined spin /> : <></>}
-                    </div>
+                    <div className="cmd_item">{isSending ? <LoadingOutlined spin /> : <></>}</div>
                     <div className="cmd_item">
                         <span>{selectedItem.length} item(s) selected</span>
                     </div>

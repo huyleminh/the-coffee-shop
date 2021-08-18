@@ -148,7 +148,7 @@ function CartLayout() {
                     if (j.product.id === item.key) {
                         if (!user || !user.token) {
                             NotificationBox.triggerError(
-                                "ITEM EXISTED IN WISHLIST",
+                                "EXISTED",
                                 `${i.product.name} added to your wishlist.`
                             );
                         }
@@ -159,7 +159,7 @@ function CartLayout() {
                 localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, i]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
-                        "ADDED ITEM TO WISHLIST",
+                        "ADDED TO WISHLIST",
                         `${i.product.name} added to your wishlist.`
                     );
                 }
@@ -173,7 +173,7 @@ function CartLayout() {
                 const response = await WishlistAPI.addToWishlist(user.token, item.key);
                 if (response.status === 200) {
                     NotificationBox.triggerSuccess(
-                        "ADDED",
+                        "ADDED TO WISHLIST",
                         `${item.product} added to your wishlist successfully.`
                     );
                     setIsSending(false);
@@ -212,14 +212,14 @@ function CartLayout() {
                     localStorage.removeItem("user");
                     localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
-                        "ADDED ITEM TO WISHLIST",
+                        "ADDED TO WISHLIST",
                         `${item.product} added to your wishlist.`
                     );
                     setIsSending(false);
                     return;
                 } else if (response.status === 409) {
                     NotificationBox.triggerError(
-                        "ITEM EXISTED",
+                        "EXISTED",
                         `${item.product} already existed in your wishlist.`
                     );
                     setIsSending(false);
@@ -227,7 +227,7 @@ function CartLayout() {
                 }
             } catch (error) {
                 console.log(error);
-                NotificationBox.triggerError("ERROR", `${item.product} something went wrong.`);
+                alert("Something went wrong");
                 setIsSending(false);
             }
         }
@@ -240,16 +240,22 @@ function CartLayout() {
         const cart = JSON.parse(localStorage.getItem("cart"));
         const newCart = [];
         const removeItems = [];
+        let countItems = 0;
 
         cart.forEach((item) => {
-            if (selectedItems.indexOf(item.product.id) > -1) removeItems.push(item);
-            else newCart.push(item);
+            if (selectedItems.indexOf(item.product.id) > -1) {
+                removeItems.push(item);
+                countItems++;
+            } else newCart.push(item);
         });
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
             if (removeItems.length > 0) {
-                NotificationBox.triggerSuccess("SUCCESS", "Remove selected item(s) successfully");
+                NotificationBox.triggerSuccess(
+                    "REMOVED",
+                    `Successfully remove ${countItems} item(s).`
+                );
                 localStorage.setItem("cart", JSON.stringify(newCart));
                 setCart(newCart);
             }
@@ -259,29 +265,35 @@ function CartLayout() {
                 const removeItemPromises = removeItems.map((item) => {
                     return CartAPI.deleteProduct(user.token, item.product.id);
                 });
+
                 const response = await Promise.all(removeItemPromises);
-                let countNotExist = 0;
+                let countNotExist = 0,
+                    countSuccess = 0;
+
                 for (let item of response) {
                     if (item.status === 200) {
+                        countSuccess++;
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
                         } else {
-                            countNotExist += 1;
+                            countNotExist++;
                         }
                     } else if (item.status === 401 || item.status === 403) {
                         localStorage.removeItem("user");
                     }
                 }
+
                 if (removeItems.length > 0) {
                     NotificationBox.triggerSuccess(
-                        "SUCCESS",
-                        "Remove selected item(s) successfully"
+                        "REMOVED",
+                        `Successfully remove ${countSuccess} item(s).`
                     );
                     if (countNotExist !== 0) {
-                        const errorString =
-                            countNotExist.toString() + "item(s) does not exist in your cart";
-                        NotificationBox.triggerError("ITEM DOES NOT EXIST", errorString);
+                        NotificationBox.triggerError(
+                            "NOT EXISTED",
+                            `${countNotExist} item(s) do(es) not exist in your wishlist.`
+                        );
                     }
                     localStorage.setItem("cart", JSON.stringify(newCart));
                     setCart(newCart);
@@ -289,7 +301,7 @@ function CartLayout() {
                 }
             } catch (error) {
                 console.log(error);
-                NotificationBox.triggerError("ERROR", "Something went wrong");
+                alert("Something went wrong.");
             }
         }
     };
@@ -344,7 +356,7 @@ function CartLayout() {
                     wishListLocal.push(cartItem);
                     if (!user || !user.token) {
                         NotificationBox.triggerSuccess(
-                            "ITEM ADDED",
+                            "ADD TO WISHLIST",
                             `${cartItem.product.name} added to your wishlist successfully.`
                         );
                     }
@@ -361,7 +373,7 @@ function CartLayout() {
                     const response = await WishlistAPI.addToWishlist(user.token, item.product.id);
                     if (response.status === 200)
                         NotificationBox.triggerSuccess(
-                            "ITEM ADDED",
+                            "ADD TO WISHLIST",
                             `${item.product.name} added to your wishlist successfully.`
                         );
                     else if (response.status === 404) {
@@ -394,19 +406,19 @@ function CartLayout() {
                         localStorage.removeItem("user");
                         localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         NotificationBox.triggerSuccess(
-                            "ADDED ITEM TO WISHLIST",
+                            "ADDED TO WISHLIST",
                             `${item.product.name} added to your wishlist.`
                         );
                     } else if (response.status === 409) {
                         NotificationBox.triggerError(
-                            "ITEM EXISTED",
+                            "EXISTED",
                             `${item.product.name} already existed in your wishlist.`
                         );
                     }
                 }
             } catch (error) {
                 console.log(error);
-                NotificationBox.triggerError("ERROR", `Something went wrong.`);
+                alert("{Something went wrong.");
             }
         }
     };
@@ -433,7 +445,7 @@ function CartLayout() {
                     }
                 } catch (error) {
                     console.log(error);
-                    NotificationBox.triggerError("ERROR", "Something went wrong");
+                    alert("Something went wrong");
                 }
             }
         };

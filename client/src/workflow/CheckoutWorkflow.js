@@ -62,6 +62,12 @@ class CheckoutWorkflow {
                         "Create order successfully. You will be automatically redirected to the order history in order to cancel the order if you want. Our employees will confirm your order soon.",
                 };
             } else if (response.status === 404) {
+                if (response.message === "This user does not exist")
+                    return {
+                        status: 403,
+                        statusText:
+                            "You are not logged in or your session has expired. You will be automatically redirected to the login page.",
+                    };
                 return {
                     status: 404,
                     statusText: response.message,

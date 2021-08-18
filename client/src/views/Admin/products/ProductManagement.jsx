@@ -6,7 +6,7 @@ import AdminAPI from "../../../services/Admin/AdminAPI";
 import FirebaseAPI from "../../../services/FirsebaseAPI";
 import CreateProductForm from "./CreateProductForm";
 import ProductManagementModal from "./ProductManagementModal";
-import Format from "../../../utilities/Format/Format.js"
+import Format from "../../../utilities/Format/Format.js";
 
 function ProductManagement() {
     const history = useHistory();
@@ -30,21 +30,24 @@ function ProductManagement() {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {
                 alert("You are not allowed to access this page.");
-                localStorage.removeItem("user");
                 history.push("/403");
             } else {
-                const response = await AdminAPI.getAllProducts(user.token);
-                if (response.status === 200) {
-                    setProducts(response.data);
-                    setIsLoading(false);
-                } else if (
-                    response.status === 401 ||
-                    response.status === 403 ||
-                    response.status === 404
-                ) {
-                    alert("You are not allowed to access this page.");
-                    localStorage.removeItem("user");
-                    history.push("/403");
+                try {
+                    const response = await AdminAPI.getAllProducts(user.token);
+                    if (response.status === 200) {
+                        setProducts(response.data);
+                        setIsLoading(false);
+                    } else if (
+                        response.status === 401 ||
+                        response.status === 403 ||
+                        response.status === 404
+                    ) {
+                        alert("You are not allowed to access this page.");
+                        history.push("/403");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
             }
         };

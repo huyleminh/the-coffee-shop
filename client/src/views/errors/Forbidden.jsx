@@ -6,13 +6,13 @@ import { useHistory } from "react-router-dom";
 function Forbidden() {
     const history = useHistory();
 
-    const goHome = () => {
-        history.push("/");
-    };
+    localStorage.removeItem("user");
+    localStorage.removeItem("profile");
+    localStorage.removeItem("checkout");
 
-    const goLogin = () => {
-        history.push("/login");
-    };
+    const goHome = () => history.push("/");
+
+    const goLogin = () => history.push("/login");
 
     return (
         <div

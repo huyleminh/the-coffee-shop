@@ -35,7 +35,7 @@ function ProductItem(props) {
     //Initialize card before rendering
     const [card, setCard] = useState(details);
 
-    const handleAddToCart = async (qtt) => {
+    const handleAddToCart = async (quantity) => {
         const user = JSON.parse(localStorage.getItem("user"));
         const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
 
@@ -53,7 +53,7 @@ function ProductItem(props) {
                       endDate: card.endDate,
                   }
                 : null,
-            quantity: qtt,
+            quantity: quantity,
         };
 
         let flag = false;
@@ -197,24 +197,23 @@ function ProductItem(props) {
                     );
             } catch (error) {
                 console.log(error);
-                //alert("Something went wrong.");
-                NotificationBox.triggerError("ERROR", `${card.name} something went wrong.`);
+                alert("Something went wrong.");
             }
         }
     };
 
-    const handleModalVisible = () => {
-        setIsModelVisible(false);
-    };
+    const handleModalVisible = () => setIsModelVisible(false);
 
     useEffect(() => {
         const getProductImage = async () => {
             let imgLink = card.imageOrigin ? card.imageOrigin : "img_default.png";
             let image = null;
-            console.log(imgLink)
             try {
                 const url = await FirebaseAPI.getImageURL(imgLink);
-                image = url.status === 200 ? url.data : require("../../../../assets/images/default_image.png").default;
+                image =
+                    url.status === 200
+                        ? url.data
+                        : require("../../../../assets/images/default_image.png").default;
             } catch (e) {
                 console.log(e);
                 image = require("../../../../assets/images/default_image.png").default;
@@ -239,6 +238,7 @@ function ProductItem(props) {
                             icon={faHeart}
                             className="favourite"
                             onClick={handleAddToWishlist}
+                            title="Add to wishlist"
                         />
                         <button onClick={() => handleAddToCart(1)}>ADD TO CART</button>
                     </div>
@@ -274,7 +274,9 @@ function ProductItem(props) {
                     addToWishlist={handleAddToWishlist}
                     details={card}
                 />
-            ) : null}
+            ) : (
+                <></>
+            )}
         </>
     );
 }
