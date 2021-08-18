@@ -17,7 +17,8 @@ function ProductsList(props) {
         const productCard = {
             id: product.id,
             name: product.name,
-            image: product.image,
+            image: require("../../../../assets/images/default_image.png").default,
+            imageOrigin: product.image,
             description: product.description,
             categoryName: categoryName,
             rate: 0,
