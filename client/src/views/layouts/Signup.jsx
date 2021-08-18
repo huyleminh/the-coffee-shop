@@ -1,17 +1,14 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../assets/css/signup.css";
 import backgroundImg from "../../assets/images/loginBackground.jpg";
+import NotificationBox from "../../components/NotificationBox";
 import SignupWorkflow from "../../workflow/SignupWorkflow";
 
 function Signup() {
-    (() => {
-        localStorage.removeItem("user");
-    })();
-
     const history = useHistory();
     const [userInfo, setUserInfo] = useState({
         fullname: "",
@@ -50,23 +47,32 @@ function Signup() {
             setIsSending(false);
             alert(signupResponse.statusText);
         } else if (signupResponse.status === 201) {
-            alert("Register successfully.");
             history.push("/");
+            setTimeout(() => {
+                NotificationBox.triggerSuccess("SIGNUP SUCCESS", "Register successfully.");
+            }, 800);
         }
     };
 
-    const handleGoHome = () => {
-        history.push("/");
-    };
+    const handleGoHome = () => history.push("/");
+
+    useEffect(() => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("profile");
+        localStorage.removeItem("checkout");
+    }, []);
 
     return (
-        <div className="signup" style={{
-            backgroundImage: `url(${backgroundImg})`,
-            backgroundSize: "cover"
-            }}>
+        <div
+            className="signup"
+            style={{
+                backgroundImage: `url(${backgroundImg})`,
+                backgroundSize: "cover",
+            }}
+        >
             <div className="form">
                 <div onClick={handleGoHome}>
-                    <FontAwesomeIcon icon={faHome} title="Go Home"/>
+                    <FontAwesomeIcon icon={faHome} title="Go Home" />
                 </div>
 
                 <div className="form__title">
@@ -123,7 +129,7 @@ function Signup() {
                             onChange={handleChange}
                         />
 
-                        <span style={{ textAlign: "center"}}>
+                        <span style={{ textAlign: "center" }}>
                             Already have an account? <a href="/login">Login</a>
                         </span>
                         <button type="submit" onClick={handleSubmit}>

@@ -30,7 +30,7 @@ function ProductManagementModal(props) {
 
     const handleSaveChange = async () => {
         if (isDeleting) {
-            alert("You can not edit it. Please waiting for a moment!");
+            alert("You can not edit this product. Please wait for a moment!");
             return;
         }
 
@@ -85,31 +85,27 @@ function ProductManagementModal(props) {
         const user = JSON.parse(localStorage.getItem("user"));
         try {
             const response = await AdminAPI.updateProductById(user.token, newData);
-
+            setIsSaving(false);
             if (response.status === 409) {
-                setIsSaving(false);
                 NotificationBox.triggerWarning("UPDATE WARNING", response.statusText);
             } else if (
                 response.status === 403 &&
                 response.status === 401 &&
                 response.status === 404
             ) {
-                localStorage.removeItem("user");
                 alert(response.statusText);
                 history.push("/403");
             } else {
                 // status = 200
-                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully");
+                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully.");
                 handleClose();
                 setTimeout(() => {
                     window.location.reload();
                 }, 1500);
             }
         } catch (error) {
-            NotificationBox.triggerError(
-                "UPDATE ERROR",
-                "Something went wrong. Can not update product."
-            );
+            console.log(error);
+            alert("Something went wrong.");
             setIsSaving(false);
         }
     };
@@ -123,7 +119,6 @@ function ProductManagementModal(props) {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             alert("You are not allowed to access this page.");
-            localStorage.removeItem("user");
             history.push("/403");
         } else {
             try {
@@ -134,12 +129,11 @@ function ProductManagementModal(props) {
                 setIsDeleting(false);
                 if (response.status === 200) {
                     NotificationBox.triggerSuccess(
-                        "DELETE PRODUCT SUCCESS",
+                        "DELETE SUCCESS",
                         `Delete ${dataModal.name} successfully.`
                     );
 
                     const imageName = dataModal.img;
-                    console.log(imageName);
                     FirebaseAPI.deleteImage(imageName);
                     // .then((res) => {
                     //     if (res.status === 200) {
@@ -162,7 +156,6 @@ function ProductManagementModal(props) {
                     response.status === 404
                 ) {
                     alert("You are not allowed to access this page.");
-                    localStorage.removeItem("user");
                     history.push("/403");
                 } else if (response.status === 400) {
                     NotificationBox.triggerError(
@@ -173,7 +166,7 @@ function ProductManagementModal(props) {
             } catch (error) {
                 setIsDeleting(false);
                 console.log(error);
-                NotificationBox.triggerError("DELETE PRODUCT ERROR", "Something went wrong.");
+                alert("Something went wrong.");
             }
         }
     };

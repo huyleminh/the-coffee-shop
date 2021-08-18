@@ -65,17 +65,13 @@ function UserProfileForm() {
                 setIsDisabled(true);
                 setIsSaving(false);
             } else if (res.status === 400) {
-                NotificationBox.triggerWarning("CHANGE PROFILE WARNING", res.statusText);
+                alert(res.statusText);
                 setIsSaving(false);
             } else if (res.status === 401 || res.status === 404) {
-                localStorage.removeItem("user");
-                localStorage.removeItem("profile");
                 alert("You are not logged in, please login again.");
                 history.push("/login");
             } else if (res.status === 403) {
                 alert("You are not allowed to access this page.");
-                localStorage.removeItem("user");
-                localStorage.removeItem("profile");
                 history.push("/403");
             } else if (res.status === 409) {
                 NotificationBox.triggerError("CHANGE PROFILE ERROR", res.statusText);
@@ -84,7 +80,7 @@ function UserProfileForm() {
             }
         } catch (error) {
             console.log(error);
-            NotificationBox.triggerError("CHANGE PROFILE ERROR", "Something went wrong.");
+            alert("Something went wrong.");
             setIsSaving(false);
         }
     };
@@ -126,17 +122,13 @@ function UserProfileForm() {
                     setUserProfile(resProfile);
                     setOldUserProfile(resProfile);
                     setIsLoading(false);
-                } else if (response.status === 404) {
-                    alert(response.message);
-                    history.push("/404");
-                } else if (response.status === 403) {
+                } else if (response.status === 403 || response.status === 404) {
                     alert("You are not allowed to access this page.");
                     history.push("/403");
                 }
             } catch (error) {
                 console.log(error);
                 alert("Something went wrong.");
-                history.push("/403");
             }
         };
 

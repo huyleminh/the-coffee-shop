@@ -64,7 +64,7 @@ function ProductModal(props) {
         const modalContent = document.querySelector("#modal-content");
         const id = setTimeout(() => {
             modalContent.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 15);
+        }, 50);
         return () => clearTimeout(id);
     }, []);
 

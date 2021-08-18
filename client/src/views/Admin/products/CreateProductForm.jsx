@@ -62,9 +62,8 @@ function CreateProductForm(props) {
             .then((res) => {
                 setIsSaving(false);
                 if (res.status === 400) {
-                    NotificationBox.triggerWarning("CREATE WARNING", res.statusText);
+                    alert(res.statusText);
                 } else if (res.status === 403) {
-                    localStorage.removeItem("user");
                     alert(res.statusText);
                     history.push("/403");
                 } else if (res.status === 409) {
@@ -101,10 +100,7 @@ function CreateProductForm(props) {
             })
             .catch((error) => {
                 console.log(error);
-                NotificationBox.triggerError(
-                    "CREATE ERROR",
-                    "Something went wrong. Can not create new product."
-                );
+                alert("Something went wrong.");
             });
     };
 

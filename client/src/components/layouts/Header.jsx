@@ -16,19 +16,16 @@ function Header(props) {
 
     const handleBarClick = () => {
         const prev = isBar;
-        setIsBar(!prev)
+        setIsBar(!prev);
     };
 
-    const handleLogoutClick = () => {
-        HomePageEventsHandler.trigger("logout");
-    };
+    const handleLogoutClick = () => HomePageEventsHandler.trigger("logout");
 
     useEffect(() => {
         const scrollHeader = () => {
             const scrollY = window.scrollY;
-            if (scrollY > 0) {
-                setIsScroll(true);
-            } else setIsScroll(false);
+            if (scrollY > 0) setIsScroll(true);
+            else setIsScroll(false);
         };
 
         window.addEventListener("scroll", scrollHeader);
@@ -79,12 +76,20 @@ function Header(props) {
                     {userStatus.isLogin ? (
                         <ul>
                             <li className="shopping">
-                                <a href="/wishlist" style={{ fontSize: "1.75rem" }} title="Your Wishlist" id="wishlist">
+                                <a
+                                    href="/wishlist"
+                                    style={{ fontSize: "1.75rem" }}
+                                    id="wishlist"
+                                >
                                     <FontAwesomeIcon icon={faHeart} />
                                 </a>
                             </li>
                             <li className="shopping">
-                                <a href="/cart" style={{ fontSize: "1.75rem" }} title="Your Cart" id="cart">
+                                <a
+                                    href="/cart"
+                                    style={{ fontSize: "1.75rem" }}
+                                    id="cart"
+                                >
                                     <FontAwesomeIcon icon={faShoppingCart} />
                                 </a>
                             </li>

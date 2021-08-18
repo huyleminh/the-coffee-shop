@@ -119,7 +119,6 @@ function OrderManagement() {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {
                 alert("You are not allowed to access this page.");
-                localStorage.removeItem("user");
                 history.push("/403");
             } else {
                 const params = {
@@ -136,18 +135,11 @@ function OrderManagement() {
                     if (response.status === 200) {
                         setOrders(response.data);
                         setIsLoading(false);
-                    } else if (response.status === 401 || response.status === 403) {
+                    } else if (response.status === 401 || response.status === 403 || response.status === 404) {
                         alert("You are not allowed to access this page.");
-                        localStorage.removeItem("user");
                         history.push("/403");
-                    } else if (response.status === 404) {
-                        if (response.message === "This user does not exist") {
-                            alert("You are not allowed to access this page.");
-                            localStorage.removeItem("user");
-                            history.push("/403");
-                        } else {
-                            alert(response.message);
-                        }
+                    } else if (response.status === 400) {
+                        alert(response.message);
                     }
                 } catch (error) {
                     console.log(error);

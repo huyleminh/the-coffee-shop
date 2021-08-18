@@ -36,7 +36,6 @@ function OrderHistory() {
                     alert(response.message);
                     history.push("/404");
                 } else if (response.status === 403 || response.status === 401) {
-                    localStorage.removeItem("user");
                     alert("You are not allowed to access this page.");
                     history.push("/403");
                 }
