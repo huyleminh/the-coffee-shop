@@ -78,7 +78,7 @@ function Wishlist() {
                 const postImages = images.map((item) =>
                     item.status === "fulfilled" && item.value.status === 200
                         ? item.value.data
-                        : require("../../../assets/images/latte.jpg").default
+                        : require("../../../assets/images/default_image.png").default
                 );
                 setImages(postImages);
             } catch (err) {

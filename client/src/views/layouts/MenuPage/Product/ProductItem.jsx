@@ -177,7 +177,7 @@ function ProductItem(props) {
                 image = url;
             } catch (e) {
                 console.log(e);
-                image = require("../../../../assets/images/latte.jpg").default;
+                image = require("../../../../assets/images/default_image.png").default;
             }
             setCard({ ...card, image });
         };
