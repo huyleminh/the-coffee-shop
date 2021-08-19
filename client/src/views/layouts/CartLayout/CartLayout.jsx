@@ -64,6 +64,7 @@ function CartLayout() {
         if (!user || !user.token) {
             localStorage.removeItem("user");
             localStorage.removeItem("checkout");
+            localStorage.removeItem("profile");
             const confirm = window.confirm(
                 "You are not logged in. Click Ok to go to the login page before you make your checkout."
             );
@@ -190,6 +191,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         setIsSending(false);
                         return;
@@ -210,6 +212,7 @@ function CartLayout() {
                         }
                     }
                     localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
                         "ADDED TO WISHLIST",
@@ -276,11 +279,13 @@ function CartLayout() {
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
+                            localStorage.removeItem("profile");
                         } else {
                             countNotExist++;
                         }
                     } else if (item.status === 401 || item.status === 403) {
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                     }
                 }
 
@@ -388,6 +393,7 @@ function CartLayout() {
                                 }
                             }
                             localStorage.removeItem("user");
+                            localStorage.removeItem("profile");
                             localStorage.setItem(
                                 "wishlist",
                                 JSON.stringify([...wishListLocal, item])
@@ -404,6 +410,7 @@ function CartLayout() {
                             }
                         }
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                         NotificationBox.triggerSuccess(
                             "ADDED TO WISHLIST",
@@ -430,6 +437,7 @@ function CartLayout() {
 
             if (!user || !user.token) {
                 localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 setIsLoading(false);
             } else {
                 try {
@@ -440,6 +448,7 @@ function CartLayout() {
                         localStorage.setItem("cart", JSON.stringify(response.data));
                     } else {
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         const cartLocal = JSON.parse(localStorage.getItem("cart"));
                         setCart(cartLocal ? cartLocal : []);
                     }

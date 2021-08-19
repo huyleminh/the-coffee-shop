@@ -29,8 +29,8 @@ function ProductManagement() {
         const fetchAllProducts = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {
-                alert("You are not allowed to access this page.");
-                history.push("/403");
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
             } else {
                 try {
                     const response = await AdminAPI.getAllProducts(user.token);
@@ -43,6 +43,8 @@ function ProductManagement() {
                         response.status === 404
                     ) {
                         alert("You are not allowed to access this page.");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         history.push("/403");
                     }
                 } catch (error) {

@@ -48,8 +48,8 @@ function OrderModal(props) {
         const target = e.target;
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            alert("You are not allowed to access this page.");
-            history.push("/403");
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
             return;
         }
 
@@ -71,11 +71,15 @@ function OrderModal(props) {
                 } else if (response.status === 401 || response.status === 403) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     history.push("/403");
                 } else if (response.status === 404) {
                     setIsSending(false);
                     if (response.message === "This user does not exist") {
                         alert("You are not allowed to access this page.");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         history.push("/403");
                     } else {
                         alert(response.message);

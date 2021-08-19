@@ -25,24 +25,30 @@ function OrderHistory() {
             .querySelector(".profile__order")
             .scrollIntoView({ behavior: "smooth", block: "start" });
         const fetchOrdersHistory = async () => {
-            try {
-                const token = JSON.parse(localStorage.getItem("user")).token;
-                const response = await UserAPI.getOrdersHistory(token);
-                if (response.status === 200) {
-                    setOrders(response.data);
-                    setIsLoading(false);
-                } else if (response.status === 404) {
-                    localStorage.removeItem("user");
-                    alert(response.message);
-                    history.push("/404");
-                } else if (response.status === 403 || response.status === 401) {
-                    alert("You are not allowed to access this page.");
-                    history.push("/403");
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.token) {
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
+            } else {
+                try {
+                    const response = await UserAPI.getOrdersHistory(user.token);
+                    if (response.status === 200) {
+                        setOrders(response.data);
+                        setIsLoading(false);
+                    } else if (
+                        response.status === 403 ||
+                        response.status === 401 ||
+                        response.status === 404
+                    ) {
+                        alert("You are not allowed to access this page.");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
+                        history.push("/403");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong.");
-                history.push("/403");
             }
         };
 
