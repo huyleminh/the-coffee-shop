@@ -51,6 +51,8 @@ function UserSecurityForm(props) {
                 history.push("/login");
             } else if (res.status === 403) {
                 alert("You are not allowed to access this page.");
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 history.push("/403");
             } else if (res.status === 409) {
                 NotificationBox.triggerError("CHANGE PASSWORD ERROR", res.statusText);

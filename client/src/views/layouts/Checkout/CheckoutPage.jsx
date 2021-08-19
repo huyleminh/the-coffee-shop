@@ -130,29 +130,32 @@ function CheckoutPage() {
 
     useEffect(() => {
         const fetchUsertInformation = async () => {
-            const token = JSON.parse(localStorage.getItem("user")).token;
-            try {
-                const response = await CheckoutAPI.getUserInformation(token);
-                if (response.status === 200) {
-                    const dataUser = response.data;
-                    dataUser.address = dataUser.address
-                        .replaceAll(/&&/g, ", ")
-                        .replaceAll(/(undefined,)|(undefined)/g, " ")
-                        .trim();
-                    setUserInfo(dataUser);
-                    setIsLoading(false);
-                } else if (response.status === 404) {
-                    // alert("Can not find your information.");
-                    // history.push("/403");
-                } else if (response.status === 401 || response.status === 403) {
-                    alert(
-                        "You are not logged in or your session has expired. You will be automatically redirected to the login page."
-                    );
-                    history.push("/login");
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.token) {
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
+            } else {
+                try {
+                    const response = await CheckoutAPI.getUserInformation(user.token);
+                    if (response.status === 200) {
+                        const dataUser = response.data;
+                        dataUser.address = dataUser.address
+                            .replaceAll(/&&/g, ", ")
+                            .replaceAll(/(undefined,)|(undefined)/g, " ")
+                            .trim();
+                        setUserInfo(dataUser);
+                        setIsLoading(false);
+                    } else if (response.status === 404) {
+                        // alert("Can not find your information.");
+                        // history.push("/403");
+                    } else if (response.status === 401 || response.status === 403) {
+                        alert("You are not allowed to access this page.");
+                        history.push("/403");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong.");
             }
         };
 

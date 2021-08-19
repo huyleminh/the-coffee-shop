@@ -35,6 +35,7 @@ function Wishlist() {
 
             if (!user || !user.token) {
                 localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 setIsLoading(false);
             } else {
                 try {
@@ -50,6 +51,7 @@ function Wishlist() {
                         response.status === 403
                     ) {
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         const wishlist = JSON.parse(localStorage.getItem("wishlist"));
                         if (!wishlist) {
                             setData([]);
@@ -140,6 +142,7 @@ function Wishlist() {
 
         if (!user || !user.token) {
             localStorage.removeItem("user");
+            localStorage.removeItem("profile");
             if (removeItem.length > 0) {
                 NotificationBox.triggerSuccess(
                     "REMOVED",
@@ -165,11 +168,13 @@ function Wishlist() {
                     } else if (item.status === 404) {
                         if (item.message === "This user does not exist") {
                             localStorage.removeItem("user");
+                            localStorage.removeItem("profile");
                         } else {
                             countNotExist++;
                         }
                     } else if (item.status === 401 || item.status === 403) {
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         countSuccess++;
                     }
                 }
@@ -282,6 +287,7 @@ function Wishlist() {
 
         if (flag) {
             localStorage.removeItem("user");
+            localStorage.removeItem("profile");
             localStorage.setItem("cart", JSON.stringify(items));
             if (existedList.length !== 0) {
                 for (let item of existedList) {

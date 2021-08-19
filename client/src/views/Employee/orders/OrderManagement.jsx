@@ -118,8 +118,8 @@ function OrderManagement() {
             setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {
-                alert("You are not allowed to access this page.");
-                history.push("/403");
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
             } else {
                 const params = {
                     startDate: new Date(filters.startDate).toJSON().match(/\d{4}-\d{2}-\d{2}/g)[0],
@@ -137,6 +137,8 @@ function OrderManagement() {
                         setIsLoading(false);
                     } else if (response.status === 401 || response.status === 403 || response.status === 404) {
                         alert("You are not allowed to access this page.");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         history.push("/403");
                     } else if (response.status === 400) {
                         alert(response.message);

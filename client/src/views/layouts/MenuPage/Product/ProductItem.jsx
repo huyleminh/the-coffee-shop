@@ -105,6 +105,7 @@ function ProductItem(props) {
                 }
             }
             localStorage.removeItem("user");
+            localStorage.removeItem("profile");
             localStorage.setItem("cart", JSON.stringify([...cart, item]));
             NotificationBox.triggerSuccess("ADD TO CART", `${card.name} is added to your cart.`);
         }
@@ -143,6 +144,7 @@ function ProductItem(props) {
                 }
             }
             localStorage.removeItem("user");
+            localStorage.removeItem("profile");
             localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
             NotificationBox.triggerSuccess(
                 "ADD TO WISHLIST",
@@ -168,6 +170,7 @@ function ProductItem(props) {
                             }
                         }
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
                         NotificationBox.triggerSuccess(
                             "ADD TO WISHLIST",
@@ -185,6 +188,7 @@ function ProductItem(props) {
                         }
                     }
                     localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     localStorage.setItem("wishlist", JSON.stringify([...wishlist, item]));
                     NotificationBox.triggerSuccess(
                         "ADD TO WISHLIST",

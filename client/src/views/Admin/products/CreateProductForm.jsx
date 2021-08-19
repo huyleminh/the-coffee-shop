@@ -57,6 +57,7 @@ function CreateProductForm(props) {
         delete newProduct.newDiscount;
         delete newProduct.startDate;
         delete newProduct.endDate;
+
         const flow = new CreateNewProductWorkflow({ ...newProduct, image: imageFile.name });
         flow.startFlow()
             .then((res) => {
@@ -65,6 +66,8 @@ function CreateProductForm(props) {
                     alert(res.statusText);
                 } else if (res.status === 403) {
                     alert(res.statusText);
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     history.push("/403");
                 } else if (res.status === 409) {
                     NotificationBox.triggerError("CREATE ERROR", res.statusText);

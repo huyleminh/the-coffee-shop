@@ -34,6 +34,13 @@ function ProductManagementModal(props) {
             return;
         }
 
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
+            return;
+        }
+
         setIsSaving(true);
 
         if (dataModal.name === "" || dataModal.name.match(/^\s+$/g)) {
@@ -82,7 +89,6 @@ function ProductManagementModal(props) {
             }
         }
 
-        const user = JSON.parse(localStorage.getItem("user"));
         try {
             const response = await AdminAPI.updateProductById(user.token, newData);
             setIsSaving(false);
@@ -94,6 +100,8 @@ function ProductManagementModal(props) {
                 response.status === 404
             ) {
                 alert(response.statusText);
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
                 history.push("/403");
             } else {
                 // status = 200
@@ -118,8 +126,8 @@ function ProductManagementModal(props) {
         setIsDeleting(true);
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            alert("You are not allowed to access this page.");
-            history.push("/403");
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
         } else {
             try {
                 const response = await AdminAPI.deleteProductById(
@@ -156,6 +164,8 @@ function ProductManagementModal(props) {
                     response.status === 404
                 ) {
                     alert("You are not allowed to access this page.");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     history.push("/403");
                 } else if (response.status === 400) {
                     NotificationBox.triggerError(
