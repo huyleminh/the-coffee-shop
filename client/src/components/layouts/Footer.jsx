@@ -4,7 +4,7 @@ import React from "react";
 import "../../assets/css/layouts/Footer.css";
 import TeamLogo from "../../assets/images/team-logo.png";
 
-const schedule = [
+const SCHEDULE = [
     { id: 1, date: "Monday", startHour: "8:00 AM", endHour: "10:00 PM" },
     { id: 2, date: "Tuesday", startHour: "8:00 AM", endHour: "10:00 PM" },
     { id: 3, date: "Wednesday", startHour: "8:00 AM", endHour: "10:00 PM" },
@@ -61,7 +61,7 @@ function Footer() {
                 <div className="footer__info">
                     <h2>Opening hours</h2>
                     <div className="footer__time">
-                        {schedule.map((item) => {
+                        {SCHEDULE.map((item) => {
                             const style = item.date.match(today) ? { color: "#fff670" } : {};
                             return (
                                 <div className="times" style={style} key={item.id}>

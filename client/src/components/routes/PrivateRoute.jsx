@@ -70,7 +70,6 @@ function PrivateRoute(props) {
         return <Route {...rest} component={AuthenticatedLayout} />;
     } else {
         alert("You are not allowed to access this page!");
-        localStorage.removeItem("user");
         return <Redirect to="/403" />;
     }
 }

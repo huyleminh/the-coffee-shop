@@ -22,7 +22,6 @@ function OrderHistoryModal(props) {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             alert("You are not allowed to access this page.");
-            history.push("/403");
             return;
         }
 
@@ -38,16 +37,17 @@ function OrderHistoryModal(props) {
                     setTimeout(() => {
                         window.location.reload();
                     }, 1500);
-                } else if (res.status === 401 || res.status === 403) {
+                } else if (
+                    res.status === 401 ||
+                    res.status === 403 ||
+                    (res.status === 404 && res.message === "This user does not exist")
+                ) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");
-                    localStorage.removeItem("user");
                     history.push("/403");
                 } else if (res.status === 404) {
                     setIsSending(false);
                     alert(res.message);
-                    localStorage.removeItem("user");
-                    history.push("/404");
                 } else if (res.status === 406) {
                     setIsSending(false);
                     NotificationBox.triggerError(
@@ -57,9 +57,6 @@ function OrderHistoryModal(props) {
                     setTimeout(() => {
                         window.location.reload();
                     }, 2500);
-                } else {
-                    alert("Something went wrong.");
-                    setIsSending(false);
                 }
             })
             .catch((err) => {
@@ -199,7 +196,10 @@ function OrderHistoryModal(props) {
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {Format.formatPriceWithVND(data.order.totalPrice + data.order.deliveryFee)} VND
+                            {Format.formatPriceWithVND(
+                                data.order.totalPrice + data.order.deliveryFee
+                            )}{" "}
+                            VND
                         </span>
                     </div>
 
@@ -219,7 +219,11 @@ function OrderHistoryModal(props) {
                                     button.
                                 </i>
                             </span>
-                            <button onClick={handleCancelOrder} className="order-modal-btn" id="order-modal-cancel">
+                            <button
+                                onClick={handleCancelOrder}
+                                className="order-modal-btn"
+                                id="order-modal-cancel"
+                            >
                                 {isSending ? <LoadingOutlined spin /> : "Cancel"}
                             </button>
                         </div>

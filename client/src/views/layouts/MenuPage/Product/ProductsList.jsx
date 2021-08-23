@@ -11,7 +11,6 @@ ProductsList.propTypes = {
 function ProductsList(props) {
     const { products, filter } = props;
 
-    // const productsList = Sort.sortProductsByKeyAsc(products, "price");
     const productsList = products.map((item) => {
         const { product, categoryName, rating, discount } = item;
         const productCard = {

@@ -7,6 +7,7 @@ import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
 import CustomPagination from "../../../components/navigation/CustomPagination";
+import NotificationBox from "../../../components/NotificationBox";
 import { MenuPageEventsHandler } from "../../../Events";
 import ProductAPI from "../../../services/Product/ProductAPI";
 import ProductsList from "./Product/ProductsList";
@@ -161,11 +162,16 @@ function MenuPage(props) {
                     setCategories(newCaterogies);
                     setIsLoading(false);
                 } else if (response.status === 404) {
+                    NotificationBox.triggerError(
+                        "LOADING PRODUCT",
+                        "Can not find any products that you need. Please wait for a moment and find it again."
+                    );
                     alert("Products not found!");
                     setIsLoading(false);
                 }
             } catch (err) {
                 console.log(err);
+                alert("Something went wrong.");
                 setIsLoading(false);
             }
         };
@@ -193,7 +199,7 @@ function MenuPage(props) {
                             setIsFilterVisible(true);
                         }}
                     >
-                        <span>Filter</span>
+                        <span>Toggle filter here</span>
                     </div>
                     {isLoading ? (
                         <Loading

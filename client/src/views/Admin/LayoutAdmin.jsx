@@ -20,7 +20,7 @@ import ProductManagement from "./products/ProductManagement";
 import StatisticManagement from "./statistics/StatisticManagement";
 
 const { Header, Sider, Content, Footer } = Layout;
-const { SubMenu } = Menu
+const { SubMenu } = Menu;
 
 function LayoutAdmin() {
     const history = useHistory();
@@ -47,7 +47,7 @@ function LayoutAdmin() {
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
                         <a href={`${match.path}/manage/products`}>Home</a>
                     </Menu.Item>
-                    <SubMenu 
+                    <SubMenu
                         key="management"
                         title="Management"
                         icon={<FontAwesomeIcon icon={faListAlt} />}>
@@ -60,8 +60,8 @@ function LayoutAdmin() {
                             <Menu.Item key="employees" icon={<FontAwesomeIcon icon={faUserCircle} />}>
                                 <a href={`${match.path}/manage/employees`}>Employees</a>
                             </Menu.Item>
-                    </SubMenu>  
-                    
+                    </SubMenu>
+
                     <Menu.Item key="statistics" icon={<FontAwesomeIcon icon={faChartBar} />}>
                         <a href={`${match.path}/manage/statistics`}>Statistics</a>
                     </Menu.Item>

@@ -36,41 +36,33 @@ function UserSecurityForm(props) {
         setIsSaving(true);
         const flow = new ChangeSecurityWorkflow({ ...security });
 
-        const res = await flow.startFlow();
+        try {
+            const res = await flow.startFlow();
 
-        switch (res.status) {
-            case 204:
+            if (res.status === 204) {
                 NotificationBox.triggerSuccess("CHANGE PASSWORD SUCCESS", res.statusText);
                 setIsSaving(false);
                 handleCancel();
-                break;
-            case 400:
-                NotificationBox.triggerWarning("CHANGE PASSWORD WARNING", res.statusText);
+            } else if (res.status === 400) {
+                alert(res.statusText);
                 setIsSaving(false);
-                break;
-            case 401:
-            case 404:
-                localStorage.removeItem("user");
-                localStorage.removeItem("profile");
+            } else if (res.status === 401 || res.status === 404) {
                 alert("You are not logged in, please login again.");
                 history.push("/login");
-                break;
-            case 403:
+            } else if (res.status === 403) {
                 alert("You are not allowed to access this page.");
                 localStorage.removeItem("user");
                 localStorage.removeItem("profile");
                 history.push("/403");
-                break;
-            case 409:
+            } else if (res.status === 409) {
                 NotificationBox.triggerError("CHANGE PASSWORD ERROR", res.statusText);
                 setIsDisabled(true);
                 setIsSaving(false);
-                break;
-
-            default:
-                NotificationBox.triggerError("CHANGE PASSWORD ERROR", "Something went wrong.");
-                console.log(res);
-                setIsSaving(false);
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong.");
+            setIsSaving(false);
         }
     };
 
