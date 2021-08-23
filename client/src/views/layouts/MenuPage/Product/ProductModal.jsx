@@ -72,7 +72,7 @@ function ProductModal(props) {
         <div className="product__modal">
             <div className="modal-overlay" onClick={handleVisible}></div>
             <div className="product__content" id="modal-content">
-                <img src={details.image} alt="detail" />
+                <img src={details.image} alt="Product" />
 
                 <div className="product__right">
                     <div className="product__top">

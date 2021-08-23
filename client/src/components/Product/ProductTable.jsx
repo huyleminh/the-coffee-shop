@@ -20,8 +20,6 @@ function ProductTable(props) {
         handleQuantity,
     } = props;
 
-    // const [isLoading, setIsLoading] = useState(true)
-
     const columns = [
         {
             title: "",
@@ -31,7 +29,7 @@ function ProductTable(props) {
                     return (
                         <img
                             src={image.src}
-                            alt="table"
+                            alt="Product"
                             width={image.width}
                             height={image.height}
                             loading="lazy"
