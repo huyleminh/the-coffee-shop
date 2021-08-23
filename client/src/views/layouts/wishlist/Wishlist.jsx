@@ -72,7 +72,8 @@ function Wishlist() {
     useEffect(() => {
         const fetchImages = async () => {
             const imagePromises = data.map((item, index) => {
-                return FirebaseAPI.getImageURL(item.product.image);
+                let imgLink = item.product.image ? item.product.image : "img_default.png";
+                return FirebaseAPI.getImageURL(imgLink);
             });
 
             try {
@@ -108,12 +109,13 @@ function Wishlist() {
             row.endDate = item.discount.endDate;
         }
 
-        if (item.product.image)
-            row.image = {
-                src: images[index],
-                width: "100px",
-                height: "100px",
-            };
+        row.image = {
+            src: images[index],
+            width: "100px",
+            height: "100px",
+        };
+        row.imageOrigin = item.product.image;
+
         return row;
     });
 
@@ -222,9 +224,7 @@ function Wishlist() {
                 items.push({
                     product: {
                         id: element.key,
-                        image: element.image.src.match(
-                            /img_.+((\.jpg)|(\.png)|(\.jpeg)|(\.jfif))/g
-                        )[0],
+                        image: element.imageOrigin,
                         name: element.product,
                         price: element.price.price,
                     },
