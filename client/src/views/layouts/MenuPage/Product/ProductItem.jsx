@@ -237,7 +237,7 @@ function ProductItem(props) {
                     <div className="custom-cover">
                         <div className="opacity" onClick={() => setIsModelVisible(true)}></div>
                         {card.discount ? <span className="sale">{`${card.discount}%`}</span> : null}
-                        <img src={card.image} alt="product" />
+                        <img src={card.image} alt="Product" />
                         <FontAwesomeIcon
                             icon={faHeart}
                             className="favourite"

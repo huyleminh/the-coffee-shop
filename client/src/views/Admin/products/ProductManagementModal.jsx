@@ -302,7 +302,7 @@ function ProductManagementModal(props) {
                     {!image ? (
                         <Skeleton.Image style={{ width: "250px", height: "300px" }} />
                     ) : (
-                        <img src={image} alt="product" loading="lazy" />
+                        <img src={image} alt="Product" loading="lazy" />
                     )}
                     <span style={{ textAlign: "center", fontSize: "1.2rem", fontWeight: 600 }}>
                         <FontAwesomeIcon

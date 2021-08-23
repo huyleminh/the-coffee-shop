@@ -35,7 +35,7 @@ function LayoutAdmin() {
         <Layout className="custom-site-dashboard">
             <Sider trigger={null} collapsible collapsed={collapsed} width="300px" breakpoint="md">
                 <div className="custom-menu__logo">
-                    <img src={LogoStore} alt="logo" />
+                    <img src={LogoStore} alt="Logo" />
                     <h1>The coffee shop</h1>
                 </div>
                 <Menu

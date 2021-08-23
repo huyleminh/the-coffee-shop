@@ -100,6 +100,7 @@ function Header(props) {
                                 </a>
                                 <div className="dropdown-content">
                                     <a href="/profile">Manage profle</a>
+                                    <a href="/profile/orders/history">Orders history</a>
                                     {/* eslint-disable-next-line */}
                                     <a onClick={handleLogoutClick}>Logout</a>
                                 </div>

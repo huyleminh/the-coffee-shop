@@ -87,7 +87,7 @@ function ProductManagement() {
                     return (
                         <img
                             src={image.src}
-                            alt="table"
+                            alt="Product"
                             width={image.width}
                             height={image.height}
                             loading="lazy"
