@@ -136,7 +136,7 @@ function Wishlist() {
         let countItems = 0;
 
         wishlist.forEach((item) => {
-            if (selectedItems.indexOf(item.product.id) > -1) {
+            if (selectedItems.findIndex((element) => element.key === item.product.id) > -1) {
                 removeItem.push(item);
                 countItems++;
             } else newWishlist.push(item);
