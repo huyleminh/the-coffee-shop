@@ -1,0 +1,124 @@
+.cart__top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart__topRight {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.cart {
+    min-height: 1200px;
+    height: auto;
+}
+
+.command_bar_cart {
+    width: 100%;
+    height: auto;
+    display: flex;
+    margin: 5px;
+    justify-content: flex-end;
+}
+
+.btn_go_menu_cart {
+    border: 2px solid #9c7044;
+    background-color: #fff;
+    color: #503a24;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 5px 20px 5px 20px;
+    margin: 0px;
+    transition: all 0.2s;
+}
+
+.btn_go_menu_cart:hover {
+    background-color: #9c7044;
+    color: #fff;
+}
+
+.btn_go_menu_cart:active {
+    border: 2px solid #503a24;
+    background-color: #503a24;
+    color: #fff;
+}
+
+.btn_delete_selected_cart {
+    outline: none;
+    background-color: #e40340;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 80px;
+    height: 40px;
+    padding: 10px;
+}
+
+.btn_delete_selected_cart:hover {
+    background-color: #cf0239;
+}
+
+.btn_delete_selected_cart:active {
+    border: 2px solid #503a24;
+    background-color: #503a24;
+    color: #fff;
+}
+
+.cmd_item_cart {
+    margin: 10px 3px 10px 3px;
+    align-items: center;
+    text-align: center;
+}
+
+.cmd_item_cart span {
+    display: flex;
+    margin: 10px 10px 10px 10px;
+}
+
+.cmd_item_checkout {
+    padding-right: 50px;
+}
+
+.btn_checkout_cart {
+    outline: none;
+    font-weight: 650;
+    border: none;
+    cursor: pointer;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 155px;
+    height: 50px;
+    padding: 0px;
+    font-size: 1.25em;
+    text-transform: uppercase;
+}
+
+.totalMoney {
+    display: flex;
+    justify-content: flex-end;
+    color: #503a24;
+    margin: 20px 0px;
+}
+
+.totalMoney > span {
+    font-size: 1.4em;
+    margin: 0px 0px 0px 10px;
+    text-align: center;
+}
+
+.totalMoney .total_text {
+    font-weight: 650;
+}
+
+.bottomRight__totalCheckout__cart {
+    display: flex;
+    justify-content: flex-end;
+}

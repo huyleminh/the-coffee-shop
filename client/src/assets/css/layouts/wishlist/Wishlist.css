@@ -1,0 +1,92 @@
+.wishlist {
+    min-height: 1200px;
+    height: auto;
+}
+
+.command_bar {
+    width: 100%;
+    height: auto;
+    display: flex;
+    margin: 5px 0;
+    justify-content: flex-end;
+}
+
+.btn_go_menu {
+    border: 2px solid #9c7044;
+    background-color: #fff;
+    color: #503a24;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 5px 20px 5px 20px;
+    margin: 0px;
+    transition: all 0.2s;
+}
+
+.btn_go_menu:hover {
+    background-color: #9c7044;
+    color: #fff;
+}
+
+.btn_go_menu:active {
+    border: 2px solid #503a24;
+    background-color: #503a24;
+    color: #fff;
+}
+
+.btn_delete_selected {
+    outline: none;
+    background-color: #e40340;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 80px;
+    height: 40px;
+    padding: 10px;
+}
+
+.btn_delete_selected:hover {
+    background-color: #cf0239;
+}
+
+.btn_delete_selected:active {
+    border: 2px solid #503a24;
+    background-color: #503a24;
+    color: #fff;
+}
+
+.cmd_item {
+    margin: 10px 3px 10px 3px;
+    align-items: center;
+    text-align: center;
+}
+
+.cmd_item span {
+    display: flex;
+    margin: 10px 10px 10px 10px;
+}
+
+.btn_cart_selected {
+    height: 40px;
+    border: 1px solid #503a2446;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    color: #61462c;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.btn_cart_selected:hover {
+    background-color: #9c7044;
+    color: #fff;
+}
+
+.btn_cart_selected:disabled {
+    cursor: wait;
+}
