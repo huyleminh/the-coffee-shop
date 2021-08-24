@@ -143,25 +143,25 @@ function CartLayout() {
             ? JSON.parse(localStorage.getItem("cart"))
             : [];
 
-        for (let i of cartLocal) {
-            if (i.product.id === item.key) {
-                for (let j of wishListLocal) {
-                    if (j.product.id === item.key) {
+        for (let cartItem of cartLocal) {
+            if (cartItem.product.id === item.key) {
+                for (let wishlistItem of wishListLocal) {
+                    if (wishlistItem.product.id === item.key) {
                         if (!user || !user.token) {
                             NotificationBox.triggerError(
                                 "EXISTED",
-                                `${i.product.name} added to your wishlist.`
+                                `${cartItem.product.name} added to your wishlist.`
                             );
                         }
                         return;
                     }
                 }
                 localStorage.removeItem("user");
-                localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, i]));
+                localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, cartItem]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
                         "ADDED TO WISHLIST",
-                        `${i.product.name} added to your wishlist.`
+                        `${cartItem.product.name} added to your wishlist.`
                     );
                 }
                 return;
@@ -180,8 +180,8 @@ function CartLayout() {
                     setIsSending(false);
                 } else if (response.status === 404) {
                     if (response.message === "This user does not exist") {
-                        for (let i of wishListLocal) {
-                            if (i.product.id === item.id) {
+                        for (let wishlistItem of wishListLocal) {
+                            if (wishlistItem.product.id === item.id) {
                                 NotificationBox.triggerError(
                                     "EXISTED",
                                     `${item.product.name} has already existed in your wishlist.`
@@ -201,8 +201,8 @@ function CartLayout() {
                         return;
                     }
                 } else if (response.status === 401 || response.status === 403) {
-                    for (let i of wishListLocal) {
-                        if (i.product.id === item.product.id) {
+                    for (let wishlistItem of wishListLocal) {
+                        if (wishlistItem.product.id === item.product.id) {
                             NotificationBox.triggerError(
                                 "EXISTED",
                                 `${item.product} has already existed in your Wishlist.`
@@ -240,12 +240,15 @@ function CartLayout() {
 
     const removeSelectedItem = async (selectedItems) => {
         const user = JSON.parse(localStorage.getItem("user"));
-        const cart = JSON.parse(localStorage.getItem("cart"));
+        let cartLocal = JSON.parse(localStorage.getItem("cart"));
         const newCart = [];
         const removeItems = [];
         let countItems = 0;
 
-        cart.forEach((item) => {
+        if (cartLocal === null)
+            cartLocal = []
+
+        cartLocal.forEach((item) => {
             if (selectedItems.indexOf(item.product.id) > -1) {
                 removeItems.push(item);
                 countItems++;
@@ -326,11 +329,6 @@ function CartLayout() {
     };
 
     const handleWishlistSelected = async () => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const cartLocal = JSON.parse(localStorage.getItem("cart"));
-        const wishListLocal = JSON.parse(localStorage.getItem("wishlist"));
-        const selectedData = [];
-
         if (selectedItem.length === 0) {
             NotificationBox.triggerError(
                 "NO SELECTED ITEM",
@@ -338,6 +336,17 @@ function CartLayout() {
             );
             return;
         }
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        let cartLocal = JSON.parse(localStorage.getItem("cart"));
+        let wishListLocal = JSON.parse(localStorage.getItem("wishlist"));
+        const selectedData = [];
+
+        if (wishListLocal === null)
+            wishListLocal = []
+        if (cartLocal === null)
+            cartLocal = []
+
         let isExisted = false;
         for (let id of selectedItem) {
             for (let cartItem of cartLocal) {
@@ -485,21 +494,27 @@ function CartLayout() {
     let totalMoneyTemp = 0;
 
     if (selectedItem.length !== 0) {
-        for (let key of selectedItem) {
-            for (let item of cart) {
-                if (key === item.product.id) {
-                    if (item.discount !== null) {
-                        const price =
-                            Math.floor(item.product.price * (1 - item.discount.percent)) *
-                            item.quantity;
-                        totalMoneyTemp += price;
-                    } else {
-                        const price = Math.floor(item.product.price * item.quantity);
-                        totalMoneyTemp += price;
-                    }
-                }
+        cart.forEach(cartItem => {
+            if (selectedItem.includes(cartItem.product.id)) {
+                const discount = (cartItem.discount === null) ? 0 : cartItem.discount.percent
+                totalMoneyTemp += Math.floor(cartItem.product.price * (1 - discount) * cartItem.quantity)
             }
-        }
+        })
+        // for (let key of selectedItem) {
+        //     for (let item of cart) {
+        //         if (key === item.product.id) {
+        //             if (item.discount !== null) {
+        //                 const price =
+        //                     Math.floor(item.product.price * (1 - item.discount.percent)) *
+        //                     item.quantity;
+        //                 totalMoneyTemp += price;
+        //             } else {
+        //                 const price = Math.floor(item.product.price * item.quantity);
+        //                 totalMoneyTemp += price;
+        //             }
+        //         }
+        //     }
+        // }
     } else {
         totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
