@@ -116,24 +116,19 @@ class AdminController {
             delete payload.categoryName;
         }
 
-        if (payload.discount !== undefined) {
-            if (payload.discount.id !== null) {
-                const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
-                if (payload.discount.id === undefined) {
-                    const newDiscount = new Discount(
-                        discountId,
-                        payload.discount.percent,
-                        0,
-                        payload.discount.startDate,
-                        payload.discount.endDate
-                    );
-                    const insertNewDiscount = await newDiscount.insert();
-                }
-
-                payload.discountId = discountId;
-                delete payload.discount;
-            }
+        const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
+        if (payload.discount.id === undefined) {
+            const newDiscount = new Discount(
+                discountId,
+                payload.discount.percent,
+                0,
+                payload.discount.startDate,
+                payload.discount.endDate
+            );
+            const insertNewDiscount = await newDiscount.insert();
         }
+        payload.discountId = discountId;
+        delete payload.discount;
 
         const productId = payload.productId;
         delete payload.productId;

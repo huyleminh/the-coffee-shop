@@ -30,14 +30,13 @@ function ProfilePage(props) {
             <div className="wrapper profile">
                 <div className={`profile__sidebar ${activeClassname}`}>
                     <FontAwesomeIcon icon={faTimes} id="exit" onClick={toggleSidebar} />
-                    <img src={defaultAvatar} alt="defaultAvatar" className="avatar"></img>
-                    {/* <h1 className="username">username</h1> */}
+                    <img src={defaultAvatar} alt="Avatar" className="avatar"></img>
                     <ul className="nav__sidebar">
                         <li>
                             <a href="/profile">Profile</a>
                         </li>
                         <li>
-                            <a href="/profile/orders/history">Order History</a>
+                            <a href="/profile/orders/history">Orders History</a>
                         </li>
                         <li>
                             <a href="/profile">Voucher</a>

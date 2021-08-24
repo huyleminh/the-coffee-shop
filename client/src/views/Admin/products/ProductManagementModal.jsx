@@ -30,59 +30,91 @@ function ProductManagementModal(props) {
 
     const handleSaveChange = async () => {
         if (isDeleting) {
-            alert("You can not edit it. Please waiting for a moment!")
-            return
+            alert("You can not edit this product. Please wait for a moment!");
+            return;
+        }
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.token) {
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
+            return;
         }
 
         setIsSaving(true);
 
+        if (dataModal.name === "" || dataModal.name.match(/^\s+$/g)) {
+            alert("Product name must be filled.");
+            setIsSaving(false);
+            return;
+        }
+
+        if (dataModal.category === "" || dataModal.category.match(/^\s+$/g)) {
+            alert("Product category must be filled.");
+            setIsSaving(false);
+            return;
+        }
+
+        if (dataModal.price === "" || parseFloat(dataModal.price) <= 0) {
+            alert("Product price must be larger than 0.");
+            setIsSaving(false);
+            return;
+        }
+
         const newData = {
             productId: dataModal.id,
-            name: dataModal.name,
+            name: dataModal.name.trim(),
             description: dataModal.description,
             price: dataModal.price,
-            categoryName: dataModal.category,
-            discount: { id: null }
-        }
+            categoryName: dataModal.category.trim().toLowerCase(),
+            discount: { id: null },
+        };
 
-        if (Object.keys(currentDiscount).length !== 0)
-            newData.discount.id = currentDiscount.id
+        newData.categoryName =
+            newData.categoryName[0].toUpperCase() + newData.categoryName.slice(1);
+
+        if (Object.keys(currentDiscount).length !== 0) newData.discount.id = currentDiscount.id;
         else {
-            if (dataModal.newDiscount !== "" && dataModal.newDiscount !== 0 &&
-                dataModal.startDate !== null && dataModal.endDate !== null ) {
+            if (
+                dataModal.newDiscount !== "" &&
+                parseFloat(dataModal.newDiscount) > 0 &&
+                dataModal.startDate !== null &&
+                dataModal.endDate !== null
+            ) {
                 newData.discount = {
-                    percent: dataModal.newDiscount / 100,
+                    percent: parseFloat(dataModal.newDiscount) / 100,
                     startDate: dataModal.startDate,
-                    endDate: dataModal.endDate
-                }
+                    endDate: dataModal.endDate,
+                };
             }
         }
 
-        const user = JSON.parse(localStorage.getItem("user"))
         try {
-            const response = await AdminAPI.updateProductById(user.token, newData)
-
+            const response = await AdminAPI.updateProductById(user.token, newData);
+            setIsSaving(false);
             if (response.status === 409) {
-                setIsSaving(false)
-                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText)
-            }
-            else if (response.status === 403 && response.status === 401 && response.status === 404) {
-                localStorage.removeItem("user")
-                alert(response.statusText)
-                history.push("/403")
-            } else {  // status = 200
-                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully")
-                handleClose()
+                NotificationBox.triggerWarning("UPDATE WARNING", response.statusText);
+            } else if (
+                response.status === 403 &&
+                response.status === 401 &&
+                response.status === 404
+            ) {
+                alert(response.statusText);
+                localStorage.removeItem("user");
+                localStorage.removeItem("profile");
+                history.push("/403");
+            } else {
+                // status = 200
+                NotificationBox.triggerSuccess("UPDATE SUCCESS", "Update successfully.");
+                handleClose();
                 setTimeout(() => {
-                    window.location.reload()
+                    window.location.reload();
                 }, 1500);
             }
         } catch (error) {
-            NotificationBox.triggerError(
-                "UPDATE ERROR",
-                "Something went wrong. Can not update product."
-            );
-            setIsSaving(false)
+            console.log(error);
+            alert("Something went wrong.");
+            setIsSaving(false);
         }
     };
 
@@ -94,9 +126,8 @@ function ProductManagementModal(props) {
         setIsDeleting(true);
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            alert("You are not allowed to access this page.");
-            localStorage.removeItem("user");
-            history.push("/403");
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
         } else {
             try {
                 const response = await AdminAPI.deleteProductById(
@@ -106,12 +137,11 @@ function ProductManagementModal(props) {
                 setIsDeleting(false);
                 if (response.status === 200) {
                     NotificationBox.triggerSuccess(
-                        "DELETE PRODUCT SUCCESS",
+                        "DELETE SUCCESS",
                         `Delete ${dataModal.name} successfully.`
                     );
 
                     const imageName = dataModal.img;
-                    console.log(imageName);
                     FirebaseAPI.deleteImage(imageName);
                     // .then((res) => {
                     //     if (res.status === 200) {
@@ -135,6 +165,7 @@ function ProductManagementModal(props) {
                 ) {
                     alert("You are not allowed to access this page.");
                     localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     history.push("/403");
                 } else if (response.status === 400) {
                     NotificationBox.triggerError(
@@ -145,7 +176,7 @@ function ProductManagementModal(props) {
             } catch (error) {
                 setIsDeleting(false);
                 console.log(error);
-                NotificationBox.triggerError("DELETE PRODUCT ERROR", "Something went wrong.");
+                alert("Something went wrong.");
             }
         }
     };
@@ -271,10 +302,13 @@ function ProductManagementModal(props) {
                     {!image ? (
                         <Skeleton.Image style={{ width: "250px", height: "300px" }} />
                     ) : (
-                        <img src={image} alt="product" loading="lazy" />
+                        <img src={image} alt="Product" loading="lazy" />
                     )}
                     <span style={{ textAlign: "center", fontSize: "1.2rem", fontWeight: 600 }}>
-                        <FontAwesomeIcon icon={faStar} style={{ color: "gold" }} />
+                        <FontAwesomeIcon
+                            icon={faStar}
+                            style={{ color: "gold", marginRight: "5px" }}
+                        />
                         {dataModal.rate}
                     </span>
                 </div>

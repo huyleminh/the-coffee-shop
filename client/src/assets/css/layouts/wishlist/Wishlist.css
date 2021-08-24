@@ -7,7 +7,7 @@
     width: 100%;
     height: auto;
     display: flex;
-    margin: 5px;
+    margin: 5px 0;
     justify-content: flex-end;
 }
 
@@ -85,4 +85,8 @@
 .btn_cart_selected:hover {
     background-color: #9c7044;
     color: #fff;
+}
+
+.btn_cart_selected:disabled {
+    cursor: wait;
 }

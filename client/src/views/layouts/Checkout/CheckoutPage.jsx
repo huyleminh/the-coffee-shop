@@ -1,3 +1,4 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Layout, Radio, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
@@ -5,10 +6,11 @@ import "../../../assets/css/layouts/checkout/CheckoutPage.css";
 import MenuImage from "../../../assets/images/menu.jpg";
 import Hero from "../../../components/layouts/Hero";
 import Loading from "../../../components/Loading";
+import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import CheckoutAPI from "../../../services/Checkout/CheckoutAPI";
+import Format from "../../../utilities/Format/Format";
 import CheckoutWorkflow from "../../../workflow/CheckoutWorkflow";
-import { LoadingOutlined } from "@ant-design/icons";
 
 const { Content } = Layout;
 
@@ -30,9 +32,8 @@ function CheckoutPage() {
     let totalPrice = 0;
     const checkoutList = JSON.parse(localStorage.getItem("checkout"));
 
-    const records = !checkoutList
-        ? []
-        : checkoutList.map((item) => {
+    const records = checkoutList
+        ? checkoutList.map((item) => {
               const record = {
                   key: item.product.id,
                   product: item.product.name,
@@ -58,7 +59,8 @@ function CheckoutPage() {
 
               totalPrice += record.total;
               return record;
-          });
+          })
+        : [];
 
     // Discount from vouchers
     const discountFee =
@@ -80,9 +82,7 @@ function CheckoutPage() {
         setUserInfo(prev);
     };
 
-    const handleBackToMenu = () => {
-        history.push("/menu");
-    };
+    const handleBackToMenu = () => history.push("/menu");
 
     const handleConfirmCheckout = async () => {
         setIsSending(true);
@@ -99,46 +99,63 @@ function CheckoutPage() {
             products,
             deliveryFee: SHIPPING_FEE[records.length % 3],
         });
-        const res = await flow.startFlow();
-        if (res.status === 200) {
-            setIsSending(false);
-            alert(res.statusText);
-            history.push("/profile/orders/history");
-        } else if (res.status === 400) {
-            setIsSending(false);
-            alert(res.statusText);
-        } else if (res.status === 403) {
-            alert(res.statusText);
-            history.push("/login");
-        } else if (res.status === 404) {
-            alert(
-                res.statusText + " Please comeback to your cart and start creating an order again."
-            );
-            history.push("/cart");
+        try {
+            const res = await flow.startFlow();
+            if (res.status === 200) {
+                setIsSending(false);
+                NotificationBox.triggerSuccess("CHECKOUT SUCCESS", res.statusText);
+                NotificationBox.triggerInfo(
+                    "CHECKOUT INFO",
+                    "The page will redirect after 4 seconds."
+                );
+                setTimeout(() => history.push("/profile/orders/history"), 4000);
+            } else if (res.status === 400) {
+                setIsSending(false);
+                alert(res.statusText);
+            } else if (res.status === 403) {
+                alert(res.statusText);
+                history.push("/login");
+            } else if (res.status === 404) {
+                alert(
+                    res.statusText +
+                        " Please comeback to your cart and start creating an order again."
+                );
+                history.push("/cart");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong.");
         }
     };
 
     useEffect(() => {
         const fetchUsertInformation = async () => {
-            const token = JSON.parse(localStorage.getItem("user")).token;
-            try {
-                const response = await CheckoutAPI.getUserInformation(token);
-                if (response.status === 200) {
-                    const dataUser = response.data;
-                    dataUser.address = dataUser.address.replaceAll(/&&/g, ", ");
-                    setUserInfo(dataUser);
-                    setIsLoading(false);
-                } else if (response.status === 404) {
-                    alert("Can not find your information.");
-                    history.push("/404");
-                } else if (response.status === 401 || response.status === 403) {
-                    alert("You are not logged in, please login again.");
-                    history.push("/login");
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.token) {
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
+            } else {
+                try {
+                    const response = await CheckoutAPI.getUserInformation(user.token);
+                    if (response.status === 200) {
+                        const dataUser = response.data;
+                        dataUser.address = dataUser.address
+                            .replaceAll(/&&/g, ", ")
+                            .replaceAll(/(undefined,)|(undefined)/g, " ")
+                            .trim();
+                        setUserInfo(dataUser);
+                        setIsLoading(false);
+                    } else if (response.status === 404) {
+                        // alert("Can not find your information.");
+                        // history.push("/403");
+                    } else if (response.status === 401 || response.status === 403) {
+                        alert("You are not allowed to access this page.");
+                        history.push("/403");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong. You will be automatically redirected to the menu.");
-                history.push("/menu");
             }
         };
 
@@ -238,20 +255,25 @@ function CheckoutPage() {
                         <div className="checkout__summary">
                             <div className="checkout__summary-item">
                                 <span>Total:</span>
-                                <span>{totalPrice} VND</span>
+                                <span>{Format.formatPriceWithVND(totalPrice)} VND</span>
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Shipping fee:</span>
-                                <span>{SHIPPING_FEE[records.length % 3]} VND</span>
+                                <span>
+                                    {Format.formatPriceWithVND(SHIPPING_FEE[records.length % 3])}{" "}
+                                    VND
+                                </span>
                             </div>
                             <div className="checkout__summary-item">
                                 <span>Voucher:</span>
-                                <span>- {discountFee} VND</span>
+                                <span> - {Format.formatPriceWithVND(discountFee)} VND</span>
                             </div>
                             <div className="checkout__summary-item total">
                                 <span>Total price:</span>
                                 <span style={{ color: "#f00" }}>
-                                    {totalPrice + SHIPPING_FEE[records.length % 3] - discountFee}{" "}
+                                    {Format.formatPriceWithVND(
+                                        totalPrice + SHIPPING_FEE[records.length % 3] - discountFee
+                                    )}{" "}
                                     VND
                                 </span>
                             </div>

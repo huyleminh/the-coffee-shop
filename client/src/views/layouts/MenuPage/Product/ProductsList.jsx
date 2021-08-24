@@ -11,13 +11,13 @@ ProductsList.propTypes = {
 function ProductsList(props) {
     const { products, filter } = props;
 
-    // const productsList = Sort.sortProductsByKeyAsc(products, "price");
     const productsList = products.map((item) => {
         const { product, categoryName, rating, discount } = item;
         const productCard = {
             id: product.id,
             name: product.name,
-            image: product.image,
+            image: require("../../../../assets/images/default_image.png").default,
+            imageOrigin: product.image,
             description: product.description,
             categoryName: categoryName,
             rate: 0,

@@ -5,6 +5,7 @@ import "../../../../assets/css/layouts/profile/OrderHistory.css";
 import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
 import Sort from "../../../../utilities/Sort/Sort";
+import Format from "../../../../utilities/Format/Format";
 import OrderHistoryModal from "./OrderHistoryModal";
 const { Option } = Select;
 
@@ -24,26 +25,30 @@ function OrderHistory() {
             .querySelector(".profile__order")
             .scrollIntoView({ behavior: "smooth", block: "start" });
         const fetchOrdersHistory = async () => {
-            try {
-                const token = JSON.parse(localStorage.getItem("user")).token;
-                const response = await UserAPI.getOrdersHistory(token);
-                if (response.status === 200) {
-                    setOrders(response.data);
-                    setIsLoading(false);
-                    console.log(response.data);
-                } else if (response.status === 404) {
-                    localStorage.removeItem("user");
-                    alert(response.message);
-                    history.push("/404");
-                } else if (response.status === 403 || response.status === 401) {
-                    localStorage.removeItem("user");
-                    alert("You are not allowed to access this page.");
-                    history.push("/403");
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.token) {
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
+            } else {
+                try {
+                    const response = await UserAPI.getOrdersHistory(user.token);
+                    if (response.status === 200) {
+                        setOrders(response.data);
+                        setIsLoading(false);
+                    } else if (
+                        response.status === 403 ||
+                        response.status === 401 ||
+                        response.status === 404
+                    ) {
+                        alert("You are not allowed to access this page.");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
+                        history.push("/403");
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert("Something went wrong.");
                 }
-            } catch (error) {
-                console.log(error);
-                alert("Something went wrong.");
-                history.push("/403");
             }
         };
 
@@ -62,10 +67,14 @@ function OrderHistory() {
             title: "Price",
             dataIndex: "totalPrice",
             render: (price) => {
-                return <span>{price} VND</span>;
+                return <span>{Format.formatPriceWithVND(price)} VND</span>;
             },
         },
-        { title: "Order date", dataIndex: "createdAt" },
+        {
+            title: "Order date",
+            dataIndex: "createdAt",
+            render: (dateString) => new Date(dateString).toLocaleString(),
+        },
         {
             title: "Status",
             dataIndex: "status",
@@ -122,7 +131,7 @@ function OrderHistory() {
             key: item.order.aliasId,
             aliasId: item.order.aliasId,
             totalPrice: 0,
-            createdAt: new Date(item.order.createdAt).toLocaleString(),
+            createdAt: item.order.createdAt,
             status: item.order.status,
             action: index,
         };
@@ -132,11 +141,7 @@ function OrderHistory() {
     });
 
     const sortedRecords = Sort.sortOrderssByStatus(
-        records.sort(
-            (left, right) =>
-                new Date(right.createdAt.replace(",", "")) -
-                new Date(left.createdAt.replace(",", ""))
-        ),
+        records.sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
         sortBy
     );
 

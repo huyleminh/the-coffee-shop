@@ -22,8 +22,14 @@
     background-color: #cf0239;
 }
 
+.table-deleted:disabled {
+    cursor: wait;
+}
+
 .table-cart,
-.table-wishlist {
+.table-wishlist,
+.table-cart-disabled,
+.table-wishlist-disabled {
     border: 1px solid #503a2446;
     padding: 8px;
     cursor: pointer;
@@ -31,6 +37,11 @@
     color: #503a24;
     border-radius: 5px;
     transition: color 0.2s, background-color 0.2s;
+}
+
+.table-cart-disabled,
+.table-wishlist-disabled {
+    cursor: wait
 }
 
 .table-cart {

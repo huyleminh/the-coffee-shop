@@ -4,6 +4,7 @@ import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import "../../assets/css/layouts/HomePage.css";
 import Footer from "../../components/layouts/Footer";
 import Header from "../../components/layouts/Header";
+import NotificationBox from "../../components/NotificationBox";
 import PrivateRoute from "../../components/routes/PrivateRoute";
 import ScrollTopButton from "../../components/ScrollTopButton";
 import { HomePageEventsHandler } from "../../Events";
@@ -50,7 +51,7 @@ function HomePage() {
                     setUserStatus({ isLogin: false, role: 3 });
                 } else {
                     if (new Date().valueOf() > expiredIn) {
-                        alert("Your session has expired.");
+                        NotificationBox.triggerInfo("INFO", "Your session has expired.");
                         clearLocal();
                         setUserStatus({ isLogin: false, role: 3 });
                     } else {
@@ -70,21 +71,21 @@ function HomePage() {
         <div>
             <Header userStatus={userStatus} />
 
-                <Layout className="container">
-                    <Switch>
-                        <PrivateRoute path="/profile" component={ProfilePage} />
-                        <Route exact path="/menu" component={MenuPage} />
-                        <Route exact path="/cart" component={CartLayout} />
-                        <Route exact path="/wishlist" component={Wishlist} />
-                        <PrivateRoute exact path="/checkout" component={CheckoutPage} />
-                        <Route exact path="/" component={LandingPage} />
-                        <Route>
-                            <Redirect to="/404">
-                                <PageNotFound />
-                            </Redirect>
-                        </Route>
-                    </Switch>
-                </Layout>
+            <Layout className="container">
+                <Switch>
+                    <PrivateRoute path="/profile" component={ProfilePage} />
+                    <Route exact path="/menu" component={MenuPage} />
+                    <Route exact path="/cart" component={CartLayout} />
+                    <Route exact path="/wishlist" component={Wishlist} />
+                    <PrivateRoute exact path="/checkout" component={CheckoutPage} />
+                    <Route exact path="/" component={LandingPage} />
+                    <Route>
+                        <Redirect to="/404">
+                            <PageNotFound />
+                        </Redirect>
+                    </Route>
+                </Switch>
+            </Layout>
 
             <ScrollTopButton />
 

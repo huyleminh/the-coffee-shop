@@ -6,6 +6,7 @@ import NotificationBox from "../../../components/NotificationBox";
 import ProductTable from "../../../components/Product/ProductTable";
 import EmployeeAPI from "../../../services/Employee/EmployeeAPI";
 import { LoadingOutlined } from "@ant-design/icons";
+import Format from "../../../utilities/Format/Format"
 
 OrderModal.propTypes = {
     visible: PropTypes.bool,
@@ -13,7 +14,7 @@ OrderModal.propTypes = {
     toggleModal: PropTypes.func,
 };
 
-const orderStatus = [
+const ORDER_STATUS = [
     {
         key: 0,
         message: "Please click the Deny or Accept button to deny or accept this order.",
@@ -33,7 +34,7 @@ const orderStatus = [
         keys: ["done"],
     },
 ];
-Object.freeze(orderStatus);
+Object.freeze(ORDER_STATUS);
 
 function OrderModal(props) {
     const history = useHistory();
@@ -47,9 +48,8 @@ function OrderModal(props) {
         const target = e.target;
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
-            alert("You are not allowed to access this page.");
-            localStorage.removeItem("user");
-            history.push("/403");
+            alert("You are not allowed to access this page. Please login first.");
+            history.push("/login");
             return;
         }
 
@@ -62,29 +62,31 @@ function OrderModal(props) {
                 if (response.status === 200) {
                     setIsSending(false);
                     NotificationBox.triggerSuccess(
-                        "VERIFY ORDER",
-                        "Verify order successfully. The page will be reloaded after 1 seconds."
+                        "VERIFY SUCCESS",
+                        "Verify order successfully. The page will be reloaded after 1.5 seconds."
                     );
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000);
+                    }, 1500);
                 } else if (response.status === 401 || response.status === 403) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");
                     localStorage.removeItem("user");
+                    localStorage.removeItem("profile");
                     history.push("/403");
                 } else if (response.status === 404) {
                     setIsSending(false);
                     if (response.message === "This user does not exist") {
                         alert("You are not allowed to access this page.");
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         history.push("/403");
                     } else {
                         alert(response.message);
                     }
                 } else if (response.status === 406) {
                     setIsSending(false);
-                    NotificationBox.triggerError("VERIFY ORDER", response.message);
+                    NotificationBox.triggerError("VERIFY ERROR", response.message);
                 }
             })
             .catch((error) => {
@@ -135,7 +137,7 @@ function OrderModal(props) {
     const removedItems = data.order.totalProducts - data.products.length;
 
     // Button tip at the bottom of the modal
-    const tips = orderStatus
+    const tips = ORDER_STATUS
         .filter((item) => item.key === data.order.status)
         .map((item) => {
             return (
@@ -239,18 +241,18 @@ function OrderModal(props) {
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{data.order.totalPrice} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.totalPrice)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Shipping fee:</span>
-                        <span>{data.order.deliveryFee} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.deliveryFee)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {data.order.totalPrice + data.order.deliveryFee} VND
+                            {Format.formatPriceWithVND(data.order.totalPrice + data.order.deliveryFee)} VND
                         </span>
                     </div>
 

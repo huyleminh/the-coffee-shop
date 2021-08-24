@@ -77,9 +77,8 @@
 .product__right .product__top .upper h1 {
     display: flex;
     margin: 0;
-    font-size: 2.4rem;
+    font-size: 2rem;
     margin-right: 10px;
-    text-align: center;
     align-items: center;
 }
 

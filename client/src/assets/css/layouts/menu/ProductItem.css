@@ -1,6 +1,8 @@
 .ant-card.ant-card-bordered.custom-card {
     width: 210px;
-    height: 335px;
+    min-height: 350px;
+    height: fit-content;
+    max-height: fit-content;
     padding: 15px;
     border-radius: 7px;
     border: 1px solid #503a2444;

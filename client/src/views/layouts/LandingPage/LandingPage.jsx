@@ -3,18 +3,41 @@ import {
     faEnvelope,
     faMapMarkerAlt,
     faPhone,
-    faShoppingCart,
+    faShoppingCart
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import AboutImage from "../../../assets/images/landing-about.jpg";
 import { Layout } from "antd";
+import React, { useState } from "react";
+import AboutImage from "../../../assets/images/landing-about.jpg";
+import NotificationBox from "../../../components/NotificationBox";
 
 const { Content } = Layout;
 
 function LandingPage() {
+    const [contact, setContact] = useState({ name: "", email: "", message: "" });
+
+    const handleChangeContact = (e) => {
+        const target = e.target;
+        setContact({ ...contact, [target.name]: target.value });
+    };
+
     const handleSubmitContact = (e) => {
-        alert("Thank you for contacting us!");
+        if (contact.name.trim() === "") {
+            alert("Please input your name.");
+            return;
+        }
+
+        if (contact.email.trim() === "") {
+            alert("Please input your email.");
+            return;
+        }
+
+        if (contact.message.trim() === "") {
+            alert("Please input your message.");
+            return;
+        }
+
+        NotificationBox.triggerSuccess("CONTACT SUCCESS", "Thank you for contacting us!");
     };
 
     return (
@@ -26,7 +49,7 @@ function LandingPage() {
                 <div className="hero__shopping">
                     <a href="/menu">
                         <FontAwesomeIcon icon={faShoppingCart} />
-                        <FontAwesomeIcon icon={faArrowRight} id="arrow_icon"/>
+                        <FontAwesomeIcon icon={faArrowRight} id="arrow_icon" />
                     </a>
                 </div>
             </div>
@@ -36,21 +59,29 @@ function LandingPage() {
                     <h1>About us</h1>
                     <br />
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-                        finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
-                        Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,
-                        vestibulum tristique risus ligula a nisl. Nam mi purus, tristique at
-                        bibendum vel, elementum scelerisque dolor. Etiam ullamcorper eros vel
-                        placerat ultrices. Curabitur eget odio et ex egestas dapibus. Integer
-                        viverra eros enim, vitae facilisis massa vestibulum vestibulum.
-                        <br /><br />
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-                        finibus ipsum. Aenean luctus nisi velit, sed tempus sem consectetur vitae.
-                        Phasellus blandit, nulla non congue bibendum, lectus tortor lacinia libero,
-                        vestibulum tristique risus ligula a nisl. Nam mi purus, tristique at
-                        bibendum vel, elementum scelerisque dolor. Etiam ullamcorper eros vel
-                        placerat ultrices. Curabitur eget odio et ex egestas dapibus. Integer
-                        viverra eros enim, vitae facilisis massa vestibulum vestibulum.
+                        <b>THE COFFEE SHOP</b> was established in <b>June 2021</b> by{" "}
+                        <b>Ga Chien Pro Max</b>, which is originally <b>Ga Chien Team</b>, based on:
+                        <br />
+                        <br />
+                        <b>- Our Vision:</b> become a stable and well-known coffee shop in the
+                        country, which has sufficient potential to compete with the reputable
+                        others.
+                        <br />
+                        <br />
+                        <b>- Our Goal:</b> The satisfaction of customers is the measure for our
+                        success.
+                        <br />
+                        <br />
+                        <b>- Our Business Philosophy:</b>
+                        <br />
+                        <b>&emsp;&emsp;* Quality:</b> The quality of products is our priority, which
+                        plays an important role in competition and corporate culture.
+                        <br />
+                        <b>&emsp;&emsp;* Professional:</b> Try our best to form a professional,
+                        creative, active and well-trained staff.
+                        <br />
+                        <b>&emsp;&emsp;* Consistent:</b> Continuously enhance our reputation, create
+                        a discrepancy with the rest and develop high quality labour resources.
                     </p>
                 </div>
 
@@ -63,18 +94,26 @@ function LandingPage() {
                 <div className="contact__left container-left">
                     <h1>Contact us</h1>
                     <div className="contact__form">
-                        <input type="text" name="name" id="name" placeholder="Enter your name" />
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Enter your name"
+                            value={contact.name}
+                            onChange={handleChangeContact}
+                        />
                         <input
                             type="email"
                             name="email"
-                            id="email"
                             placeholder="Enter your email"
+                            value={contact.email}
+                            onChange={handleChangeContact}
                         />
                         <textarea
                             name="message"
-                            id="message"
                             rows="5"
                             placeholder="Type your message here..."
+                            value={contact.message}
+                            onChange={handleChangeContact}
                         ></textarea>
                         <button type="submit" onClick={handleSubmitContact}>
                             Submit

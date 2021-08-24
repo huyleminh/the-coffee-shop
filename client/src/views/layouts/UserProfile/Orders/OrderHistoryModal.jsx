@@ -7,6 +7,7 @@ import { UserProfileEventsHandler } from "../../../../Events";
 import UserAPI from "../../../../services/User/UserAPI";
 import NotificationBox from "../../../../components/NotificationBox";
 import { LoadingOutlined } from "@ant-design/icons";
+import Format from "../../../../utilities/Format/Format";
 
 function OrderHistoryModal(props) {
     const { isVisible, data } = props;
@@ -21,7 +22,6 @@ function OrderHistoryModal(props) {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
             alert("You are not allowed to access this page.");
-            history.push("/403");
             return;
         }
 
@@ -32,21 +32,22 @@ function OrderHistoryModal(props) {
                     setIsSending(false);
                     NotificationBox.triggerSuccess(
                         "CANCEL ORDER",
-                        "Cancel order successfully. The page will be reloaded after 2.5 seconds."
+                        "Cancel order successfully. The page will be reloaded after 1.5 seconds."
                     );
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2500);
-                } else if (res.status === 401 || res.status === 403) {
+                    }, 1500);
+                } else if (
+                    res.status === 401 ||
+                    res.status === 403 ||
+                    (res.status === 404 && res.message === "This user does not exist")
+                ) {
                     setIsSending(false);
                     alert("You are not allowed to access this page.");
-                    localStorage.removeItem("user");
                     history.push("/403");
                 } else if (res.status === 404) {
                     setIsSending(false);
                     alert(res.message);
-                    localStorage.removeItem("user");
-                    history.push("/404");
                 } else if (res.status === 406) {
                     setIsSending(false);
                     NotificationBox.triggerError(
@@ -56,9 +57,6 @@ function OrderHistoryModal(props) {
                     setTimeout(() => {
                         window.location.reload();
                     }, 2500);
-                } else {
-                    alert("Something went wrong.");
-                    setIsSending(false);
                 }
             })
             .catch((err) => {
@@ -187,18 +185,21 @@ function OrderHistoryModal(props) {
 
                     <div className="order-modal-section__item">
                         <span>Price:</span>
-                        <span>{data.order.totalPrice} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.totalPrice)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Shipping fee:</span>
-                        <span>{data.order.deliveryFee} VND</span>
+                        <span>{Format.formatPriceWithVND(data.order.deliveryFee)} VND</span>
                     </div>
 
                     <div className="order-modal-section__item">
                         <span>Total price:</span>
                         <span style={{ fontSize: "1.2rem", color: "#f00" }}>
-                            {data.order.totalPrice + data.order.deliveryFee} VND
+                            {Format.formatPriceWithVND(
+                                data.order.totalPrice + data.order.deliveryFee
+                            )}{" "}
+                            VND
                         </span>
                     </div>
 
@@ -218,7 +219,11 @@ function OrderHistoryModal(props) {
                                     button.
                                 </i>
                             </span>
-                            <button onClick={handleCancelOrder} className="order-modal-btn" id="order-modal-cancel">
+                            <button
+                                onClick={handleCancelOrder}
+                                className="order-modal-btn"
+                                id="order-modal-cancel"
+                            >
                                 {isSending ? <LoadingOutlined spin /> : "Cancel"}
                             </button>
                         </div>

@@ -4,6 +4,7 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import EmployeeAPI from "../../../services/Employee/EmployeeAPI";
+import Format from "../../../utilities/Format/Format";
 import Sort from "../../../utilities/Sort/Sort";
 import OrderModal from "./OrderModal";
 
@@ -35,10 +36,14 @@ function OrderManagement() {
             title: "Total",
             dataIndex: "totalPrice",
             render: (price) => {
-                return <span>{price} VND</span>;
+                return <span>{Format.formatPriceWithVND(price)} VND</span>;
             },
         },
-        { title: "Created Date", dataIndex: "createdAt" },
+        {
+            title: "Created Date",
+            dataIndex: "createdAt",
+            render: (dateString) => new Date(dateString).toLocaleString(),
+        },
         {
             title: "Status",
             dataIndex: "status",
@@ -90,9 +95,7 @@ function OrderManagement() {
         },
     ];
 
-    const toggleModal = () => {
-        setCurrentModal({ ...currentModal, visible: false });
-    };
+    const toggleModal = () => setCurrentModal({ ...currentModal, visible: false });
 
     const handleChangeDate = (values) => {
         if (!values) {
@@ -115,9 +118,8 @@ function OrderManagement() {
             setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {
-                alert("You are not allowed to access this page.");
-                localStorage.removeItem("user");
-                history.push("/403");
+                alert("You are not allowed to access this page. Please login first.");
+                history.push("/login");
             } else {
                 const params = {
                     startDate: new Date(filters.startDate).toJSON().match(/\d{4}-\d{2}-\d{2}/g)[0],
@@ -133,18 +135,13 @@ function OrderManagement() {
                     if (response.status === 200) {
                         setOrders(response.data);
                         setIsLoading(false);
-                    } else if (response.status === 401 || response.status === 403) {
+                    } else if (response.status === 401 || response.status === 403 || response.status === 404) {
                         alert("You are not allowed to access this page.");
                         localStorage.removeItem("user");
+                        localStorage.removeItem("profile");
                         history.push("/403");
-                    } else if (response.status === 404) {
-                        if (response.message === "This user does not exist") {
-                            alert("You are not allowed to access this page.");
-                            localStorage.removeItem("user");
-                            history.push("/403");
-                        } else {
-                            alert(response.message);
-                        }
+                    } else if (response.status === 400) {
+                        alert(response.message);
                     }
                 } catch (error) {
                     console.log(error);
@@ -161,7 +158,7 @@ function OrderManagement() {
             key: item.order.aliasId,
             aliasId: item.order.aliasId,
             totalPrice: 0,
-            createdAt: new Date(item.order.createdAt).toLocaleString(),
+            createdAt: item.order.createdAt,
             status: item.order.status,
             action: index,
         };
@@ -171,11 +168,7 @@ function OrderManagement() {
     });
 
     const sortedRecords = Sort.sortOrderssByStatus(
-        records.sort(
-            (left, right) =>
-                new Date(right.createdAt.replace(",", "")) -
-                new Date(left.createdAt.replace(",", ""))
-        ),
+        records.sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt)),
         sortBy
     );
 
