@@ -161,7 +161,7 @@ function CartLayout() {
         }
 
         setChangedItem(tempChangedItem);
-        console.log("CHANGED ITEM: ", changedItem);
+        //console.log("CHANGED ITEM: ", changedItem);
 
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
@@ -177,7 +177,7 @@ function CartLayout() {
                                 productId: tempItem.key,
                                 quantity: tempItem.quantity,
                             });
-                            console.log("RESPONSE: ", response.status);
+                            //console.log("RESPONSE: ", response.status);
                             if (response.status === 200) {
                                 localStorage.setItem("cart", JSON.stringify(cart));
                                 NotificationBox.triggerSuccess(
