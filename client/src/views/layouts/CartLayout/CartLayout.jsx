@@ -23,6 +23,7 @@ function CartLayout() {
     const [selectedItem, setSelectedItem] = useState([]);
     const [isSending, setIsSending] = useState(false);
     const [images, setImages] = useState([]);
+    const [changedItem, setChangedItem] = useState([]);
 
     const tappingQuantity = useRef(null);
 
@@ -90,14 +91,77 @@ function CartLayout() {
 
     const handleSelected = (keys) => setSelectedItem(keys);
 
+    // const handleQuantity = (item, value) => {
+    //     if (value === 0) return;
+    //     let changedItem = [];
+    //     const index = cartTable.findIndex((element) => element.key === item.key);
+    //     const newCart = [...cart];
+    //     newCart[index].quantity = value;
+    //     setCart(newCart);
+
+    //     if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
+
+    //     const user = JSON.parse(localStorage.getItem("user"));
+    //     if (!user || !user.token) {
+    //         localStorage.setItem("cart", JSON.stringify(cart));
+    //         localStorage.removeItem("user");
+    //     } else {
+    //         tappingQuantity.current = setTimeout(async () => {
+    //             try {
+    //                 setIsSending(true);
+    //                 const response = await CartAPI.editCart(user.token, {
+    //                     productId: item.key,
+    //                     quantity: value,
+    //                 });
+    //                 setIsSending(false);
+
+    //                 if (response.status === 200) {
+    //                     localStorage.setItem("cart", JSON.stringify(cart));
+    //                     NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
+    //                 } else {
+    //                     if (
+    //                         response.message !==
+    //                         "There is at least one product that does not exist in your cart"
+    //                     )
+    //                         localStorage.removeItem("user");
+
+    //                     NotificationBox.triggerError("ERROR", "Fail to change quantity.");
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error);
+    //                 alert("Something went wrong");
+    //             }
+    //         }, 1000);
+    //     }
+    // };
+
     const handleQuantity = (item, value) => {
         if (value === 0) return;
         const index = cartTable.findIndex((element) => element.key === item.key);
         const newCart = [...cart];
+        const tempChangedItem = changedItem;
+        let existFlag = 0;
+        let hasChanged = 0;
         newCart[index].quantity = value;
         setCart(newCart);
 
         if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
+
+        for (let tempItem of tempChangedItem) {
+            if (item.key === tempItem.key) {
+                tempItem.quantity = value;
+                existFlag = 1;
+                hasChanged = 1;
+                break;
+            }
+        }
+        if (existFlag === 0) {
+            tempChangedItem.push(item);
+            //console.log("CHANGED ITEM: ", changedItem);
+        }
+
+        setChangedItem(tempChangedItem);
+        console.log("CHANGED ITEM: ", changedItem);
 
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
@@ -105,32 +169,67 @@ function CartLayout() {
             localStorage.removeItem("user");
         } else {
             tappingQuantity.current = setTimeout(async () => {
-                try {
-                    setIsSending(true);
-                    const response = await CartAPI.editCart(user.token, {
-                        productId: item.key,
-                        quantity: value,
-                    });
-                    setIsSending(false);
+                if (hasChanged === 1) {
+                    try {
+                        setIsSending(true);
+                        for (let tempItem of changedItem) {
+                            const response = await CartAPI.editCart(user.token, {
+                                productId: tempItem.key,
+                                quantity: tempItem.quantity,
+                            });
+                            console.log("RESPONSE: ", response.status);
+                            if (response.status === 200) {
+                                localStorage.setItem("cart", JSON.stringify(cart));
+                                NotificationBox.triggerSuccess(
+                                    "SUCCESS",
+                                    "Change quantity successfully."
+                                );
+                            } else {
+                                if (
+                                    response.message !==
+                                    "There is at least one product that does not exist in your cart"
+                                )
+                                    //localStorage.removeItem("user");
 
-                    if (response.status === 200) {
-                        localStorage.setItem("cart", JSON.stringify(cart));
-                        NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
-                    } else {
-                        if (
-                            response.message !==
-                            "There is at least one product that does not exist in your cart"
-                        )
-                            localStorage.removeItem("user");
-
-                        NotificationBox.triggerError("ERROR", "Fail to change quantity.");
+                                    NotificationBox.triggerError(
+                                        "ERROR",
+                                        "Failed to change quantity."
+                                    );
+                            }
+                        }
+                        setIsSending(false);
+                    } catch (error) {
+                        console.log(error);
+                        NotificationBox.triggerError("ERROR", "Something went wrong.");
                     }
-                } catch (error) {
-                    console.log(error);
-                    alert("Something went wrong");
                 }
             }, 1000);
         }
+
+        // try {
+        //     setIsSending(true);
+        //     const response = await CartAPI.editCart(user.token, {
+        //         productId: item.key,
+        //         quantity: value,
+        //     });
+        //     setIsSending(false);
+
+        //     if (response.status === 200) {
+        //         localStorage.setItem("cart", JSON.stringify(cart));
+        //         NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
+        //     } else {
+        //         if (
+        //             response.message !==
+        //             "There is at least one product that does not exist in your cart"
+        //         )
+        //             localStorage.removeItem("user");
+
+        //         NotificationBox.triggerError("ERROR", "Fail to change quantity.");
+        //     }
+        // } catch (error) {
+        //     console.log(error);
+        //     alert("Something went wrong");
+        // }
     };
 
     const handleAddToWishlist = async (item) => {
@@ -156,7 +255,7 @@ function CartLayout() {
                         return;
                     }
                 }
-                localStorage.removeItem("user");
+                //localStorage.removeItem("user");
                 localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, cartItem]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
@@ -211,7 +310,7 @@ function CartLayout() {
                             return;
                         }
                     }
-                    localStorage.removeItem("user");
+                    //localStorage.removeItem("user");
                     localStorage.removeItem("profile");
                     localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
@@ -245,8 +344,7 @@ function CartLayout() {
         const removeItems = [];
         let countItems = 0;
 
-        if (cartLocal === null)
-            cartLocal = []
+        if (cartLocal === null) cartLocal = [];
 
         cartLocal.forEach((item) => {
             if (selectedItems.indexOf(item.product.id) > -1) {
@@ -342,10 +440,8 @@ function CartLayout() {
         let wishListLocal = JSON.parse(localStorage.getItem("wishlist"));
         const selectedData = [];
 
-        if (wishListLocal === null)
-            wishListLocal = []
-        if (cartLocal === null)
-            cartLocal = []
+        if (wishListLocal === null) wishListLocal = [];
+        if (cartLocal === null) cartLocal = [];
 
         let isExisted = false;
         for (let id of selectedItem) {
@@ -494,12 +590,14 @@ function CartLayout() {
     let totalMoneyTemp = 0;
 
     if (selectedItem.length !== 0) {
-        cart.forEach(cartItem => {
+        cart.forEach((cartItem) => {
             if (selectedItem.includes(cartItem.product.id)) {
-                const discount = (cartItem.discount === null) ? 0 : cartItem.discount.percent
-                totalMoneyTemp += Math.floor(cartItem.product.price * (1 - discount) * cartItem.quantity)
+                const discount = cartItem.discount === null ? 0 : cartItem.discount.percent;
+                totalMoneyTemp += Math.floor(
+                    cartItem.product.price * (1 - discount) * cartItem.quantity
+                );
             }
-        })
+        });
         // for (let key of selectedItem) {
         //     for (let item of cart) {
         //         if (key === item.product.id) {
