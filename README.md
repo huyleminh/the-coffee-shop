@@ -9,6 +9,7 @@ The Coffee Shop is a web application which assists the demand of enterprises and
 * Database: This project uses the database cloud service provided by [Heroku Clear DB service](https://elements.heroku.com/addons/cleardb)
 
 ## Live demo
+[https://thecoffeeshop.vercel.app/](https://thecoffeeshop.vercel.app/)
 
 ## Usage
 * Before you run the project, please install [NodeJS](https://nodejs.org/en/), version 14.x is highly recommned.
