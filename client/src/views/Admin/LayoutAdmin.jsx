@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
 import PageNotFound from "../errors/PageNotFound";
 import EmployeeManagement from "./employees/EmployeeManagement";
@@ -25,11 +25,14 @@ const { SubMenu } = Menu;
 function LayoutAdmin() {
     const history = useHistory();
     const match = useRouteMatch();
+    const location = useLocation();
     const [collapsed, setCollapsed] = useState(false);
 
     const toggleSiderbar = () => {
         setCollapsed(!collapsed);
     };
+
+    const selectedKeys = location.pathname.split("/")[3];
 
     return (
         <Layout className="custom-site-dashboard">
@@ -42,7 +45,7 @@ function LayoutAdmin() {
                     theme="dark"
                     mode="inline"
                     defaultOpenKeys={["management"]}
-                    defaultSelectedKeys={["products"]}
+                    selectedKeys={[selectedKeys]}
                 >
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
                         <a href={`${match.path}/manage/products`}>Home</a>
