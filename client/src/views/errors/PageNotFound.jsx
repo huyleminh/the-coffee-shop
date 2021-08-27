@@ -4,23 +4,11 @@ import "../../assets/css/404.css";
 import { useHistory } from "react-router-dom";
 
 function NotFound() {
-    // const history = useHistory();
-
-    // const handleGoHome = () => {
-    //     // history.push
-    // };
-
-    // const handleGoBack = () => {
-    // };
     const history = useHistory();
 
-    const goHome = () => {
-        history.push("/");
-    };
+    const goHome = () => history.push("/");
 
-    const goLogin = () => {
-        history.push("/login");
-    };
+    const goLogin = () => history.push("/login");
 
     return (
         <div
