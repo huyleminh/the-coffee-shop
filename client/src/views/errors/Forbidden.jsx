@@ -6,9 +6,9 @@ import { useHistory } from "react-router-dom";
 function Forbidden() {
     const history = useHistory();
 
-    localStorage.removeItem("user");
-    localStorage.removeItem("profile");
-    localStorage.removeItem("checkout");
+    // localStorage.removeItem("user");
+    // localStorage.removeItem("profile");
+    // localStorage.removeItem("checkout");
 
     const goHome = () => history.push("/");
 

@@ -46,7 +46,7 @@ function ProductModal(props) {
             else setQuantity(parseInt(quantity) + 1);
         } else if (type === "desc") {
             if (!quantity) return;
-            else setQuantity(quantity - 1);
+            quantity > 1 && setQuantity(quantity - 1);
         }
     };
 

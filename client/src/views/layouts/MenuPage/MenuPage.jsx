@@ -50,6 +50,7 @@ function MenuPage(props) {
             initialState.search = "";
         } else if (params.search) {
             initialState.search = params.search;
+            initialState.filter = "All";
         }
         return initialState;
     });
@@ -70,6 +71,7 @@ function MenuPage(props) {
         setFilters({
             ...filters,
             filter: newFilter,
+            search: "",
             page: 1,
             limit: 9,
         });
@@ -89,6 +91,7 @@ function MenuPage(props) {
         delete params["page"];
         delete params["limit"];
         delete params["filter"];
+        if (!searchTerm) delete params["search"];
 
         history.push({
             path: location.pathname,
@@ -97,7 +100,7 @@ function MenuPage(props) {
         setFilters({
             ...filters,
             search: searchTerm,
-            filter: "",
+            filter: "All",
             page: 1,
             limit: 9,
         });
@@ -118,10 +121,13 @@ function MenuPage(props) {
     };
 
     useEffect(() => {
-        MenuPageEventsHandler.subcribe("changeSortBy", handleSortBy);
-        MenuPageEventsHandler.subcribe("search", handleSearchTerm);
-        MenuPageEventsHandler.subcribe("filter", handleChangeFilter);
-        MenuPageEventsHandler.subcribe("toggleSideBar", setIsFilterVisible);
+        const subcribeMenuEvents = () => {
+            MenuPageEventsHandler.subcribe("changeSortBy", handleSortBy);
+            MenuPageEventsHandler.subcribe("search", handleSearchTerm);
+            MenuPageEventsHandler.subcribe("filter", handleChangeFilter);
+            MenuPageEventsHandler.subcribe("toggleSideBar", setIsFilterVisible);
+        }
+        subcribeMenuEvents()
 
         return () => {
             MenuPageEventsHandler.unSubcribe("changeSortBy", handleSortBy);
@@ -129,8 +135,7 @@ function MenuPage(props) {
             MenuPageEventsHandler.unSubcribe("filter", handleChangeFilter);
             MenuPageEventsHandler.unSubcribe("toggleSideBar", setIsFilterVisible);
         };
-        // eslint-disable-next-line
-    }, []);
+    });
 
     useEffect(() => {
         document.querySelector(".menu").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -148,6 +153,11 @@ function MenuPage(props) {
 
                 if (response.status === 200) {
                     const { pagination, products } = response.data;
+                    if (products.length === 0)
+                        NotificationBox.triggerWarning(
+                            "LOADING PRODUCT",
+                            "Can not find any products that you need. Please wait for a moment and find it again."
+                        );
 
                     setTotalProducts(products);
                     setPaginationState(pagination);
@@ -162,11 +172,10 @@ function MenuPage(props) {
                     setCategories(newCaterogies);
                     setIsLoading(false);
                 } else if (response.status === 404) {
-                    NotificationBox.triggerError(
+                    NotificationBox.triggerWarning(
                         "LOADING PRODUCT",
                         "Can not find any products that you need. Please wait for a moment and find it again."
                     );
-                    alert("Products not found!");
                     setIsLoading(false);
                 }
             } catch (err) {
