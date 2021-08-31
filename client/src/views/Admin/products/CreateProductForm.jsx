@@ -76,30 +76,30 @@ function CreateProductForm(props) {
                         "CREATE SUCCESS",
                         `Create ${newProduct.name} successfully.`
                     );
-                }
-                const upLoadURL = res.data;
-                if (upLoadURL) {
-                    FirebaseAPI.uploadImage(imageFile, upLoadURL)
-                        .then((res) => {
-                            if (res.status === 200) {
-                            } else if (res.status === 400)
+
+                    if (res.data) {
+                        FirebaseAPI.uploadImage(imageFile, res.data)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                } else if (res.status === 400)
+                                    NotificationBox.triggerError(
+                                        "UPLOAD ERROR",
+                                        "Can not upload your image."
+                                    );
+                            })
+                            .catch((error) => {
                                 NotificationBox.triggerError(
                                     "UPLOAD ERROR",
                                     "Can not upload your image."
                                 );
-                        })
-                        .catch((error) => {
-                            NotificationBox.triggerError(
-                                "UPLOAD ERROR",
-                                "Can not upload your image."
-                            );
-                            console.log(error);
-                        });
+                                console.log(error);
+                            });
+                    }
+                    handleClose();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 }
-                handleClose();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
             })
             .catch((error) => {
                 console.log(error);
