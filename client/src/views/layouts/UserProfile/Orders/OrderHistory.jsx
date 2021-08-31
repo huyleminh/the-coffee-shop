@@ -79,30 +79,9 @@ function OrderHistory() {
             title: "Status",
             dataIndex: "status",
             render: (status) => {
-                let content = status ? "" : "None";
-                switch (status) {
-                    case 0:
-                        content = "Pending";
-                        break;
-                    case 1:
-                        content = "Accepted";
-                        break;
-                    case 2:
-                        content = "Denied";
-                        break;
-                    case 3:
-                        content = "Done";
-                        break;
-                    case 4:
-                        content = "Cancelled";
-                        break;
-                    case 5:
-                        content = "Delivering";
-                        break;
-                    default:
-                        content = "None";
-                        break;
-                }
+                const STATUS = ["Pending", "Accepted", "Denied", "Done", "Cancelled", "Delivering"];
+                const newStatus = status ? status : -1;
+                const content = newStatus > -1 ? STATUS[newStatus] : "None";
                 return (
                     <div className="status-tag">
                         <span id={content.toLowerCase()}>{content}</span>
