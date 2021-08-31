@@ -2,7 +2,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout } from "antd";
 import React, { useState } from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import MenuImage from "../../../assets/images/menu.jpg";
 import defaultAvatar from "../../../assets/images/store-logo.png";
 import Hero from "../../../components/layouts/Hero";
@@ -33,13 +33,13 @@ function ProfilePage(props) {
                     <img src={defaultAvatar} alt="Avatar" className="avatar"></img>
                     <ul className="nav__sidebar">
                         <li>
-                            <a href="/profile">Profile</a>
+                            <Link to="/profile">Profile</Link>
                         </li>
                         <li>
-                            <a href="/profile/orders/history">Orders History</a>
+                            <Link to="/profile/orders/history">Orders History</Link>
                         </li>
                         <li>
-                            <a href="/profile">Voucher</a>
+                            <Link to="/profile">Voucher</Link>
                         </li>
                     </ul>
                 </div>

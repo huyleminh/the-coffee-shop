@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
 import PageNotFound from "../errors/PageNotFound";
 import OrderManagement from "./orders/OrderManagement";
@@ -34,16 +34,16 @@ function LayoutEmployee() {
                 </div>
                 <Menu theme="dark" mode="vertical">
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
-                        <a href={`${match.path}/manage/orders`}>Home</a>
+                        <Link to={`${match.path}/manage/orders`}>Home</Link>
                     </Menu.Item>
                     <Menu.Item key="orders" icon={<FontAwesomeIcon icon={faListUl} />}>
-                        <a href={`${match.path}/manage/orders`}>Orders</a>
+                        <Link to={`${match.path}/manage/orders`}>Orders</Link>
                     </Menu.Item>
                     <Menu.Item key="profile" icon={<FontAwesomeIcon icon={faIdBadge} />}>
-                        <a href={`/profile`}>Profile</a>
+                        <Link to={`/profile`}>Profile</Link>
                     </Menu.Item>
                     <Menu.Item key="back" icon={<FontAwesomeIcon icon={faArrowLeft} />}>
-                        <a href="/menu">Back to shop</a>
+                        <Link to="/menu">Back to shop</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>

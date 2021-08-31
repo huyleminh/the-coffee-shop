@@ -2,6 +2,7 @@ import { faBars, faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../../assets/css/layouts/Header.css";
 import { HomePageEventsHandler } from "../../Events";
 
@@ -40,33 +41,33 @@ function Header(props) {
 
     return (
         <div className={`header wrapper ${headerClassname}`}>
-            <a href="/">
+            <Link to="/">
                 <div className={`${logoClassname}`}></div>
-            </a>
+            </Link>
 
             <div className={`header__navbar ${visibleClassname}`}>
                 <div className="header__navigation">
                     <ul>
                         <li>
-                            <a href="/">HOME</a>
+                            <Link to="/">HOME</Link>
                         </li>
                         <li>
-                            <a href="/menu">MENU</a>
+                            <Link to="/menu">MENU</Link>
                         </li>
                         <li>
-                            <a href="/#about">ABOUT</a>
+                            <Link to={{ pathname: "/", hash: "#about" }}>ABOUT</Link>
                         </li>
                         <li>
-                            <a href="/#contact">CONTACT</a>
+                            <Link to={{ pathname: "/", hash: "#contact" }}>CONTACT</Link>
                         </li>
                         {userStatus.role === 1 ? (
                             <li>
-                                <a href="/admin">ADMIN</a>
+                                <Link to="/admin">ADMIN</Link>
                             </li>
                         ) : null}
                         {userStatus.role === 2 ? (
                             <li>
-                                <a href="/employee">EMPLOYEE</a>
+                                <Link to="/employee">EMPLOYEE</Link>
                             </li>
                         ) : null}
                     </ul>
@@ -76,54 +77,47 @@ function Header(props) {
                     {userStatus.isLogin ? (
                         <ul>
                             <li className="shopping">
-                                <a
-                                    href="/wishlist"
-                                    style={{ fontSize: "1.75rem" }}
-                                    id="wishlist"
-                                >
+                                <Link to="/wishlist" style={{ fontSize: "1.75rem" }} id="wishlist">
                                     <FontAwesomeIcon icon={faHeart} />
-                                </a>
+                                </Link>
                             </li>
                             <li className="shopping">
-                                <a
-                                    href="/cart"
-                                    style={{ fontSize: "1.75rem" }}
-                                    id="cart"
-                                >
+                                <Link to="/cart" style={{ fontSize: "1.75rem" }} id="cart">
                                     <FontAwesomeIcon icon={faShoppingCart} />
-                                </a>
+                                </Link>
                             </li>
 
                             <li className="shopping" id="user">
-                                <a href="/profile" style={{ fontSize: "1.75rem" }}>
+                                <Link to="/profile" style={{ fontSize: "1.75rem" }}>
                                     <FontAwesomeIcon icon={faUserCircle} />
-                                </a>
+                                </Link>
                                 <div className="dropdown-content">
-                                    <a href="/profile">Manage profle</a>
-                                    <a href="/profile/orders/history">Orders history</a>
-                                    {/* eslint-disable-next-line */}
-                                    <a onClick={handleLogoutClick}>Logout</a>
+                                    <Link to="/profile">Manage profle</Link>
+                                    <Link to="/profile/orders/history">Orders history</Link>
+                                    <Link to="" onClick={handleLogoutClick}>
+                                        Logout
+                                    </Link>
                                 </div>
                             </li>
                         </ul>
                     ) : (
                         <ul>
                             <li className="shopping">
-                                <a href="/wishlist" style={{ fontSize: "1.75rem" }} id="wishlist">
+                                <Link to="/wishlist" style={{ fontSize: "1.75rem" }} id="wishlist">
                                     <FontAwesomeIcon icon={faHeart} />
-                                </a>
+                                </Link>
                             </li>
                             <li className="shopping">
-                                <a href="/cart" style={{ fontSize: "1.75rem" }} id="cart">
+                                <Link to="/cart" style={{ fontSize: "1.75rem" }} id="cart">
                                     <FontAwesomeIcon icon={faShoppingCart} />
-                                </a>
+                                </Link>
                             </li>
 
                             <li id="login">
-                                <a href="/login">Login</a>
+                                <Link to="/login">Login</Link>
                             </li>
                             <li>
-                                <a href="/signup">Signup</a>
+                                <Link to="/signup">Signup</Link>
                             </li>
                         </ul>
                     )}

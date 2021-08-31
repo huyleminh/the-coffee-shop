@@ -7,7 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import AboutImage from "../../../assets/images/landing-about.jpg";
 import NotificationBox from "../../../components/NotificationBox";
 
@@ -40,17 +41,23 @@ function LandingPage() {
         NotificationBox.triggerSuccess("CONTACT SUCCESS", "Thank you for contacting us!");
     };
 
+    useEffect(() => {
+        const hash = window.location.hash;
+        const id = !hash ? "#hero" : hash;
+        document.querySelector(id).scrollIntoView();
+    })
+
     return (
         <Content>
             <div className="overlay"></div>
-            <div className="hero">
+            <div className="hero" id="hero">
                 <button disabled="disabled">Welcome To</button>
                 <h1>The Coffee Shop</h1>
                 <div className="hero__shopping">
-                    <a href="/menu">
+                    <Link to="/menu">
                         <FontAwesomeIcon icon={faShoppingCart} />
                         <FontAwesomeIcon icon={faArrowRight} id="arrow_icon" />
-                    </a>
+                    </Link>
                 </div>
             </div>
 

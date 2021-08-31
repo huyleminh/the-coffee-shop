@@ -84,7 +84,8 @@
 .header__navigation > ul > li > a:hover,
 .header__right > ul > li > a:hover {
     color: #c99337;
-    text-shadow: -1px -1px #fff, -1px 1px #fff, 1px -1px #fff, 1px 1px #fff, 1px 0px #fff, -1px 0px #fff, 0px 1px #fff, 0px -1px #fff;
+    text-shadow: -1px -1px #fff, -1px 1px #fff, 1px -1px #fff, 1px 1px #fff, 1px 0px #fff, -1px 0px #fff, 0px 1px #fff,
+        0px -1px #fff;
 }
 
 .header__right {
@@ -162,7 +163,7 @@
 }
 
 .header__right > ul > .shopping > #cart:hover {
-    color: #2674EA;
+    color: #2674ea;
 }
 
 @media only screen and (max-width: 900px) {

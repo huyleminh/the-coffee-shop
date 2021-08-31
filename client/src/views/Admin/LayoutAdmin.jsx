@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Layout, Menu } from "antd";
 import React, { useState } from "react";
-import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import LogoStore from "../../assets/images/store-logo.png";
 import PageNotFound from "../errors/PageNotFound";
 import EmployeeManagement from "./employees/EmployeeManagement";
@@ -48,32 +48,32 @@ function LayoutAdmin() {
                     selectedKeys={[selectedKeys]}
                 >
                     <Menu.Item key="home" icon={<FontAwesomeIcon icon={faHome} />}>
-                        <a href={`${match.path}/manage/products`}>Home</a>
+                        <Link to={`${match.path}/manage/products`}>Home</Link>
                     </Menu.Item>
                     <SubMenu
                         key="management"
                         title="Management"
                         icon={<FontAwesomeIcon icon={faListAlt} />}>
                             <Menu.Item key="products" icon={<FontAwesomeIcon icon={faCube}/>}>
-                                <a href={`${match.path}/manage/products`}>Products</a>
+                                <Link to={`${match.path}/manage/products`}>Products</Link>
                             </Menu.Item>
                             <Menu.Item key="ingredients" icon={<FontAwesomeIcon icon={faCube}/>}>
-                                <a href={`${match.path}/manage/ingredients`}>Ingredients</a>
+                                <Link to={`${match.path}/manage/ingredients`}>Ingredients</Link>
                             </Menu.Item>
                             <Menu.Item key="employees" icon={<FontAwesomeIcon icon={faUserCircle} />}>
-                                <a href={`${match.path}/manage/employees`}>Employees</a>
+                                <Link to={`${match.path}/manage/employees`}>Employees</Link>
                             </Menu.Item>
                     </SubMenu>
 
                     <Menu.Item key="statistics" icon={<FontAwesomeIcon icon={faChartBar} />}>
-                        <a href={`${match.path}/manage/statistics`}>Statistics</a>
+                        <Link to={`${match.path}/manage/statistics`}>Statistics</Link>
                     </Menu.Item>
 
                     <Menu.Item key="profile" icon={<FontAwesomeIcon icon={faIdBadge} />}>
-                        <a href={`/profile`}>Profile</a>
+                        <Link to={`/profile`}>Profile</Link>
                     </Menu.Item>
                     <Menu.Item key="back" icon={<FontAwesomeIcon icon={faArrowLeft} />}>
-                        <a href="/menu">Back to shop</a>
+                        <Link to="/menu">Back to shop</Link>
                     </Menu.Item>
                 </Menu>
             </Sider>

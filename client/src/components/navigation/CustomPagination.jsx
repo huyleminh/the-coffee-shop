@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
-import "../../assets/css/navigation/Pagination.css";
 
 CustomePagination.propTypes = {
     page: PropTypes.number,

@@ -452,3 +452,11 @@
 .ant-menu-submenu .ant-menu-item:hover {
     background-color: #22160b;
 }
+
+/* Pagination */
+.pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

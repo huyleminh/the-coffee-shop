@@ -1,6 +1,7 @@
 import { faEnvelope, faMapMarkerAlt, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { Link } from "react-router-dom";
 import "../../assets/css/layouts/Footer.css";
 import TeamLogo from "../../assets/images/team-logo.png";
 
@@ -22,9 +23,9 @@ function Footer() {
             <div className="footer__top wrapper">
                 <div className="footer__info team">
                     <h2 id="team-tiltle">Designed and developed by</h2>
-                    <a href="/">
+                    <Link to="/">
                         <img src={TeamLogo} alt="Team logo" />
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="footer__info">
