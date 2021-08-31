@@ -91,50 +91,6 @@ function CartLayout() {
 
     const handleSelected = (keys) => setSelectedItem(keys);
 
-    // const handleQuantity = (item, value) => {
-    //     if (value === 0) return;
-    //     let changedItem = [];
-    //     const index = cartTable.findIndex((element) => element.key === item.key);
-    //     const newCart = [...cart];
-    //     newCart[index].quantity = value;
-    //     setCart(newCart);
-
-    //     if (tappingQuantity.current) clearTimeout(tappingQuantity.current);
-
-    //     const user = JSON.parse(localStorage.getItem("user"));
-    //     if (!user || !user.token) {
-    //         localStorage.setItem("cart", JSON.stringify(cart));
-    //         localStorage.removeItem("user");
-    //     } else {
-    //         tappingQuantity.current = setTimeout(async () => {
-    //             try {
-    //                 setIsSending(true);
-    //                 const response = await CartAPI.editCart(user.token, {
-    //                     productId: item.key,
-    //                     quantity: value,
-    //                 });
-    //                 setIsSending(false);
-
-    //                 if (response.status === 200) {
-    //                     localStorage.setItem("cart", JSON.stringify(cart));
-    //                     NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
-    //                 } else {
-    //                     if (
-    //                         response.message !==
-    //                         "There is at least one product that does not exist in your cart"
-    //                     )
-    //                         localStorage.removeItem("user");
-
-    //                     NotificationBox.triggerError("ERROR", "Fail to change quantity.");
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error);
-    //                 alert("Something went wrong");
-    //             }
-    //         }, 1000);
-    //     }
-    // };
-
     const handleQuantity = (item, value) => {
         if (value === 0) return;
         const index = cartTable.findIndex((element) => element.key === item.key);
@@ -157,11 +113,9 @@ function CartLayout() {
         }
         if (existFlag === 0) {
             tempChangedItem.push(item);
-            //console.log("CHANGED ITEM: ", changedItem);
         }
 
         setChangedItem(tempChangedItem);
-        //console.log("CHANGED ITEM: ", changedItem);
 
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
@@ -177,7 +131,7 @@ function CartLayout() {
                                 productId: tempItem.key,
                                 quantity: tempItem.quantity,
                             });
-                            //console.log("RESPONSE: ", response.status);
+
                             if (response.status === 200) {
                                 localStorage.setItem("cart", JSON.stringify(cart));
                                 NotificationBox.triggerSuccess(
@@ -205,31 +159,6 @@ function CartLayout() {
                 }
             }, 1000);
         }
-
-        // try {
-        //     setIsSending(true);
-        //     const response = await CartAPI.editCart(user.token, {
-        //         productId: item.key,
-        //         quantity: value,
-        //     });
-        //     setIsSending(false);
-
-        //     if (response.status === 200) {
-        //         localStorage.setItem("cart", JSON.stringify(cart));
-        //         NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
-        //     } else {
-        //         if (
-        //             response.message !==
-        //             "There is at least one product that does not exist in your cart"
-        //         )
-        //             localStorage.removeItem("user");
-
-        //         NotificationBox.triggerError("ERROR", "Fail to change quantity.");
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        //     alert("Something went wrong");
-        // }
     };
 
     const handleAddToWishlist = async (item) => {
@@ -255,7 +184,7 @@ function CartLayout() {
                         return;
                     }
                 }
-                //localStorage.removeItem("user");
+
                 localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, cartItem]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
@@ -310,7 +239,7 @@ function CartLayout() {
                             return;
                         }
                     }
-                    //localStorage.removeItem("user");
+
                     localStorage.removeItem("profile");
                     localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
@@ -598,21 +527,6 @@ function CartLayout() {
                 );
             }
         });
-        // for (let key of selectedItem) {
-        //     for (let item of cart) {
-        //         if (key === item.product.id) {
-        //             if (item.discount !== null) {
-        //                 const price =
-        //                     Math.floor(item.product.price * (1 - item.discount.percent)) *
-        //                     item.quantity;
-        //                 totalMoneyTemp += price;
-        //             } else {
-        //                 const price = Math.floor(item.product.price * item.quantity);
-        //                 totalMoneyTemp += price;
-        //             }
-        //         }
-        //     }
-        // }
     } else {
         totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
