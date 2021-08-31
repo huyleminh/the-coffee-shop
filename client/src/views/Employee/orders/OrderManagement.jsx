@@ -48,30 +48,9 @@ function OrderManagement() {
             title: "Status",
             dataIndex: "status",
             render: (status) => {
-                let content = status ? "" : "None";
-                switch (status) {
-                    case 0:
-                        content = "Pending";
-                        break;
-                    case 1:
-                        content = "Accepted";
-                        break;
-                    case 2:
-                        content = "Denied";
-                        break;
-                    case 3:
-                        content = "Done";
-                        break;
-                    case 4:
-                        content = "Cancelled";
-                        break;
-                    case 5:
-                        content = "Delivering";
-                        break;
-                    default:
-                        content = "None";
-                        break;
-                }
+                const STATUS = ["Pending", "Accepted", "Denied", "Done", "Cancelled", "Delivering"];
+                const newStatus = status ? status : -1;
+                const content = newStatus > -1 ? STATUS[newStatus] : "None";
                 return (
                     <div className="status-tag">
                         <span id={content.toLowerCase()}>{content}</span>
@@ -122,8 +101,8 @@ function OrderManagement() {
                 history.push("/login");
             } else {
                 const params = {
-                    startDate: new Date(filters.startDate).toJSON().match(/\d{4}-\d{2}-\d{2}/g)[0],
-                    endDate: new Date(filters.endDate).toJSON().match(/\d{4}-\d{2}-\d{2}/g)[0],
+                    startDate: new Date(`${filters.startDate.format("YYYY-MM-DD")} 0:0:0`).toJSON(),
+                    endDate: new Date(`${filters.endDate.format("YYYY-MM-DD")} 23:59:59`).toJSON(),
                 };
 
                 try {
@@ -135,7 +114,11 @@ function OrderManagement() {
                     if (response.status === 200) {
                         setOrders(response.data);
                         setIsLoading(false);
-                    } else if (response.status === 401 || response.status === 403 || response.status === 404) {
+                    } else if (
+                        response.status === 401 ||
+                        response.status === 403 ||
+                        response.status === 404
+                    ) {
                         alert("You are not allowed to access this page.");
                         localStorage.removeItem("user");
                         localStorage.removeItem("profile");
