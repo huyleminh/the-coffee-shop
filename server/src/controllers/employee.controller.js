@@ -1,6 +1,5 @@
 import Order from '../utilities/database/entities/Order.js'
 import ProductOrder from '../utilities/database/entities/ProductOrder.js'
-import { getRangeDate } from '../utilities/utilityFunctions.js';
 import { OrderStatus, OrderPaymentStatus } from '../utilities/constants.js';
 
 class EmployeeController {
@@ -17,8 +16,7 @@ class EmployeeController {
         }
 
         if (startDate !== undefined && endDate !== undefined && countParams === 2) {
-            const rangeDate = getRangeDate(startDate, endDate)
-            const orderList = await Order.getAllByDate(rangeDate.start.toJSON(), rangeDate.end.toJSON())
+            const orderList = await Order.getAllByDate(startDate, endDate)
             const productsList = []
 
             for (let order of orderList)
