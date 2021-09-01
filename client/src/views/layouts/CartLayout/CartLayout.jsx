@@ -154,7 +154,7 @@ function CartLayout() {
                         setIsSending(false);
                     } catch (error) {
                         console.log(error);
-                        NotificationBox.triggerError("ERROR", "Something went wrong.");
+                        alert("Something went wrong.");
                     }
                 }
             }, 1000);
@@ -176,12 +176,13 @@ function CartLayout() {
                 for (let wishlistItem of wishListLocal) {
                     if (wishlistItem.product.id === item.key) {
                         if (!user || !user.token) {
-                            NotificationBox.triggerError(
+                            NotificationBox.triggerWarning(
                                 "EXISTED",
                                 `${cartItem.product.name} added to your wishlist.`
                             );
+                            return;
                         }
-                        return;
+                        break;
                     }
                 }
 
@@ -191,8 +192,9 @@ function CartLayout() {
                         "ADDED TO WISHLIST",
                         `${cartItem.product.name} added to your wishlist.`
                     );
+                    return;
                 }
-                return;
+                break;
             }
         }
 
@@ -210,7 +212,7 @@ function CartLayout() {
                     if (response.message === "This user does not exist") {
                         for (let wishlistItem of wishListLocal) {
                             if (wishlistItem.product.id === item.id) {
-                                NotificationBox.triggerError(
+                                NotificationBox.triggerWarning(
                                     "EXISTED",
                                     `${item.product.name} has already existed in your wishlist.`
                                 );
@@ -231,7 +233,7 @@ function CartLayout() {
                 } else if (response.status === 401 || response.status === 403) {
                     for (let wishlistItem of wishListLocal) {
                         if (wishlistItem.product.id === item.product.id) {
-                            NotificationBox.triggerError(
+                            NotificationBox.triggerWarning(
                                 "EXISTED",
                                 `${item.product} has already existed in your Wishlist.`
                             );
@@ -249,7 +251,7 @@ function CartLayout() {
                     setIsSending(false);
                     return;
                 } else if (response.status === 409) {
-                    NotificationBox.triggerError(
+                    NotificationBox.triggerWarning(
                         "EXISTED",
                         `${item.product} already existed in your wishlist.`
                     );
@@ -325,7 +327,7 @@ function CartLayout() {
                         `Successfully remove ${countSuccess} item(s).`
                     );
                     if (countNotExist !== 0) {
-                        NotificationBox.triggerError(
+                        NotificationBox.triggerWarning(
                             "NOT EXISTED",
                             `${countNotExist} item(s) do(es) not exist in your wishlist.`
                         );
@@ -379,7 +381,7 @@ function CartLayout() {
                 for (let wishlistItem of wishListLocal) {
                     if (id === wishlistItem.product.id) {
                         if (!user || !user.token) {
-                            NotificationBox.triggerError(
+                            NotificationBox.triggerWarning(
                                 "ITEM EXISTED",
                                 `${wishlistItem.product.name} already existed in your wishlist.`
                             );
@@ -419,7 +421,7 @@ function CartLayout() {
                         if (response.message === "This user does not exist") {
                             for (let i of wishListLocal) {
                                 if (i.product.id === item.product.id) {
-                                    NotificationBox.triggerError(
+                                    NotificationBox.triggerWarning(
                                         "EXISTED",
                                         `${item.product} has already existed in your wishlist.`
                                     );
@@ -436,7 +438,7 @@ function CartLayout() {
                     } else if (response.status === 401 || response.status === 403) {
                         for (let i of wishListLocal) {
                             if (i.product.id === item.product.id) {
-                                NotificationBox.triggerError(
+                                NotificationBox.triggerWarning(
                                     "EXISTED",
                                     `${item.product} has already existed in your Wishlist.`
                                 );
@@ -451,7 +453,7 @@ function CartLayout() {
                             `${item.product.name} added to your wishlist.`
                         );
                     } else if (response.status === 409) {
-                        NotificationBox.triggerError(
+                        NotificationBox.triggerWarning(
                             "EXISTED",
                             `${item.product.name} already existed in your wishlist.`
                         );
