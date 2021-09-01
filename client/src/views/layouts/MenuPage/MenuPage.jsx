@@ -139,6 +139,7 @@ function MenuPage(props) {
 
     useEffect(() => {
         document.querySelector(".menu").scrollIntoView({ behavior: "smooth", block: "start" });
+        document.title = "Menu - The Coffee Shop";
 
         const fetchProducts = async () => {
             const params = { ...filters };

@@ -466,6 +466,7 @@ function CartLayout() {
 
     useEffect(() => {
         localStorage.removeItem("checkout");
+        document.title = "Shopping cart - The Coffee Shop";
         const fetchCart = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
 

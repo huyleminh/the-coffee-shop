@@ -24,6 +24,7 @@ function OrderHistory() {
         document
             .querySelector(".profile__order")
             .scrollIntoView({ behavior: "smooth", block: "start" });
+        document.title = "Orders history -  The Coffee Shop";
         const fetchOrdersHistory = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {

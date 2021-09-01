@@ -129,6 +129,7 @@ function CheckoutPage() {
     };
 
     useEffect(() => {
+        document.title = "Checkout -  The Coffee Shop";
         const fetchUsertInformation = async () => {
             const user = JSON.parse(localStorage.getItem("user"));
             if (!user || !user.token) {

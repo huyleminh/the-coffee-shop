@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 
 function EmployeeManagement() {
     const history = useHistory();
+    document.title = "Manage employees - Admin";
     return (
         <div className="custom-site-main-content">
             <Result

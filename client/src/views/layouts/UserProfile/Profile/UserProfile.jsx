@@ -4,6 +4,7 @@ import UserProfileForm from "./UserProfileForm";
 import UserSecurityForm from "./UserSecurityForm";
 
 function UserProfile() {
+    document.title = "Profile -  The Coffee Shop";
     return (
         <>
             <UserProfileForm />

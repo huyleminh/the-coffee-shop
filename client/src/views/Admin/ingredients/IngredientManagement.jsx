@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 
 function IngredientManagement() {
     const history = useHistory();
+    document.title = "Manage ingredients - Admin";
     return (
         <div className="custom-site-main-content">
             <Result

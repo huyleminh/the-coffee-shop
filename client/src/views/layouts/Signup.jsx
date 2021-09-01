@@ -57,6 +57,7 @@ function Signup() {
     const handleGoHome = () => history.push("/");
 
     useEffect(() => {
+        document.title = "Signup - The Coffee Shop";
         localStorage.removeItem("user");
         localStorage.removeItem("profile");
         localStorage.removeItem("checkout");

@@ -45,6 +45,7 @@ function LandingPage() {
         const hash = window.location.hash;
         const id = !hash ? "#hero" : hash;
         document.querySelector(id).scrollIntoView();
+        document.title = "The Coffee Shop";
     })
 
     return (

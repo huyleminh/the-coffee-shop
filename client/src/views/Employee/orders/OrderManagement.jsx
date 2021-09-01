@@ -93,6 +93,7 @@ function OrderManagement() {
     const handleChangeSortBy = (value) => setSortBy(value);
 
     useEffect(() => {
+        document.title = "Manage orders - Employee";
         const fetchAllOrders = async () => {
             setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));

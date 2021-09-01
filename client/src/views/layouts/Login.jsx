@@ -42,6 +42,7 @@ function Login() {
     const handleGoHome = () => history.push("/");
 
     useEffect(() => {
+        document.title = "Login - The Coffee Shop";
         localStorage.removeItem("user");
         localStorage.removeItem("profile");
         localStorage.removeItem("checkout");

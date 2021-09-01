@@ -29,6 +29,7 @@ function Wishlist() {
     const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
+        document.title = "Wishlist -  The Coffee Shop";
         const fetchWishlist = async () => {
             setIsLoading(true);
             const user = JSON.parse(localStorage.getItem("user"));

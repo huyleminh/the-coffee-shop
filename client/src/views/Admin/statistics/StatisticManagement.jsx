@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 
 function StatisticManagement() {
     const history = useHistory();
+    document.title = "Satistics - Admin";
     return (
         <div className="custom-site-main-content">
             <Result
