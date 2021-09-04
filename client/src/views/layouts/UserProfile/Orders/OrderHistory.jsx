@@ -81,7 +81,7 @@ function OrderHistory() {
             dataIndex: "status",
             render: (status) => {
                 const STATUS = ["Pending", "Accepted", "Denied", "Done", "Cancelled", "Delivering"];
-                const newStatus = status ? status : -1;
+                const newStatus = Number.parseInt(status) > -1 ? Number.parseInt(status) : -1;
                 const content = newStatus > -1 ? STATUS[newStatus] : "None";
                 return (
                     <div className="status-tag">
