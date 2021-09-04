@@ -103,11 +103,14 @@ function CheckoutPage() {
             const res = await flow.startFlow();
             if (res.status === 200) {
                 setIsSending(false);
+
                 NotificationBox.triggerSuccess("CHECKOUT SUCCESS", res.statusText);
-                NotificationBox.triggerInfo(
-                    "CHECKOUT INFO",
-                    "The page will redirect after 4 seconds."
-                );
+                setTimeout(() => {
+                    NotificationBox.triggerInfo(
+                        "CHECKOUT INFO",
+                        "The page will redirect after 4 seconds."
+                    );
+                }, 1000);
                 setTimeout(() => history.push("/profile/orders/history"), 4000);
             } else if (res.status === 400) {
                 setIsSending(false);
