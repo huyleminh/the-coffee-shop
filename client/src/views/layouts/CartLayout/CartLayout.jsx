@@ -566,21 +566,6 @@ function CartLayout() {
                 );
             }
         });
-        // for (let key of selectedItem) {
-        //     for (let item of cart) {
-        //         if (key === item.product.id) {
-        //             if (item.discount !== null) {
-        //                 const price =
-        //                     Math.floor(item.product.price * (1 - item.discount.percent)) *
-        //                     item.quantity;
-        //                 totalMoneyTemp += price;
-        //             } else {
-        //                 const price = Math.floor(item.product.price * item.quantity);
-        //                 totalMoneyTemp += price;
-        //             }
-        //         }
-        //     }
-        // }
     } else {
         totalMoneyTemp = cartTable.reduce((accumulator, currentItem) => {
             return accumulator + currentItem.total;
