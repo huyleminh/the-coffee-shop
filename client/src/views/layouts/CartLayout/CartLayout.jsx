@@ -186,7 +186,6 @@ function CartLayout() {
                                     response.message !==
                                     "There is at least one product that does not exist in your cart"
                                 )
-
                                     NotificationBox.triggerError(
                                         "ERROR",
                                         "Failed to change quantity."
@@ -201,31 +200,6 @@ function CartLayout() {
                 }
             }, 1000);
         }
-
-        // try {
-        //     setIsSending(true);
-        //     const response = await CartAPI.editCart(user.token, {
-        //         productId: item.key,
-        //         quantity: value,
-        //     });
-        //     setIsSending(false);
-
-        //     if (response.status === 200) {
-        //         localStorage.setItem("cart", JSON.stringify(cart));
-        //         NotificationBox.triggerSuccess("SUCCESS", "Change quantity successfully.");
-        //     } else {
-        //         if (
-        //             response.message !==
-        //             "There is at least one product that does not exist in your cart"
-        //         )
-        //             localStorage.removeItem("user");
-
-        //         NotificationBox.triggerError("ERROR", "Fail to change quantity.");
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        //     alert("Something went wrong");
-        // }
     };
 
     const handleAddToWishlist = async (item) => {
