@@ -39,13 +39,13 @@ class CartController {
         const [product] = await Product.getSpecificProduct(productId)
         if (product === undefined) {
             res.send({ status: 404, message: "This product does not exist" })
-            return
+            return;
         }
 
         const [productInCart] = await Cart.getProductByUserIdAndProductId(userInfo.id, productId)
         if (productInCart !== undefined) {
             res.send({ status: 409, message: "This product has existed in your cart" })
-            return
+            return;
         }
 
         const cart = await Cart.insert(productId, userInfo.id, quantity);
@@ -79,7 +79,7 @@ class CartController {
                 status: 404,
                 message: "There is at least one product that does not exist in your cart"
             })
-            return
+            return;
         }
 
         // Updates each product
