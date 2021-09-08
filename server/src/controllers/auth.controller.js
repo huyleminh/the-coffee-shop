@@ -27,7 +27,7 @@ class AuthController {
                     role,
                 },
                 process.env.SECRET_TOKEN_KEY,
-                { expiresIn: "0.5h" }
+                { expiresIn: "0.5h" },
             );
 
             let expiredIn = new Date();
@@ -41,12 +41,14 @@ class AuthController {
     static verifyToken = (req, res) => {
         const authHeader = req.headers["authorization"];
         const token = authHeader.split(" ")[1];
-        if (!token) {
+        if (!token)
             res.send({ status: 401 });
-        } else {
+        else {
             jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
-                if (err) res.send({ status: 403 });
-                else res.send({ status: 200, data: { role: data.role } });
+                if (err)
+                    res.send({ status: 403 });
+                else
+                    res.send({ status: 200, data: { role: data.role } });
             });
         }
     };

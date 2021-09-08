@@ -15,10 +15,7 @@ class ProductCategory {
         const jsonData = JSON.parse(jsonString);
 
         return jsonData.map((row) => {
-            return new ProductCategory(
-                row.productId,
-                row.categoryId
-            );
+            return new ProductCategory(row.productId, row.categoryId);
         });
     };
 
@@ -29,16 +26,20 @@ class ProductCategory {
             SET ${newData.key} = ?
             WHERE ${condition.key} = ?;`;
 
-            DatabaseConnection.query(sql, [newData.value, condition.value], (error) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
+            DatabaseConnection.query(
+                sql,
+                [newData.value, condition.value],
+                (error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
 
-                resolve();
-            });
+                    resolve();
+                }
+            );
         });
-    }
+    };
 }
 
 export default ProductCategory;

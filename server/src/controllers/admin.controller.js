@@ -41,21 +41,37 @@ class AdminController {
 
     static createProduct = async (req, res) => {
         const payload = res.locals.payload;
-        const [productExisted] = await Product.getProductsByAttribute("name", payload.name)
+        const [productExisted] = await Product.getProductsByAttribute(
+            "name",
+            payload.name
+        );
 
         if (productExisted !== undefined)
-            res.send({ status: 409, message: "This product has existed in the system" });
+            res.send({
+                status: 409,
+                message: "This product has existed in the system",
+            });
         else {
             // insert new category if duplicate
-            const [categoryExisted] = await Category.getByAttribute("name", payload.categoryName)
-            const categoryId = (categoryExisted === undefined) ? uuidv4() : categoryExisted.id
+            const [categoryExisted] = await Category.getByAttribute(
+                "name",
+                payload.categoryName
+            );
+            const categoryId =
+                categoryExisted === undefined ? uuidv4() : categoryExisted.id;
             if (categoryExisted === undefined) {
-                const newCategory = new Category(categoryId, payload.categoryName)
-                const insertNewCategory = await newCategory.insert()
+                const newCategory = new Category(
+                    categoryId,
+                    payload.categoryName
+                );
+                const insertNewCategory = await newCategory.insert();
             }
 
             // insert new discount if receive new discount
-            const discountId = (payload.discount.id === undefined) ? uuidv4() : payload.discount.id
+            const discountId =
+                payload.discount.id === undefined
+                    ? uuidv4()
+                    : payload.discount.id;
             if (payload.discount.id === undefined) {
                 const newDiscount = new Discount(
                     discountId,
@@ -63,15 +79,18 @@ class AdminController {
                     0,
                     payload.discount.startDate,
                     payload.discount.endDate
-                )
-                const insertNewDiscount = await newDiscount.insert()
+                );
+                const insertNewDiscount = await newDiscount.insert();
             }
 
             // insert new product (includes product_rating)
-            const now = new Date()
-            const dateString = now.toJSON()
-            const newProductId = uuidv4()
-            const image = (payload.image === undefined) ? "" : `img_${newProductId}${payload.image}`
+            const now = new Date();
+            const dateString = now.toJSON();
+            const newProductId = uuidv4();
+            const image =
+                payload.image === undefined
+                    ? ""
+                    : `img_${newProductId}${payload.image}`;
             const newProduct = new Product(
                 newProductId,
                 payload.name,
@@ -81,8 +100,8 @@ class AdminController {
                 discountId,
                 dateString,
                 dateString
-            )
-            const insertNewProduct = await newProduct.insert(categoryId)
+            );
+            const insertNewProduct = await newProduct.insert(categoryId);
 
             // create new product successfully
             res.send({ status: 200, data: image });
@@ -92,31 +111,45 @@ class AdminController {
     static editProduct = async (req, res) => {
         const payload = res.locals.payload;
         if (payload.name !== undefined) {
-            const [product] = await Product.getProductsByAttribute("name", payload.name);
+            const [product] = await Product.getProductsByAttribute(
+                "name",
+                payload.name
+            );
             if (product !== undefined && product.id !== payload.productId) {
-                res.send({ status: 409, message: "This product has existed in the system" });
+                res.send({
+                    status: 409,
+                    message: "This product has existed in the system",
+                });
                 return;
             }
         }
 
         // insert new category if need
         if (payload.categoryName !== undefined) {
-            const [category] = await Category.getByAttribute("name", payload.categoryName);
+            const [category] = await Category.getByAttribute(
+                "name",
+                payload.categoryName
+            );
             const categoryId = category === undefined ? uuidv4() : category.id;
 
             if (category === undefined) {
-                const newCategory = new Category(categoryId, payload.categoryName);
+                const newCategory = new Category(
+                    categoryId,
+                    payload.categoryName
+                );
                 const insertNewCategory = await newCategory.insert();
             }
 
-            const updateProductCategory = await ProductCategory.updateOneAttribute(
-                { key: "productId", value: payload.productId },
-                { key: "categoryId", value: categoryId }
-            );
+            const updateProductCategory =
+                await ProductCategory.updateOneAttribute(
+                    { key: "productId", value: payload.productId },
+                    { key: "categoryId", value: categoryId }
+                );
             delete payload.categoryName;
         }
 
-        const discountId = payload.discount.id === undefined ? uuidv4() : payload.discount.id;
+        const discountId =
+            payload.discount.id === undefined ? uuidv4() : payload.discount.id;
         if (payload.discount.id === undefined) {
             const newDiscount = new Discount(
                 discountId,
@@ -134,7 +167,11 @@ class AdminController {
         delete payload.productId;
         const keys = Object.keys(payload);
         const values = Object.values(payload);
-        const updateProduct = await Product.updateAttributes(productId, keys, values);
+        const updateProduct = await Product.updateAttributes(
+            productId,
+            keys,
+            values
+        );
 
         res.send({ status: 200 });
     };
@@ -143,10 +180,15 @@ class AdminController {
         const params = res.locals.params;
         const countParams = Object.keys(params).length;
 
-        if (countParams !== 1 || (countParams === 1 && params.productId === undefined))
+        if (
+            countParams !== 1 ||
+            (countParams === 1 && params.productId === undefined)
+        )
             res.send({ status: 400, message: "Params is invalid" });
         else {
-            const deleteProduct = await Product.deleteByProductId(params.productId);
+            const deleteProduct = await Product.deleteByProductId(
+                params.productId
+            );
             res.send({ status: 200 });
         }
     };

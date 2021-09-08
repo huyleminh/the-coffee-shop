@@ -6,17 +6,23 @@ class ProductsController {
         const params = res.locals.params;
 
         let productList = undefined;
-        if (params.page === undefined) params.page = 1;
-        else params.page = parseInt(params.page);
+        if (params.page === undefined)
+            params.page = 1;
+        else
+            params.page = parseInt(params.page);
 
-        if (params.search !== undefined) productList = await Product.searchProducts(params.search);
+        if (params.search !== undefined)
+            productList = await Product.searchProducts(params.search);
         else if (params.filter !== undefined)
             productList = await Product.filterProducts(params.filter);
-        else productList = await Product.getProducts();
+        else
+            productList = await Product.getProducts();
 
         const totalProducts = productList.length;
         let totalPages = Math.ceil(totalProducts / MAX_PRODUCTS_PER_PAGE);
-        if (totalPages === 0) totalPages = 1;
+
+        if (totalPages === 0)
+            totalPages = 1;
 
         if (params.page < 1 || params.page > totalPages) {
             res.send({ status: 404, message: "Page not found" });

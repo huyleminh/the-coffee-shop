@@ -58,20 +58,24 @@ class Wishlist {
             LEFT JOIN ${DatabaseConfig.CONFIG.DATABASE}.discount D ON P.discountId = D.id
             WHERE W.userId = ? AND W.productId = ?`;
 
-            DatabaseConnection.query(sql, [userId, productId], (error, rows) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
+            DatabaseConnection.query(
+                sql,
+                [userId, productId],
+                (error, rows) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
 
-                if (rows === undefined)
-                    reject(new Error("Error: 'rows' is undefined"));
-                else {
-                    const jsonString = JSON.stringify(rows);
-                    const jsonData = JSON.parse(jsonString);
-                    resolve(jsonData);
+                    if (rows === undefined)
+                        reject(new Error("Error: 'rows' is undefined"));
+                    else {
+                        const jsonString = JSON.stringify(rows);
+                        const jsonData = JSON.parse(jsonString);
+                        resolve(jsonData);
+                    }
                 }
-            });
+            );
         });
     };
 
