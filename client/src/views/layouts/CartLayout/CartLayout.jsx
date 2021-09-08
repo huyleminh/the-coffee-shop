@@ -225,7 +225,6 @@ function CartLayout() {
                         return;
                     }
                 }
-                //localStorage.removeItem("user");
                 localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, cartItem]));
                 if (!user || !user.token) {
                     NotificationBox.triggerSuccess(
