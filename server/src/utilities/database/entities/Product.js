@@ -186,7 +186,9 @@ class Product {
     };
 
     insert(categoryId) {
-        const values = Object.values(this).concat([this.id, 0, 0]).concat([this.id, categoryId])
+        const values = Object.values(this)
+            .concat([this.id, 0, 0])
+            .concat([this.id, categoryId]);
 
         return new Promise((resolve, reject) => {
             const sql = `
@@ -195,17 +197,16 @@ class Product {
             INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_rating (productId, totalStar, totalRating)
             VALUES (?, ?, ?);
             INSERT INTO ${DatabaseConfig.CONFIG.DATABASE}.product_category (productId, categoryId)
-            VALUES (?, ?);`
+            VALUES (?, ?);`;
 
             DatabaseConnection.query(sql, values, (error) => {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    resolve();
+                if (error) {
+                    reject(error);
+                    return;
                 }
-            );
+
+                resolve();
+            });
         });
     }
 
