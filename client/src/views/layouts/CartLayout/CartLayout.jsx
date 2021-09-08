@@ -175,7 +175,6 @@ function CartLayout() {
                                 productId: tempItem.key,
                                 quantity: tempItem.quantity,
                             });
-                            //console.log("RESPONSE: ", response.status);
                             if (response.status === 200) {
                                 localStorage.setItem("cart", JSON.stringify(cart));
                                 NotificationBox.triggerSuccess(
