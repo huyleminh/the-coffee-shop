@@ -1,0 +1,76 @@
+.table-deleted {
+    outline: none;
+    background-color: #e40340;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-bottom: 0;
+    width: 80px;
+    height: 40px;
+    padding: 10px;
+}
+
+.table-deleted:active {
+    background-color: #503a24;
+    color: #fff;
+}
+
+.table-deleted:hover {
+    background-color: #cf0239;
+}
+
+.table-deleted:disabled {
+    cursor: wait;
+}
+
+.table-cart,
+.table-wishlist,
+.table-cart-disabled,
+.table-wishlist-disabled {
+    border: 1px solid #503a2446;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    color: #503a24;
+    border-radius: 5px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.table-cart-disabled,
+.table-wishlist-disabled {
+    cursor: wait
+}
+
+.table-cart {
+    color: #61462c;
+}
+
+.table-cart:hover {
+    background-color: #9c7044;
+    color: #fff;
+}
+
+.table-wishlist:hover {
+    color: #ff0000;
+}
+
+.table-ready {
+    background-color: #109627;
+    display: block;
+    padding: 8px;
+    color: #fff;
+    width: fit-content;
+}
+
+.img_style {
+    border-radius: 5px;
+    border: 1px solid #503a2444;
+    object-fit: cover;
+}
+
+.price_style {
+    margin: 0px;
+}

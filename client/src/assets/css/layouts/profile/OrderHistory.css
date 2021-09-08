@@ -1,0 +1,80 @@
+.profile__order {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile__order h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #503a24;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.profile__order span {
+    color: #503a24;
+}
+
+.status-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+}
+
+.status-tag span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    width: 70px;
+    height: 30px;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.status-tag #pending,
+.status-tag #not-paid {
+    background-color: #ff933d;
+}
+
+.status-tag #accepted {
+    background-color: #00d349;
+}
+
+.status-tag #denied {
+    background-color: #ff1f32;
+}
+
+.status-tag #done {
+    background-color: #bdbec2;
+}
+
+.status-tag #cancelled {
+    background-color: #ff1f32;
+}
+
+.status-tag #delivering,
+.status-tag #paid,
+.status-tag #refunded {
+    background-color: #007ff5;
+}
+
+.status-tag #none {
+    background-color: #bdbec2;
+}
+
+.table-view-action {
+    cursor: pointer;
+    border-radius: 8px;
+    color: #fff;
+    width: 65px;
+    height: 40px;
+    padding: 10px;
+    margin: 0;
+    font-weight: 600;
+}

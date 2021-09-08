@@ -1,0 +1,199 @@
+.form__bottom {
+    justify-content: center;
+}
+
+.signin {
+    width: 100%;
+    height: 100vh;
+
+    background-image: repeating-linear-gradient(to top right, #503a24, #4a2e06);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signin__form {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    justify-content: center;
+
+    width: calc(100% / 3);
+    height: calc(100vh - 100px);
+
+    padding: 35px;
+    border-radius: 20px;
+    position: relative;
+
+    -webkit-box-shadow: 0px 0px 7px 7px #674c24;
+    -moz-box-shadow: 0px 0px 7px 7px #674c24;
+    box-shadow: 0px 0px 7px 7px #363d38;
+}
+
+.signin__form > :first-child {
+    position: absolute;
+    width: 25px;
+    font-size: 1.75rem;
+    top: 45px;
+    left: 35px;
+    color: #4c3d23;
+    cursor: pointer;
+}
+
+.signin__form__title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 30px 0px;
+    z-index: 1000;
+}
+
+.signin__form__title h1 {
+    color: #4c3d23;
+    font-size: 2.75rem;
+}
+
+.signin__form__title span {
+    color: #000;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.signin__form__controll {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.signin__form__controll form > :nth-child(n) {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.signin__form__controll form {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.signin__form__controll form input {
+    outline: none;
+    border-radius: 10px;
+    height: 50px;
+
+    padding: 15px 10px;
+    font-size: 14px;
+}
+
+.signin__IconFbGg {
+    display: flex;
+    height: auto;
+    padding-left: 0em;
+    white-space: 3em;
+    margin: 0px;
+    justify-content: center;
+}
+
+.icon_item {
+    margin: 5px;
+}
+
+.signin__form__controll form button[type="submit"] {
+    padding: 8px;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 780px) {
+    .signin__form {
+        width: 350px;
+    }
+
+    .signin__form__title {
+        margin-bottom: 5px;
+    }
+
+    .signin__form__title h1 {
+        font-size: 1.75rem;
+    }
+
+    .signin__form__title span {
+        font-size: 0.95rem;
+    }
+
+    .signin__form__controll form input {
+        height: 40px;
+    }
+
+    .signin__form__controll form button[type="submit"] {
+        height: 45px;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+}
+
+@media only screen and (min-width: 780px) and (max-width: 1420px) {
+    .signin__form {
+        width: 400px;
+    }
+
+    .signin__form__title {
+        margin-bottom: 10px;
+    }
+
+    .signin__form__title h1 {
+        font-size: 2rem;
+    }
+
+    .signin__form__title span {
+        font-size: 0.95rem;
+    }
+
+    .signin__form__controll form input {
+        height: 40px;
+    }
+
+    .signin__form__controll form button[type="submit"] {
+        height: 45px;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+}
+
+@media only screen and (min-width: 1420px) {
+    .signin__form {
+        width: 440px;
+    }
+}
+
+@media only screen and (max-height: 890px) {
+    .signin__form {
+        width: 420px;
+    }
+
+    .signin__form__controll form > :nth-child(n) {
+        margin-top: 25px;
+        width: 100%;
+    }
+
+    .signin__form__title {
+        margin: 20px 0px;
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .signin__form {
+        height: calc(100vh - 50px);
+    }
+
+    .signin__form > :first-child {
+        top: 20px;
+    }
+}

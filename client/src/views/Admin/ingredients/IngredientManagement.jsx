@@ -1,10 +1,33 @@
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Result } from "antd";
 import React from "react";
-import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
-IngredientManagement.propTypes = {};
-
-function IngredientManagement(props) {
-    return <div>Ingerdients management</div>;
+function IngredientManagement() {
+    const history = useHistory();
+    document.title = "Manage ingredients - Admin";
+    return (
+        <div className="custom-site-main-content">
+            <Result
+                icon={
+                    <FontAwesomeIcon
+                        spin
+                        icon={faCog}
+                        style={{ fontSize: "35px", color: "#503a23" }}
+                    />
+                }
+                title="Coming soon!"
+                subTitle="This feature is being developed. Please comeback latter."
+                extra={
+                    <button style={{ fontWeight: "700" }} onClick={() => history.push("/admin")}>
+                        Back to Home
+                    </button>
+                }
+                style={{ height: "100%" }}
+            />
+        </div>
+    );
 }
 
 export default IngredientManagement;
