@@ -279,7 +279,6 @@ function CartLayout() {
                             return;
                         }
                     }
-                    //localStorage.removeItem("user");
                     localStorage.removeItem("profile");
                     localStorage.setItem("wishlist", JSON.stringify([...wishListLocal, item]));
                     NotificationBox.triggerSuccess(
