@@ -186,7 +186,6 @@ function CartLayout() {
                                     response.message !==
                                     "There is at least one product that does not exist in your cart"
                                 )
-                                    //localStorage.removeItem("user");
 
                                     NotificationBox.triggerError(
                                         "ERROR",
