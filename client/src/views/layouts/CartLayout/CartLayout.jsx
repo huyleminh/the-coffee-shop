@@ -160,7 +160,6 @@ function CartLayout() {
         }
 
         setChangedItem(tempChangedItem);
-        //console.log("CHANGED ITEM: ", changedItem);
 
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.token) {
