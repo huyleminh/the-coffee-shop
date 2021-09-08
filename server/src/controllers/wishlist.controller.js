@@ -36,7 +36,7 @@ class WishlistController {
         const [productInProductTable] = await Product.getSpecificProduct(productId)
         if (productInProductTable === undefined) {
             res.send({ status: 404, message: "This product does not exist" });
-            return
+            return;
         }
 
         const [productInWishlist] = await Wishlist.getProductByUserIdAndProductId(
@@ -70,7 +70,7 @@ class WishlistController {
                 status: 404,
                 message: "This product does not exist in your wishlist"
             });
-            return
+            return;
         }
 
         const deleteProduct = await Wishlist.deleteProduct(productId);
