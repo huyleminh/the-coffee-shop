@@ -35,8 +35,7 @@ class CheckoutController {
             if (!productIdList.includes(product.id)) {
                 res.send({
                     status: 404,
-                    message:
-                        "There is at least one product that does not exist in your cart",
+                    message: "There is at least one product that does not exist in your cart",
                 });
                 return;
             }
