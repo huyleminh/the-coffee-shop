@@ -157,7 +157,6 @@ function CartLayout() {
         }
         if (existFlag === 0) {
             tempChangedItem.push(item);
-            //console.log("CHANGED ITEM: ", changedItem);
         }
 
         setChangedItem(tempChangedItem);
