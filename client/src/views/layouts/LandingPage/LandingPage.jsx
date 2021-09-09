@@ -76,7 +76,7 @@ function LandingPage() {
                         others.
                         <br />
                         <br />
-                        <b>- Our Goal:</b> The satisfaction of customers is the measure for our
+                        <b>- Our Goal:</b> The satisfaction of customers is a measure of our
                         success.
                         <br />
                         <br />
